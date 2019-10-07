@@ -1,0 +1,28 @@
+
+{% block content %}
+
+<h1 style="margin: auto; width: 9%;padding:10px">Register</h1>
+<div class="center" style="text-align:left;margin: auto; width: 25%;border: 3px solid black;padding: 20px;">
+{% include 'accounts/form.html' with form=form %}
+</div>
+    {% endblock %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.footer {
+
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: black;
+   color: white;
+   text-align: center;
+   padding:10px;
+
+
+}
+</style>
+<div class="footer">
+    <span><a style="text-decoration:none;color:white;" href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;" href="/" >Login</a></span>
+</div>

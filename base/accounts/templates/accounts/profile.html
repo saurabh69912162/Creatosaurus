@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{user.first_name}}<br>
+{{user.email}}
+<h3><a href="/logout" >Logout</a></h3>
+<h3><a href="/admin" >admin</a></h3>
+<h3><a href="/profile/edit" >edit</a></h3>
+<h3><a href="/email" >email</a></h3>
+<h3><a href="/password" >Change password</a></h3>
+<h3><a href="/social/connections" >Social Connections</a></h3>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.footer {
+
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: black;
+   color: white;
+   text-align: center;
+   padding:10px;
+
+
+}
+</style>
+<div class="footer">
+    <span><a style="text-decoration:none;color:white;" href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;" href="/register" >Register</a></span>
+</div>
+
+
+</body>
+</html>
