@@ -8,7 +8,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from allauth.account.models import EmailAddress
 from .forms import busi_data, creator_data
 from .models import business_profile_data, creator_profile_data
 from rest_framework.views import APIView
@@ -101,23 +100,15 @@ def profile(request):
     userme = request.user
     user_name_ = request.user.username
     if userme.is_authenticated:
-        email_req = User.objects.get(email=request.user.email)
-        if EmailAddress.objects.filter(email=email_req):
-            veri = EmailAddress.objects.get(email=email_req).verified
-            if veri == True:
-                if request.user.category == 'Creator':
-                    check_creator(userme, user_name_)
-                    return render(request,'accounts/creator.html',{})
-                elif request.user.category == 'Business':
-                    check_bizz(userme,user_name_)
-                    return render(request,'accounts/business.html',{})
-                else:
-                    print('choose category')
-                    return HttpResponseRedirect("/")
-            else:
-                return HttpResponseRedirect("/email")
+        if request.user.category == 'Creator':
+            check_creator(userme, user_name_)
+            return render(request,'accounts/creator.html',{})
+        elif request.user.category == 'Business':
+            check_bizz(userme,user_name_)
+            return render(request,'accounts/business.html',{})
         else:
-            return HttpResponseRedirect("/email")
+            print('choose category')
+            return HttpResponseRedirect("/")
     else:
         return HttpResponseRedirect("/")
 

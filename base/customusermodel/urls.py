@@ -8,13 +8,11 @@ from accounts.views import register, login_view, profile, \
 
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.urls import path, include
-from allauth.account.views import login as all_login
 
 
 urlpatterns = [
 
     url(r'^profile/$', profile, name='profile'),
-    path('', include('allauth.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^register/$', register),
     path('', login_view),
