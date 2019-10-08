@@ -4,8 +4,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import business_profile_data, creator_profile_data
 from .forms import UserCreationForm
-from .models import MyUser
-
+from .models import *
+admin.site.unregister(Group)
 # Register your models here.
 
 class UserAdmin(BaseUserAdmin):
@@ -62,4 +62,50 @@ class business_profile_data_admin(admin.ModelAdmin):
 
 
 admin.site.register(business_profile_data, business_profile_data_admin)
-admin.site.unregister(Group)
+
+class connections_admin(admin.ModelAdmin):
+
+	list_display = ('username','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	list_filter = ('provider',)
+
+	fieldsets = (
+			(None, {'fields': ('username','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
+			('Description', {'fields': ('extra_data',)})
+		)
+	search_fields = ('username','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	ordering = ('username','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+
+	filter_horizontal = ()
+
+
+admin.site.register(connections, connections_admin)
+
+
+
+class current_package_user_admin(admin.ModelAdmin):
+
+	list_display = ('username','dirtybit','package_selected','queue_size','account_connection_size','team_member_size')
+	list_filter = ('package_selected',)
+
+
+	search_fields = ('username','dirtybit','package_selected','queue_size','account_connection_size','team_member_size')
+	ordering = ('username','dirtybit','package_selected','queue_size','account_connection_size','team_member_size')
+
+	filter_horizontal = ()
+
+
+admin.site.register(current_package_user, current_package_user_admin)
+
+
+
+	
+class available_package_admin(admin.ModelAdmin):
+
+	list_display = ('package_name','amount','queue_size','account_connection_size','team_member_size','package_dirtybit')
+
+	filter_horizontal = ()
+
+
+admin.site.register(available_package, available_package_admin)
+
+

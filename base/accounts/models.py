@@ -98,11 +98,13 @@ class MyUser(AbstractBaseUser):
 			super().save(*args, **kwargs)
 			obj = MyUser.objects.get(dirtybit = self.dirtybit)
 			creator_profile_data.objects.get_or_create(username = obj,dirtybit=self.dirtybit)
+			current_package_user.objects.get_or_create(username = obj,dirtybit=self.dirtybit,package_selected = available_package.objects.get(package_name = 'L1'))
 			super().save(*args, **kwargs)
 		elif self.category == 'Business':
 			super().save(*args, **kwargs)
 			obj = MyUser.objects.get(dirtybit=self.dirtybit)
 			business_profile_data.objects.get_or_create(username = obj, dirtybit=self.dirtybit)
+			current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,package_selected=available_package.objects.get(package_name='L1'))
 			super().save(*args, **kwargs)
 		else:
 			pass
@@ -141,3 +143,54 @@ class creator_profile_data(models.Model):
 	address = models.CharField(max_length=255,blank=True,null=True)
 	number = models.IntegerField(blank=True,null=True)
 	cache_hit = models.BooleanField(default=False,blank=True,null=True)
+
+
+
+class connections(models.Model):
+	username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+	dirtybit = models.UUIDField(unique=True, blank=True, null=True)
+	connection_dirtybit = models.UUIDField(default=uuid.uuid4,unique=True, blank=True, null=True)
+	provider = models.CharField(blank=False,null=False,max_length=50)
+	access_token = models.CharField(blank=False,null=False,max_length=1000)
+	extra_data = models.TextField(blank=True,null=True,max_length=10000)
+	access_expiry = models.DateTimeField(blank=True,null=True)
+	long_token = models.CharField(blank=True,null=True,max_length=1000)
+	long_expiry = models.DateTimeField(blank=True,null=True)
+
+
+
+class available_package(models.Model):
+	package_name  = models.CharField(max_length=20,blank=False,null=False)
+	amount = models.IntegerField(blank=False,null=False)
+	queue_size = models.IntegerField(blank=False,null=False)
+	account_connection_size = models.IntegerField(blank=False,null=False)
+	team_member_size = models.IntegerField(blank=False,null=False)
+	package_dirtybit = models.UUIDField(default=uuid.uuid4, blank=False, unique=True, null=True)
+
+	def __str__(self):
+		return self.package_name
+
+class current_package_user(models.Model):
+	username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+	dirtybit = models.UUIDField(unique=True, blank=True, null=True)
+	package_selected = models.ForeignKey(available_package, on_delete=models.CASCADE,blank=False,null=False)
+	queue_size = models.IntegerField(blank=True, null=True)
+	account_connection_size = models.IntegerField(blank=True, null=True)
+	team_member_size = models.IntegerField(blank=True, null=True)
+
+	def save(self, *args, **kwargs):
+		self.queue_size = self.package_selected.queue_size
+		self.account_connection_size = self.package_selected.account_connection_size
+		self.team_member_size = self.package_selected.team_member_size
+		super().save(*args, **kwargs)
+
+
+
+class scheduler(models.Model):
+	username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+	dirtybit = models.UUIDField(unique=True, blank=True, null=True)
+	schedule_dirtybit = models.UUIDField(default=uuid.uuid4,unique=True, blank=True, null=True)
+	provider = models.ForeignKey(connections, on_delete=models.CASCADE)
+	content = models.TextField(max_length=63000,blank=True,null=True)
+	datetime = models.DateTimeField(blank=False,null=False)
+	# image = models.ImageField(upload_to=)

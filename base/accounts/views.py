@@ -101,13 +101,13 @@ def profile(request):
     user_name_ = request.user.username
     if userme.is_authenticated:
         if request.user.category == 'Creator':
-            check_creator(userme, user_name_)
+            # check_creator(userme, user_name_)
             return render(request,'accounts/creator.html',{})
         elif request.user.category == 'Business':
-            check_bizz(userme,user_name_)
+            # check_bizz(userme,user_name_)
             return render(request,'accounts/business.html',{})
         else:
-            print('choose category')
+            # print('choose category')
             return HttpResponseRedirect("/")
     else:
         return HttpResponseRedirect("/")
