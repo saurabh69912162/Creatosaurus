@@ -171,7 +171,6 @@ class busi_data(forms.ModelForm):
         fields =(
             'company_category',
             'website',
-            'email',
             'number',
             'founded',
             'field_of_interest',

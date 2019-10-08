@@ -1,17 +1,14 @@
 from django.db import models
-
-# Create your models here.
+import uuid
 from django.core.validators import RegexValidator
-
 from django.contrib.auth.models import (
 		BaseUserManager, AbstractBaseUser
 	)
-
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
-
+from datetime import datetime
 
 class MyUserManager(BaseUserManager):
-	def create_user(self, username, email,first_name,last_name,category,password=None):
+	def create_user(self, username, email,first_name,last_name,category,date_of_joining,dirtybit,password=None):
 		if not email:
 			raise ValueError('Users must have an email address')
 
@@ -19,19 +16,29 @@ class MyUserManager(BaseUserManager):
 					username = username,
 					email = self.normalize_email(email),
 				)
-		first_name = first_name
-		last_name = last_name
-		category = category
+		user.first_name = first_name
+		user.last_name = last_name
+		user.category = category
+		user.date_of_joining = date_of_joining
+		user.dirtybit = dirtybit
 		user.set_password(password)
 		user.save(using=self._db)
+
 		return user
 		# user.password = password # bad - do not do this
 
-	def create_superuser(self, username, email,first_name,last_name,category,password=None):
+	def create_superuser(self, username, email,first_name,last_name,category,date_of_joining,dirtybit,password=None):
 		user = self.create_user(
-				username, email,first_name,last_name,category,password=password
+				username, email,first_name,last_name,category,date_of_joining,dirtybit,password=password
 			)
+		user.first_name = first_name
+		user.last_name = last_name
+		user.date_of_joining = date_of_joining
+		user.dirtybit = dirtybit
 		user.is_admin = True
+		user.cache_hit = False
+		user.email_verified = True
+		user.phone_verified = True
 		user.is_staff = True
 		user.save(using=self._db)
 		return user
@@ -57,12 +64,16 @@ class MyUser(AbstractBaseUser):
 	last_name = models.CharField(max_length=255)
 	category = models.CharField(max_length=10, default='creator')
 	is_admin = models.BooleanField(default=False)
+	cache_hit = models.BooleanField(default=False)
+	email_verified = models.BooleanField(default=False)
+	phone_verified = models.BooleanField(default=False)
 	is_staff = models.BooleanField(default=False)
-
+	date_of_joining = models.DateTimeField(default=datetime.now)
+	dirtybit = models.UUIDField(default=uuid.uuid4, unique=True)
 	objects = MyUserManager()
 
 	USERNAME_FIELD = 'username'
-	REQUIRED_FIELDS = ['email','first_name','last_name','category']
+	REQUIRED_FIELDS = ['email','first_name','last_name','category','date_of_joining','dirtybit']
 
 	def __str__(self):
 		return self.email
@@ -82,44 +93,51 @@ class MyUser(AbstractBaseUser):
 		# Simplest possible answer: Yes, always
 		return True
 
+	def save(self, *args, **kwargs):
+		if self.category == 'Creator':
+			super().save(*args, **kwargs)
+			obj = MyUser.objects.get(dirtybit = self.dirtybit)
+			creator_profile_data.objects.get_or_create(username = obj,dirtybit=self.dirtybit)
+			super().save(*args, **kwargs)
+		elif self.category == 'Business':
+			super().save(*args, **kwargs)
+			obj = MyUser.objects.get(dirtybit=self.dirtybit)
+			business_profile_data.objects.get_or_create(username = obj, dirtybit=self.dirtybit)
+			super().save(*args, **kwargs)
+		else:
+			pass
 
 
 
 
 class business_profile_data(models.Model):
 
-	username = models.CharField(max_length=255)
-	#username = models.ForeignKey(MyUser,on_delete=models.CASCADE)
-	first_name = models.CharField(max_length=255)
-	founded = models.DateField(max_length=255)
-	company_category = models.CharField(max_length=255)
-	website = models.CharField(max_length=255)
-	email = models.EmailField(max_length=255)
-	location = models.CharField(max_length=255)
-	overview = models.CharField(max_length=500)
-	company_size = models.IntegerField()
-	field_of_interest = models.CharField(max_length=1000)
-	address = models.CharField(max_length=255)
-	number = models.IntegerField()
-	verified = models.BooleanField(default=False)
-
-
-	def __str__(self):
-		return self.username+'	'+self.email+'	'+self.location
+	username = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+	dirtybit = models.UUIDField(unique=True, blank=True,null=True)
+	first_name = models.CharField(max_length=255,blank=True,null=True)
+	founded = models.DateField(max_length=255,blank=True,null=True)
+	company_category = models.CharField(max_length=255,blank=True,null=True)
+	website = models.CharField(max_length=255,blank=True,null=True)
+	# email = models.EmailField(max_length=255,blank=True,null=True)
+	location = models.CharField(max_length=255,blank=True,null=True)
+	overview = models.CharField(max_length=500,blank=True,null=True)
+	company_size = models.IntegerField(blank=True,null=True)
+	field_of_interest = models.CharField(max_length=1000,blank=True,null=True)
+	address = models.CharField(max_length=255,blank=True,null=True)
+	number = models.IntegerField(blank=True,null=True)
+	cache_hit = models.BooleanField(default=False,blank=True,null=True)
 
 class creator_profile_data(models.Model):
 
-	username = models.CharField(max_length=255)
-	skills = models.CharField(max_length=500)
-	artist_category = models.CharField(max_length=255)
-	website = models.CharField(max_length=255)
-	email = models.EmailField(max_length=255)
-	location = models.CharField(max_length=255)
-	gender = models.CharField(max_length=500)
-	description = models.CharField(max_length=1000)
-	address = models.CharField(max_length=255)
-	number = models.IntegerField()
-	verified = models.BooleanField(default=False)
-
-	def __str__(self):
-		return self.username+'	'+self.email+'	'+self.location+'	'+self.artist_category
+	username = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+	dirtybit = models.UUIDField(unique=True,blank=True,null=True)
+	skills = models.CharField(max_length=500,blank=True,null=True)
+	artist_category = models.CharField(max_length=255,blank=True,null=True)
+	website = models.CharField(max_length=255,blank=True,null=True)
+	# email = models.EmailField(max_length=255,blank=True,null=True)
+	location = models.CharField(max_length=255,blank=True,null=True)
+	gender = models.CharField(max_length=500,blank=True,null=True)
+	description = models.CharField(max_length=1000,blank=True,null=True)
+	address = models.CharField(max_length=255,blank=True,null=True)
+	number = models.IntegerField(blank=True,null=True)
+	cache_hit = models.BooleanField(default=False,blank=True,null=True)
