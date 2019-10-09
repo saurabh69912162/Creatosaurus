@@ -143,6 +143,19 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
+APSCHEDULER_DATETIME_FORMAT =  "N j, Y, f:s a"  # Default
+
+SCHEDULER_CONFIG = {
+    "apscheduler.jobstores.default": {
+        "class": "django_apscheduler.jobstores:DjangoJobStore"
+    },
+    'apscheduler.executors.processpool': {
+        "type": "threadpool"
+    },
+}
+SCHEDULER_AUTOSTART = True
+
+
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

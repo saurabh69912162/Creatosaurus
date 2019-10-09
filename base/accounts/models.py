@@ -16,7 +16,7 @@ executors = {
             }
 scheduler = BackgroundScheduler(executors=executors)
 scheduler.add_jobstore(DjangoJobStore(), "default")
-scheduler.start()
+
 
 
 
@@ -256,11 +256,23 @@ class scheduler_model(models.Model):
     status = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        obj_string_dirtybit = str(self.schedule_dirtybit)
-        new_obj = scheduler.add_job(jobs_now, 'date', args=[obj_string_dirtybit,],
-                                       run_date=self.scheduled_datetime, id=str(self.schedule_dirtybit))
         super().save(*args, **kwargs)
 
+        obj_string_dirtybit = str(self.schedule_dirtybit)
+        scheduler.add_job(jobs_now, 'date', args=[obj_string_dirtybit,],
+                                       run_date=self.scheduled_datetime, id=str(self.schedule_dirtybit))
+        check_state()
+
+
+
+
+
+def check_state():
+    if scheduler.state == 0:
+        print('scheduler started')
+        scheduler.start()
+    else:
+        print('scheduler Running')
 
 
 def jobs_now(obj_string_dirtybit):
