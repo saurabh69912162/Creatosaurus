@@ -29,7 +29,9 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'accounts.MyUser'
 LOGIN_REDIRECT_URL = '/profile'
-
+MEDIA_ROOT = os.path.join(BASE_DIR,'accounts/media')
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
 # Application definition
 
 INSTALLED_APPS = [

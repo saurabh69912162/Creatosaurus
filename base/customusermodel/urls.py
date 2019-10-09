@@ -1,9 +1,8 @@
 from django.conf.urls import url
 from django.contrib import admin
-
+from django.conf.urls.static import static
 from accounts.views import *
-
-
+from django.conf import settings
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.urls import path, include
 
@@ -22,5 +21,4 @@ urlpatterns = [
 ]
 
 
-
-urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
