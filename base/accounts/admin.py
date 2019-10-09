@@ -110,14 +110,14 @@ admin.site.register(available_package, available_package_admin)
 
 
 
-class scheduler_admin(admin.ModelAdmin):
+class scheduler_model_admin(admin.ModelAdmin):
 
 	list_display = ('username','dirtybit','init_schedule_fk','schedule_dirtybit','provider','content','scheduled_datetime','upload_datetime','image','video','status')
 
 	filter_horizontal = ()
 
 
-admin.site.register(scheduler, scheduler_admin)
+admin.site.register(scheduler_model,scheduler_model_admin)
 
 
 class init_schedule_admin(admin.ModelAdmin):

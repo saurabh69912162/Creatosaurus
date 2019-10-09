@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'accounts',
     'rest_framework',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [

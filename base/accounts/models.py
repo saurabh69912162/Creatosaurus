@@ -1,13 +1,24 @@
+from django.shortcuts import get_object_or_404
 from django.db import models
 import uuid
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import ( BaseUserManager, AbstractBaseUser)
-USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
-from datetime import datetime, timedelta
-from datetime import datetime
-from apscheduler.schedulers.blocking import BlockingScheduler
+from datetime import datetime, time
 
-sched = BlockingScheduler()
+
+USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
+from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+from apscheduler.schedulers.background import BackgroundScheduler
+executors = {
+    'default': ThreadPoolExecutor(90),   # max threads: 90
+    'processpool': ProcessPoolExecutor(20)  # max processes 20
+            }
+scheduler = BackgroundScheduler(executors=executors)
+scheduler.add_jobstore(DjangoJobStore(), "default")
+scheduler.start()
+
+
 
 
 class MyUserManager(BaseUserManager):
@@ -214,7 +225,7 @@ class init_schedule(models.Model):
 
         for x in range(len(provider)):
             # print(connections.objects.get(account_uid=provider[x]))
-            obj = scheduler()
+            obj = scheduler_model()
             obj.username = self.username
             obj.dirtybit = self.dirtybit
             obj.provider = connections.objects.get(account_uid=provider[x])
@@ -229,7 +240,9 @@ class init_schedule(models.Model):
         super().save(*args, **kwargs)
 
 
-class scheduler(models.Model):
+from datetime import datetime
+
+class scheduler_model(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
     init_schedule_fk = models.ForeignKey(init_schedule, on_delete=models.CASCADE, blank=True, null=True)
@@ -241,3 +254,17 @@ class scheduler(models.Model):
     image = models.ImageField(upload_to='scheduled_images', blank=True)
     video = models.FileField(upload_to='scheduled_videos', blank=True)
     status = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        obj_string_dirtybit = str(self.schedule_dirtybit)
+        new_obj = scheduler.add_job(jobs_now, 'date', args=[obj_string_dirtybit,],
+                                       run_date=self.scheduled_datetime, id=str(self.schedule_dirtybit))
+        super().save(*args, **kwargs)
+
+
+
+def jobs_now(obj_string_dirtybit):
+    # obj = get_object_or_404(scheduler,schedule_dirtybit = obj_string_dirtybit)
+    # print(obj.provider, obj.content, obj.init_schedule_fk)
+    print(obj_string_dirtybit)
+    print(datetime.now())
