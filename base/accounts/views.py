@@ -1,5 +1,5 @@
 from django.contrib.auth import login, get_user_model, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from .forms import UserCreationForm, UserLoginForm , editpro
 from django.contrib.auth.forms import UserChangeForm
 from .forms import CustomUserChangeForm
@@ -16,6 +16,18 @@ from rest_framework import status
 from .serializers import business_profile_dataSerializers
 from django.shortcuts import get_object_or_404
 from .models import MyUser
+from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+from apscheduler.schedulers.background import BackgroundScheduler
+
+executors = {
+    'default': ThreadPoolExecutor(90),  # max threads: 90
+    'processpool': ProcessPoolExecutor(20)  # max processes 20
+}
+scheduler = BackgroundScheduler(executors=executors)
+scheduler.add_jobstore(DjangoJobStore(), "default")
+
+from datetime import datetime
 
 User = get_user_model()
 
@@ -248,3 +260,24 @@ class userlist(APIView):
 
     def post(self):
         pass
+
+
+
+import time
+def timed_job():
+    print('lmao')
+    print(datetime.now())
+
+
+def lol(request):
+    print('This job is run every 2 seconds.')
+    print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 55)))
+    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 45)))
+    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 35)))
+    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 00)))
+    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 5)))
+    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 6)))
+
+    print(scheduler.start())
+
+    return HttpResponse('done')

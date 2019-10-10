@@ -4,18 +4,30 @@ import uuid
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import ( BaseUserManager, AbstractBaseUser)
 from datetime import datetime, time
-
+from apscheduler.jobstores.mongodb import MongoDBJobStore
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+
 from apscheduler.schedulers.background import BackgroundScheduler
 executors = {
     'default': ThreadPoolExecutor(90),   # max threads: 90
     'processpool': ProcessPoolExecutor(20)  # max processes 20
             }
-scheduler = BackgroundScheduler(executors=executors)
+
+job_defaults = {
+    'coalesce': False,
+    'max_instances': 3
+}
+
+scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults)
 scheduler.add_jobstore(DjangoJobStore(), "default")
+import logging
+
+logging.basicConfig()
+logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 
 
@@ -241,7 +253,8 @@ class init_schedule(models.Model):
 
 
 from datetime import datetime
-
+import schedule
+import time
 class scheduler_model(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
@@ -257,7 +270,7 @@ class scheduler_model(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-
+        print('Scheduler Stopped')
         obj_string_dirtybit = str(self.schedule_dirtybit)
         scheduler.add_job(jobs_now, 'date', args=[obj_string_dirtybit,],
                                        run_date=self.scheduled_datetime, id=str(self.schedule_dirtybit))
@@ -265,14 +278,14 @@ class scheduler_model(models.Model):
 
 
 
-
-
 def check_state():
     if scheduler.state == 0:
-        print('scheduler started')
+        print('Scheduler started')
         scheduler.start()
     else:
-        print('scheduler Running')
+        print('Scheduler Running')
+        print('Already Running Jobs :: ',scheduler.print_jobs())
+        pass
 
 
 def jobs_now(obj_string_dirtybit):
