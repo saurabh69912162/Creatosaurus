@@ -4,30 +4,10 @@ import uuid
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import ( BaseUserManager, AbstractBaseUser)
 from datetime import datetime, time
-# from apscheduler.jobstores.mongodb import MongoDBJobStore
-# from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-
+from datetime import datetime
+import schedule
+import time
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
-from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
-from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
-
-from apscheduler.schedulers.background import BackgroundScheduler
-executors = {
-    'default': ThreadPoolExecutor(90),   # max threads: 90
-    'processpool': ProcessPoolExecutor(20)  # max processes 20
-            }
-
-job_defaults = {
-    'coalesce': False,
-    'max_instances': 3
-}
-
-scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults)
-scheduler.add_jobstore(DjangoJobStore(), "default")
-import logging
-
-logging.basicConfig()
-logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 
 
@@ -251,10 +231,8 @@ class init_schedule(models.Model):
 
         super().save(*args, **kwargs)
 
-
 from datetime import datetime
-import schedule
-import time
+
 class scheduler_model(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
@@ -266,30 +244,30 @@ class scheduler_model(models.Model):
     upload_datetime = models.DateTimeField(default=datetime.now, blank=False, null=False)
     image = models.ImageField(upload_to='scheduled_images', blank=True)
     video = models.FileField(upload_to='scheduled_videos', blank=True)
-    status = models.BooleanField(default=False)
+    timestamp = models.CharField(max_length=20,null=True,blank=True)
+    hit = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.schedule_dirtybit)
+
 
     def save(self, *args, **kwargs):
+        import datetime
+        import time
+        d = datetime.datetime(self.scheduled_datetime.year, self.scheduled_datetime.month, self.scheduled_datetime.day, self.scheduled_datetime.hour,self.scheduled_datetime.minute,self.scheduled_datetime.second)
+        epoch = time.mktime(d.timetuple())
+        self.timestamp = epoch
+
         super().save(*args, **kwargs)
-        print('Scheduler Stopped')
-        obj_string_dirtybit = str(self.schedule_dirtybit)
-        scheduler.add_job(jobs_now, 'date', args=[obj_string_dirtybit,],
-                                       run_date=self.scheduled_datetime, id=str(self.schedule_dirtybit))
-        check_state()
 
 
 
-def check_state():
-    if scheduler.state == 0:
-        print('Scheduler started')
-        scheduler.start()
-    else:
-        print('Scheduler Running')
-        print('Already Running Jobs :: ',scheduler.print_jobs())
-        pass
-
-
-def jobs_now(obj_string_dirtybit):
-    # obj = get_object_or_404(scheduler,schedule_dirtybit = obj_string_dirtybit)
-    # print(obj.provider, obj.content, obj.init_schedule_fk)
-    print(obj_string_dirtybit)
-    print(datetime.now())
+class upcomming_queue(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    dirtybit = models.UUIDField(blank=True, null=True)
+    init_schedule_fk = models.ForeignKey(init_schedule, on_delete=models.CASCADE, blank=True, null=True)
+    schedule_dirtybit = models.ForeignKey(scheduler_model, on_delete=models.CASCADE, blank=True, null=True)
+    timestamp = models.CharField(max_length=20, null=True, blank=True)
+    provider = models.ForeignKey(connections, on_delete=models.CASCADE,blank=True,null=True)
+    def __str__(self):
+        return str(self.timestamp)

@@ -112,8 +112,8 @@ admin.site.register(available_package, available_package_admin)
 
 class scheduler_model_admin(admin.ModelAdmin):
 
-	list_display = ('username','dirtybit','init_schedule_fk','schedule_dirtybit','provider','content','scheduled_datetime','upload_datetime','image','video','status')
-
+	list_display = ('hit','username','dirtybit','init_schedule_fk','schedule_dirtybit','provider','content','scheduled_datetime','timestamp','upload_datetime','image','video')
+	ordering = ['timestamp']
 	filter_horizontal = ()
 
 
@@ -127,3 +127,14 @@ class init_schedule_admin(admin.ModelAdmin):
 	filter_horizontal = ()
 
 admin.site.register(init_schedule, init_schedule_admin)
+
+
+class upcomming_queue_admin(admin.ModelAdmin):
+
+	list_display = ('username','dirtybit','init_schedule_fk','schedule_dirtybit','timestamp')
+	ordering = ['timestamp']
+	filter_horizontal = ()
+
+admin.site.register(upcomming_queue, upcomming_queue_admin)
+
+

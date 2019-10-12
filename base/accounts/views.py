@@ -268,16 +268,19 @@ def timed_job():
     print('lmao')
     print(datetime.now())
 
+from django.conf import settings
 
 def lol(request):
     print('This job is run every 2 seconds.')
-    print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 55)))
+    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 55)))
     # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 45)))
     # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 35)))
     # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 00)))
     # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 5)))
     # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 6)))
-
-    print(scheduler.start())
+    print(int(datetime.now().timestamp()))
+    print(datetime.now())
+    print(datetime.now())
+    # print(scheduler.start())
 
     return HttpResponse('done')
