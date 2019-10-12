@@ -4,8 +4,8 @@ import uuid
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import ( BaseUserManager, AbstractBaseUser)
 from datetime import datetime, time
-from apscheduler.jobstores.mongodb import MongoDBJobStore
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+# from apscheduler.jobstores.mongodb import MongoDBJobStore
+# from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
