@@ -10,9 +10,6 @@ import time
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
 
 
-
-
-
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, first_name, last_name, category, date_of_joining, dirtybit, password=None):
         if not email:
@@ -244,7 +241,7 @@ class scheduler_model(models.Model):
     upload_datetime = models.DateTimeField(default=datetime.now, blank=False, null=False)
     image = models.ImageField(upload_to='scheduled_images', blank=True)
     video = models.FileField(upload_to='scheduled_videos', blank=True)
-    timestamp = models.CharField(max_length=20,null=True,blank=True)
+    timestamp = models.BigIntegerField(null=True,blank=True)
     hit = models.BooleanField(default=False)
 
     def __str__(self):
@@ -256,18 +253,19 @@ class scheduler_model(models.Model):
         import time
         d = datetime.datetime(self.scheduled_datetime.year, self.scheduled_datetime.month, self.scheduled_datetime.day, self.scheduled_datetime.hour,self.scheduled_datetime.minute,self.scheduled_datetime.second)
         epoch = time.mktime(d.timetuple())
-        self.timestamp = epoch
+        self.timestamp = int(epoch)
 
         super().save(*args, **kwargs)
-
-
 
 class upcomming_queue(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
     init_schedule_fk = models.ForeignKey(init_schedule, on_delete=models.CASCADE, blank=True, null=True)
     schedule_dirtybit = models.ForeignKey(scheduler_model, on_delete=models.CASCADE, blank=True, null=True)
-    timestamp = models.CharField(max_length=20, null=True, blank=True)
+    timestamp = models.BigIntegerField(null=True, blank=True)
     provider = models.ForeignKey(connections, on_delete=models.CASCADE,blank=True,null=True)
     def __str__(self):
         return str(self.timestamp)
+
+
+    
