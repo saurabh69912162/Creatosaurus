@@ -8,7 +8,7 @@ from datetime import datetime
 import schedule
 import time
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
-
+from celery123 import *
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, first_name, last_name, category, date_of_joining, dirtybit, password=None):
@@ -194,6 +194,9 @@ class current_package_user(models.Model):
         super().save(*args, **kwargs)
 
 
+
+
+
 class init_schedule(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
@@ -211,7 +214,6 @@ class init_schedule(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         provider = self.providers.split(',')
-
         for x in range(len(provider)):
             # print(connections.objects.get(account_uid=provider[x]))
             obj = scheduler_model()
@@ -264,8 +266,11 @@ class upcomming_queue(models.Model):
     schedule_dirtybit = models.ForeignKey(scheduler_model, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.BigIntegerField(null=True, blank=True)
     provider = models.ForeignKey(connections, on_delete=models.CASCADE,blank=True,null=True)
+
     def __str__(self):
         return str(self.timestamp)
 
-
-    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        print(self.timestamp - datetime.timestamp(datetime.now()))
+        reverse.delay(self.provider.provider,self.timestamp - datetime.timestamp(datetime.now()))

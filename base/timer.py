@@ -7,6 +7,7 @@ settings.configure(INSTALLED_APPS=app_settings.INSTALLED_APPS,DATABASES=app_sett
 import django
 django.setup()
 
+
 from accounts.models import *
 from datetime import datetime
 
@@ -32,5 +33,4 @@ schedule.every(1).seconds.do(job)
 
 while True:
     schedule.run_pending()
-    time.sleep(1)
 

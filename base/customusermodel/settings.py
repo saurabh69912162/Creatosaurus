@@ -17,6 +17,7 @@ sys.path.append('..')
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# DJANGO_SETTINGS_MODULE = 'customusermodel.settings'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -145,18 +146,6 @@ AUTHENTICATION_BACKENDS = (
 
 )
 
-
-APSCHEDULER_DATETIME_FORMAT =  "N j, Y, f:s a"  # Default
-
-SCHEDULER_CONFIG = {
-    "apscheduler.jobstores.default": {
-        "class": "django_apscheduler.jobstores:DjangoJobStore"
-    },
-    'apscheduler.executors.processpool': {
-        "type": "threadpool"
-    },
-}
-SCHEDULER_AUTOSTART = True
 
 
 
