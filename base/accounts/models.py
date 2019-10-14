@@ -1,3 +1,6 @@
+# import os
+# os.environ["DJANGO_SETTINGS_MODULE"] = "customusermodel.settings"
+
 from django.shortcuts import get_object_or_404
 from django.db import models
 import uuid
@@ -8,7 +11,10 @@ from datetime import datetime
 import schedule
 import time
 USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
-from celery123 import *
+
+#
+# from ..celery123 import *
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, first_name, last_name, category, date_of_joining, dirtybit, password=None):
@@ -273,4 +279,4 @@ class upcomming_queue(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         print(self.timestamp - datetime.timestamp(datetime.now()))
-        reverse.delay(self.provider.provider,self.timestamp - datetime.timestamp(datetime.now()))
+        # reverse.delay(self.provider.provider,self.timestamp - datetime.timestamp(datetime.now()))

@@ -9,14 +9,18 @@
 # django.setup()
 
 
-from __future__ import unicode_literals
-
 import os
 os.environ["DJANGO_SETTINGS_MODULE"] = "customusermodel.settings"
 
+
+import django
+django.setup()
+
+
+
 from celery import Celery
 import time
-from models import *
+from accounts.models import *
 app = Celery('celery123',broker='amqp://localhost//')
 
 
@@ -25,6 +29,7 @@ app = Celery('celery123',broker='amqp://localhost//')
 def reverse(string,number):
 	localtime = time.localtime(time.time())
 	print("Local current time :", localtime)
+	time.sleep(number)
 	print('delay is :: ',number)
 	obj = string[::-1]
 	return obj
