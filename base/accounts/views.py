@@ -271,16 +271,5 @@ def timed_job():
 from django.conf import settings
 
 def lol(request):
-    print('This job is run every 2 seconds.')
-    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 55)))
-    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 45)))
-    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 35)))
-    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 00)))
-    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 5)))
-    # print(scheduler.add_job(timed_job, 'date', run_date=datetime(2019, 10, 10, 13, 37, 6)))
-    print(int(datetime.now().timestamp()))
-    print(datetime.now())
-    print(datetime.now())
-    # print(scheduler.start())
 
-    return HttpResponse('done')
+    return render(request, 'accounts/linkedin.html', {})
