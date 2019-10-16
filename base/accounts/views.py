@@ -275,3 +275,8 @@ def connect(request):
         return render(request, 'accounts/connections.html',{})
     else:
         return redirect('/')
+
+
+def lol(request):
+
+    return render(request, 'accounts/facebookjssdk.html',{})

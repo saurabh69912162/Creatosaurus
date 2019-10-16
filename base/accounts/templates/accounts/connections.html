@@ -1,4 +1,95 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
 <h1>Connections </h1>
+
+<script>
+
+
+
+function checkLoginState() {
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+}
+
+
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1990551177704465',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v3.2'
+    });
+
+    FB.AppEvents.logPageView();
+
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+
+
+FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+});
+
+
+ function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
+    if (response.status === 'connected') {   // Logged into your webpage and Facebook.
+      console.log(response.authResponse.userID)
+      alert(response.authResponse.userID)
+      console.log(response.authResponse.accessToken)
+      testAPI();
+
+
+    } else {                                 // Not logged into your webpage or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this webpage.';
+    }
+  }
+
+
+function testAPI() {
+    FB.api('/me?fields=id,name,accounts', function(response) {
+      console.log(response.accounts.data);
+    document.getElementById('id01').style.display='block'
+    });
+
+
+
+  }
+
+
+
+</script>
+
+<fb:login-button data-button-type="continue_with" scope="email,user_posts,manage_pages" onlogin="checkLoginState();">
+</fb:login-button>
+
+
+<hr>
+<h1>Connected Accounts</h1>
+
+
+
+<div class="w3-container">
+
+  <div id="id01" class="w3-modal">
+    <div class="w3-modal-content">
+      <div class="w3-container">
+        <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+        <p>Some text. Some text. Some text.</p>
+        <p>Some text. Some text. Some text.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

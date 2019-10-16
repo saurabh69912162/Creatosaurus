@@ -160,6 +160,7 @@ class connections(models.Model):
     dirtybit = models.UUIDField(blank=True, null=True)
     connection_dirtybit = models.UUIDField(default=uuid.uuid4, unique=True, blank=True, null=True)
     provider = models.CharField(blank=False, null=False, max_length=50)
+    account_token = models.CharField(blank=True, null=True, max_length=1000)
     access_token = models.CharField(blank=False, null=False, max_length=1000)
     extra_data = models.TextField(blank=True, null=True, max_length=10000)
     access_expiry = models.DateTimeField(blank=True, null=True)

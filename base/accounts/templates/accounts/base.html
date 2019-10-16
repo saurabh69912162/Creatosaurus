@@ -5,7 +5,8 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
         <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     </head>
     <body>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,6 +29,7 @@
 
 {% endblock %}
 
+{%if request.user.is_authenticated%}
 <div class="footer">
 
 <span><a style="text-decoration:none;color:white;"  href="/profile" >Home</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -41,6 +43,14 @@
 
 </div>
 
+{%else%}
+<div class="footer">
 
+<span><a style="text-decoration:none;color:white;"  href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;"  href="/register" >Register</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+</div>
+
+    {%endif%}
 </body>
 </html>

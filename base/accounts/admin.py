@@ -65,15 +65,15 @@ admin.site.register(business_profile_data, business_profile_data_admin)
 
 class connections_admin(admin.ModelAdmin):
 
-	list_display = ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	list_display = ('username','account_name','account_token','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
 	list_filter = ('provider',)
 
 	fieldsets = (
-			(None, {'fields': ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
+			(None, {'fields': ('username','account_name','account_token','account_uid','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
 			('Description', {'fields': ('extra_data',)})
 		)
 	search_fields = ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
-	ordering = ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	ordering = ('username','account_name','account_token','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
 
 	filter_horizontal = ()
 
