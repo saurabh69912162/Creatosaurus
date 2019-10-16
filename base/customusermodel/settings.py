@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'accounts',
+    'sslserver',
     'customusermodel',
     'rest_framework',
     'django_apscheduler',
