@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^profile/$', profile, name='profile'),
     url(r'^register/$', register),
     path('', login_view),
-    path('lol/', lol),
+    path('connect/',connect),
     path('logout/', logout_view),
     url(r'^password/$', change_password, name='change_password'),
     url(r'^profile/edit$', edit_profile),

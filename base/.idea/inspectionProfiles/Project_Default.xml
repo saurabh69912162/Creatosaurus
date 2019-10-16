@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="56">
+          <list size="105">
             <item index="0" class="java.lang.String" itemvalue="absl-py" />
             <item index="1" class="java.lang.String" itemvalue="protobuf" />
             <item index="2" class="java.lang.String" itemvalue="Automat" />
@@ -61,6 +61,55 @@
             <item index="53" class="java.lang.String" itemvalue="grpcio" />
             <item index="54" class="java.lang.String" itemvalue="pytz" />
             <item index="55" class="java.lang.String" itemvalue="Twisted" />
+            <item index="56" class="java.lang.String" itemvalue="Brlapi" />
+            <item index="57" class="java.lang.String" itemvalue="PyYAML" />
+            <item index="58" class="java.lang.String" itemvalue="ufw" />
+            <item index="59" class="java.lang.String" itemvalue="pycups" />
+            <item index="60" class="java.lang.String" itemvalue="pycairo" />
+            <item index="61" class="java.lang.String" itemvalue="MarkupSafe" />
+            <item index="62" class="java.lang.String" itemvalue="macaroonbakery" />
+            <item index="63" class="java.lang.String" itemvalue="distro-info" />
+            <item index="64" class="java.lang.String" itemvalue="systemd-python" />
+            <item index="65" class="java.lang.String" itemvalue="PyNaCl" />
+            <item index="66" class="java.lang.String" itemvalue="certifi" />
+            <item index="67" class="java.lang.String" itemvalue="language-selector" />
+            <item index="68" class="java.lang.String" itemvalue="unattended-upgrades" />
+            <item index="69" class="java.lang.String" itemvalue="lazr.restfulclient" />
+            <item index="70" class="java.lang.String" itemvalue="cryptography" />
+            <item index="71" class="java.lang.String" itemvalue="reportlab" />
+            <item index="72" class="java.lang.String" itemvalue="pexpect" />
+            <item index="73" class="java.lang.String" itemvalue="lazr.uri" />
+            <item index="74" class="java.lang.String" itemvalue="python-apt" />
+            <item index="75" class="java.lang.String" itemvalue="SecretStorage" />
+            <item index="76" class="java.lang.String" itemvalue="click" />
+            <item index="77" class="java.lang.String" itemvalue="simplejson" />
+            <item index="78" class="java.lang.String" itemvalue="pyxdg" />
+            <item index="79" class="java.lang.String" itemvalue="Mako" />
+            <item index="80" class="java.lang.String" itemvalue="pygobject" />
+            <item index="81" class="java.lang.String" itemvalue="sublime" />
+            <item index="82" class="java.lang.String" itemvalue="pymacaroons" />
+            <item index="83" class="java.lang.String" itemvalue="defer" />
+            <item index="84" class="java.lang.String" itemvalue="netifaces" />
+            <item index="85" class="java.lang.String" itemvalue="requests-unixsocket" />
+            <item index="86" class="java.lang.String" itemvalue="httplib2" />
+            <item index="87" class="java.lang.String" itemvalue="requests" />
+            <item index="88" class="java.lang.String" itemvalue="wadllib" />
+            <item index="89" class="java.lang.String" itemvalue="pycrypto" />
+            <item index="90" class="java.lang.String" itemvalue="python-debian" />
+            <item index="91" class="java.lang.String" itemvalue="cupshelpers" />
+            <item index="92" class="java.lang.String" itemvalue="launchpadlib" />
+            <item index="93" class="java.lang.String" itemvalue="louis" />
+            <item index="94" class="java.lang.String" itemvalue="oauth" />
+            <item index="95" class="java.lang.String" itemvalue="keyrings.alt" />
+            <item index="96" class="java.lang.String" itemvalue="ubuntu-drivers-common" />
+            <item index="97" class="java.lang.String" itemvalue="system-service" />
+            <item index="98" class="java.lang.String" itemvalue="xkit" />
+            <item index="99" class="java.lang.String" itemvalue="pyRFC3339" />
+            <item index="100" class="java.lang.String" itemvalue="olefile" />
+            <item index="101" class="java.lang.String" itemvalue="usb-creator" />
+            <item index="102" class="java.lang.String" itemvalue="command-not-found" />
+            <item index="103" class="java.lang.String" itemvalue="keyring" />
+            <item index="104" class="java.lang.String" itemvalue="Pillow" />
           </list>
         </value>
       </option>

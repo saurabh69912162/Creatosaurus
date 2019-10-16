@@ -5,42 +5,14 @@
     <title>Creator</title>
 </head>
 <body>
+{% extends 'accounts/base.html' %}
+{% block content %}
+
 <h1>Home</h1>
 {{user.first_name}}<br>
 {{user.email}}
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-.footer {
-
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   background-color: black;
-   color: white;
-   text-align: center;
-   padding:10px;
-
-
-}
-</style>
-<div class="footer">
-
-<span><a style="text-decoration:none;color:white;"  href="/profile" >Home</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;"  href="/logout" >Logout</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/admin" >admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/profile/edit" >edit</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/profile/details" >Edit Details</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/email" >email</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/password" >Change password</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/social/connections" >Social Connections</a></span>
-
-</div>
-
-
-
-
+{% endblock %}
 </body>
 
 </html>
