@@ -215,13 +215,13 @@ def edit_me(request):
         if cat == 'Creator':
 
             if request.method=='POST':
-                poll = creator_profile_data.objects.get(username = request.user.username)
+                poll = creator_profile_data.objects.get(username = request.user)
                 form = creator_data(request.POST or None,instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
             else:
-                poll = creator_profile_data.objects.get(username = request.user.username)
+                poll = creator_profile_data.objects.get(username = request.user)
                 form = creator_data(instance=poll)
                 context = {'form':form}
                 return render(request,'accounts/creator_edit.html',context)
@@ -229,13 +229,13 @@ def edit_me(request):
         elif cat == 'Business':
 
             if request.method == 'POST':
-                poll = business_profile_data.objects.get(username=request.user.username)
+                poll = business_profile_data.objects.get(username=request.user)
                 form = busi_data(request.POST or None, instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
             else:
-                poll = business_profile_data.objects.get(username=request.user.username)
+                poll = business_profile_data.objects.get(username=request.user)
                 form = busi_data(instance=poll)
                 context = {'form': form}
                 return render(request, 'accounts/business_edit.html', context)
@@ -270,6 +270,8 @@ def timed_job():
 
 from django.conf import settings
 
-def lol(request):
-
-    return render(request, 'accounts/linkedin.html', {})
+def connect(request):
+    if request.user.is_authenticated:
+        return render(request, 'accounts/connections.html',{})
+    else:
+        return redirect('/')

@@ -1,4 +1,4 @@
-
+{% extends 'accounts/base.html' %}
 {% block content %}
 
 <h1 style="margin:auto;width: 5%;padding: 10px;">Login</h1>
@@ -6,23 +6,3 @@
 {% include 'accounts/form.html' with form=form %}
 </div>
 {% endblock %}
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-.footer {
-
-   position: fixed;
-   left: 0;
-   bottom: 0;
-   width: 100%;
-   background-color: black;
-   color: white;
-   text-align: center;
-   padding:10px;
-
-
-}
-</style>
-<div class="footer">
-    <span><a style="text-decoration:none;color:white;" href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span><a style="text-decoration:none;color:white;" href="/register" >Register</a></span>
-</div>

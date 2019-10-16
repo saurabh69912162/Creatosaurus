@@ -1,0 +1,46 @@
+{% load static %}
+<html>
+    <head>
+        <title>Creatosaurus</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    </head>
+    <body>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.footer {
+
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: black;
+   color: white;
+   text-align: center;
+   padding:10px;
+
+
+}
+</style>
+{% block content %}
+
+{% endblock %}
+
+<div class="footer">
+
+<span><a style="text-decoration:none;color:white;"  href="/profile" >Home</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;"  href="/logout" >Logout</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span><a style="text-decoration:none;color:white;"  href="/admin" >admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span><a style="text-decoration:none;color:white;"  href="/profile/edit" >edit</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span><a style="text-decoration:none;color:white;"  href="/profile/details" >Edit Details</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span><a style="text-decoration:none;color:white;"  href="/email" >email</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span><a style="text-decoration:none;color:white;"  href="/password" >Change password</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span><a style="text-decoration:none;color:white;"  href="/connect" >Social Connections</a></span>
+
+</div>
+
+
+</body>
+</html>
