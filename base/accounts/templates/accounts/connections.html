@@ -44,7 +44,6 @@ FB.getLoginStatus(function(response) {
  function statusChangeCallback(response) {  // Called with the results from FB.getLoginStatus().
     if (response.status === 'connected') {   // Logged into your webpage and Facebook.
       console.log(response.authResponse.userID)
-      alert(response.authResponse.userID)
       console.log(response.authResponse.accessToken)
       testAPI();
 
@@ -67,12 +66,10 @@ function testAPI() {
   }
 
 
-
 </script>
 
 <fb:login-button data-button-type="continue_with" scope="email,user_posts,manage_pages" onlogin="checkLoginState();">
 </fb:login-button>
-
 
 <hr>
 <h1>Connected Accounts</h1>
@@ -85,11 +82,14 @@ function testAPI() {
     <div class="w3-modal-content">
       <div class="w3-container">
         <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-        <p>Some text. Some text. Some text.</p>
-        <p>Some text. Some text. Some text.</p>
+          <p id="demo">all accounts here</p>
+
+
       </div>
     </div>
   </div>
 </div>
+
+
 
 {% endblock %}

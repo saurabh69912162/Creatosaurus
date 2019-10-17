@@ -33,10 +33,43 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'accounts',
     'sslserver',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.twitter',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+    'allauth.socialaccount.providers.pinterest',
     'customusermodel',
     'rest_framework',
-    'django_apscheduler',
 ]
+
+
+SOCIALACCOUNT_PROVIDERS = {
+                                'google':{ 'SCOPE': ['email','phone','https://www.googleapis.com/auth/yt-analytics.readonly','https://www.googleapis.com/auth/youtube.readonly',],'AUTH_PARAMS': { 'access_type': 'online' }}
+                                ,'linkedin': {
+                                                'SCOPE': [
+                                                    'r_basicprofile',
+                                                    'r_liteprofile',
+                                                    'r_emailaddress',
+                                                    'w_share',
+                                                    'w_member_social',
+                                                ],
+                                                'PROFILE_FIELDS': [
+                                                    'id',
+                                                    'first-name',
+                                                    'last-name',
+                                                    'email-address',
+                                                    'picture-url',
+                                                    'public-profile-url',
+                                                ]
+                                            }
+                                 ,'pinterest': {'SCOPE': ['read_public','read_relationships',]}
+                                    , 'facebook': {'SCOPE': ['email','instagram_basic','instagram_basic']}
+                            }
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -53,7 +86,7 @@ ROOT_URLCONF = 'customusermodel.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS':  [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates', 'allauth')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

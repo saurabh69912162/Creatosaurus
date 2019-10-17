@@ -16,16 +16,6 @@ from rest_framework import status
 from .serializers import business_profile_dataSerializers
 from django.shortcuts import get_object_or_404
 from .models import MyUser
-from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
-from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
-from apscheduler.schedulers.background import BackgroundScheduler
-
-executors = {
-    'default': ThreadPoolExecutor(90),  # max threads: 90
-    'processpool': ProcessPoolExecutor(20)  # max processes 20
-}
-scheduler = BackgroundScheduler(executors=executors)
-scheduler.add_jobstore(DjangoJobStore(), "default")
 
 from datetime import datetime
 
@@ -280,3 +270,8 @@ def connect(request):
 def lol(request):
 
     return render(request, 'accounts/facebookjssdk.html',{})
+
+
+def check(request):
+
+    return HttpResponse(request.POST.items())

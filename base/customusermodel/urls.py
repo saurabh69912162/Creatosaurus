@@ -13,6 +13,8 @@ urlpatterns = [
     path('', login_view),
     path('connect/',connect),
     path('lol/',lol),
+    path('check/',check),
+    url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
     url(r'^password/$', change_password, name='change_password'),
     url(r'^profile/edit$', edit_profile),

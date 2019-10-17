@@ -110,10 +110,14 @@ class MyUser(AbstractBaseUser):
             current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,
                                                        package_selected=available_package.objects.get(
                                                            package_name='L1'))
+            user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
+
+
             super().save(*args, **kwargs)
         elif self.category == 'Business':
             super().save(*args, **kwargs)
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
+            user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
             business_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
             current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,
                                                        package_selected=available_package.objects.get(
@@ -155,7 +159,7 @@ class creator_profile_data(models.Model):
     cache_hit = models.BooleanField(default=False, blank=True, null=True)
 
 
-class connections(models.Model):
+class selected_connections(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
     connection_dirtybit = models.UUIDField(default=uuid.uuid4, unique=True, blank=True, null=True)
@@ -172,6 +176,30 @@ class connections(models.Model):
     def __str__(self):
         return str(self.account_uid)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        obj = queue_statistics.objects.get_or_create(username = self.username, dirtybit = self.dirtybit, selected_account= selected_connections.objects.get(id = self.id))
+
+
+
+
+class user_connection_data(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    dirtybit = models.UUIDField(blank=True, null=True, unique=True)
+    max_connections = models.IntegerField(default=8)
+    total_connections = models.IntegerField(default=0)
+    max_seleceted_connections = models.IntegerField(default=8)
+    total_seleceted_connections = models.IntegerField(default=0)
+    max_team_members = models.IntegerField(default=0)
+    total_team_members = models.IntegerField(default=0)
+
+
+class queue_statistics(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    dirtybit = models.UUIDField(blank=True, null=True)
+    selected_account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    limit = models.IntegerField(default=10)
+    left = models.IntegerField(default=10)
 
 
 class available_package(models.Model):
@@ -226,7 +254,7 @@ class init_schedule(models.Model):
             obj = scheduler_model()
             obj.username = self.username
             obj.dirtybit = self.dirtybit
-            obj.provider = connections.objects.get(account_uid=provider[x])
+            obj.provider = selected_connections.objects.get(account_uid=provider[x])
             obj.content = self.content
             obj.scheduled_datetime = self.scheduled_datetime
             obj.upload_datetime = self.upload_datetime
@@ -244,7 +272,7 @@ class scheduler_model(models.Model):
     dirtybit = models.UUIDField(blank=True, null=True)
     init_schedule_fk = models.ForeignKey(init_schedule, on_delete=models.CASCADE, blank=True, null=True)
     schedule_dirtybit = models.UUIDField(default=uuid.uuid4, unique=True, blank=True, null=True)
-    provider = models.ForeignKey(connections, on_delete=models.CASCADE)
+    provider = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
     content = models.TextField(max_length=63000, blank=True, null=True)
     scheduled_datetime = models.DateTimeField(blank=False, null=False)
     upload_datetime = models.DateTimeField(default=datetime.now, blank=False, null=False)
@@ -272,7 +300,7 @@ class upcomming_queue(models.Model):
     init_schedule_fk = models.ForeignKey(init_schedule, on_delete=models.CASCADE, blank=True, null=True)
     schedule_dirtybit = models.ForeignKey(scheduler_model, on_delete=models.CASCADE, blank=True, null=True)
     timestamp = models.BigIntegerField(null=True, blank=True)
-    provider = models.ForeignKey(connections, on_delete=models.CASCADE,blank=True,null=True)
+    provider = models.ForeignKey(selected_connections, on_delete=models.CASCADE,blank=True,null=True)
 
     def __str__(self):
         return str(self.timestamp)
