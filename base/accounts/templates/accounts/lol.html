@@ -1,48 +1,28 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
 {% load i18n %}
+<div class="container">
 <h1>{% trans "Account Connections" %}</h1>
 
-{% if form.accounts %}
-<p>{% blocktrans %}You can sign in to your account using any of the following third party accounts:{% endblocktrans %}</p>
+{% if lmao %}
 
 <div style="padding:10px">
-<form method="post" action="{% url 'socialaccount_connections' %}">
-{% csrf_token %}
+{%for x in lmao%}
+    <h4>{{ x.provider |title}}</h4>
 
-{% if form.non_field_errors %}
-<div id="errorMsg">{{ form.non_field_errors }}</div>
-{% endif %}
-
-{% for base_account in form.accounts %}
-{% with base_account.get_provider_account as account %}
-    <h5>
-<div>
-<!--<label for="id_account_{{ base_account.id }}">-->
-<!--<input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>-->
-<!--    -->
-<!--<span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }}">{{account.get_brand.name}}</span>-->
-<!--</label>-->
-    <h4>{{ base_account.provider |title}}</h4>
-    <span style="color:red">{{ account }}</span>
-<hr>
-</div>
-    </h5>
-{% endwith %}
-{% endfor %}
-
-<div>
-<!--<button type="submit"  class="btn-danger btn" style="decoration:none;padding:5px">{% trans 'Remove' %}</button>-->
-<a href="/configure"  class="btn-success btn" type="button" style="decoration:none;padding:6px">Configure Connected Accounts</a>
-<hr>
+    {% if x.extra_data.email %}
+    <h5><span style="color:red">{{ x.extra_data.email }}</span></h5>
+    {% elif x.extra_data.name %}
+        <h5><span style="color:red">{{ x.extra_data.name }}</span></h5>
+    {%endif %}
+    <hr>
+    {%endfor%}
 </div>
 
-
-
-</form>
-</div>
 {% else %}
 <p>{% trans 'You currently have no social network accounts connected to this account.' %}</p>
+
+
 {% endif %}
 
 <h2>{% trans 'Add a 3rd Party Account' %}</h2>
@@ -58,6 +38,8 @@
 
 {% include "socialaccount/snippets/login_extra.html" %}
 
+
+</div>
 
 
 {% endblock %}

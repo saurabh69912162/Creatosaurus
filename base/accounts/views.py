@@ -268,8 +268,8 @@ def connect(request):
 
 
 def lol(request):
-
-    return render(request, 'accounts/facebookjssdk.html',{})
+    lmao = SocialAccount.objects.filter(user=request.user.id)
+    return render(request, 'accounts/lol.html',{'lmao':lmao,})
 
 def facebookconfigure(requset):
 
@@ -282,16 +282,6 @@ def configure(request):
     for x in range(len(obj)):
         account.append(obj[x])
 
-    # for x in obj:
-    #     print(x.provider)
-
-    # for x in range(len(obj)):
-    #     print('lol')
-    #     print(SocialToken.objects.get(account_id=account[x]))
-
-    # if SocialAccount.objects.filter(user=request.user.id, provider ='Facebook'):
-    #     pass
-
     selected = selected_connections.objects.filter(dirtybit = request.user.dirtybit, selected = True)
     not_selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=False)
 
@@ -303,15 +293,12 @@ def configure(request):
         obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token="+str(facetoken))
         par = obj1.json()
         accs = par['accounts']['data']
-        # print(accs)
         return render(request, 'accounts/page-configrue.html',{'accs':accs,'object':object})
 
 
     elif 'facebook-model' in request.POST:
         obj = request.POST['facebook-model'].split(',,,,,')
-
-        # if SocialAccount.objects.filter(user=request.user.id, id=obj[3]).exists():
-        if not selected_connections.objects.get(account_uid=obj[0]):
+        if not selected_connections.objects.filter(account_uid=obj[0]):
             print(obj[0])
             print(obj[1])
             print(obj[2])
@@ -330,15 +317,6 @@ def configure(request):
             obj_create.save()
         else:
             error_connected = 'Account Already Connected !'
-
-            # facetoken = get_object_or_404(SocialToken,id=request.POST['facebook'])
-            # all_account = get_object_or_404(SocialAccount,user=request.user, id=request.POST['facebook'])
-            # obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token="+str(facetoken))
-            # par = obj1.json()
-            # accs = par['accounts']['data']
-            # print(accs)
-            # return render(request, 'accounts/page-configrue.html',{'accs':accs,})
-
 
 
     elif 'google' in request.POST:
@@ -432,9 +410,44 @@ def configure(request):
             else:
                 error_connected = 'Account Already Connected !'
                 pass
-        else:
-            pass
-            return redirect('/404')
+    elif 'facebook-remove' in request.POST:
+        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).extra_data['id']
+        var1 = selected_connections.objects.filter(username = request.user.id, extra_data__icontains = var).delete()
+        delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).delete()
+        return redirect('/configure')
+
+    elif 'google-remove' in request.POST:
+        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).uid
+        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).delete()
+        return redirect('/configure')
+
+    elif 'twitter-remove' in request.POST:
+        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).uid
+        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).delete()
+        return redirect('/configure')
+
+    elif 'pinterest-remove' in request.POST:
+        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).uid
+        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).delete()
+        return redirect('/configure')
+
+    elif 'linkedin-remove' in request.POST:
+        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).uid
+        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).delete()
+        return redirect('/configure')
+
+
+
+
+
+
+    else:
+        pass
+
 
     return render(request, 'accounts/configure.html', {'account':account,'not_selected':not_selected,'selected':selected,'error_connected':error_connected})
 
