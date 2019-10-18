@@ -66,7 +66,7 @@ SOCIALACCOUNT_PROVIDERS = {
                                                 ]
                                             }
                                  ,'pinterest': {'SCOPE': ['read_public','read_relationships',]}
-                                    , 'facebook': {'SCOPE': ['email','instagram_basic','instagram_basic']}
+                                    , 'facebook': {'SCOPE': ['email','manage_pages',]}
                             }
 
 

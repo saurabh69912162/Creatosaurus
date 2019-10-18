@@ -1,6 +1,7 @@
 from django.contrib.auth import login, get_user_model, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import UserCreationForm, UserLoginForm , editpro
+from allauth.socialaccount.models import SocialAccount,SocialToken
 from django.contrib.auth.forms import UserChangeForm
 from .forms import CustomUserChangeForm
 from django.contrib import messages
@@ -9,13 +10,12 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import busi_data, creator_data
-from .models import business_profile_data, creator_profile_data
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import business_profile_dataSerializers
 from django.shortcuts import get_object_or_404
-from .models import MyUser
+from .models import  *
 
 from datetime import datetime
 
@@ -262,7 +262,7 @@ from django.conf import settings
 
 def connect(request):
     if request.user.is_authenticated:
-        return render(request, 'accounts/connections.html',{})
+        return render(request, 'accounts/connect-accounts.html',{})
     else:
         return redirect('/')
 
@@ -272,6 +272,131 @@ def lol(request):
     return render(request, 'accounts/facebookjssdk.html',{})
 
 
-def check(request):
 
-    return HttpResponse(request.POST.items())
+def configure(request):
+    account = []
+    error_connected = ''
+    obj = SocialAccount.objects.filter(user=request.user.id)
+    for x in range(len(obj)):
+        account.append(obj[x])
+
+    # for x in obj:
+    #     print(x.provider)
+
+    # for x in range(len(obj)):
+    #     print('lol')
+    #     print(SocialToken.objects.get(account_id=account[x]))
+
+    # if SocialAccount.objects.filter(user=request.user.id, provider ='Facebook'):
+    #     pass
+
+    selected = selected_connections.objects.filter(dirtybit = request.user.dirtybit, selected = True)
+    not_selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=False)
+
+    if 'facebook' in request.POST:
+        print(request.POST['facebook'])
+        print(get_object_or_404(SocialToken,id=request.POST['facebook']))
+
+
+
+
+
+    elif 'google' in request.POST:
+
+        if SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']).exists():
+            if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid):
+                obj_create = selected_connections()
+                obj_create.username = MyUser.objects.get(id = request.user.id)
+                obj_create.dirtybit = request.user.dirtybit
+                obj_create.provider = 'google'
+                obj_create.account_token = SocialToken.objects.get(id=request.POST['google'])
+                obj_create.access_token = SocialToken.objects.get(id=request.POST['google'])
+                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                     id=request.POST['google']).extra_data
+                obj_create.access_expiry = SocialToken.objects.get(id=request.POST['google']).expires_at
+                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                       id=request.POST['google']).extra_data['email']
+                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid
+                obj_create.selected = True
+                obj_create.save()
+                # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']))
+                # print(SocialToken.objects.get(id = request.POST['google']).account)
+                # print(request.POST['google'])
+
+            else:
+                error_connected = 'Account Already Connected !'
+                pass
+        else:
+            return redirect('/404')
+
+    elif 'pinterest' in request.POST:
+        print(request.POST['pinterest'])
+
+    elif 'linkedin' in request.POST:
+        if SocialAccount.objects.filter(user=request.user.id, id=request.POST['linkedin']).exists():
+            if not selected_connections.objects.filter(
+                    account_uid=SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid):
+
+                obj_create = selected_connections()
+                obj_create.username = MyUser.objects.get(id=request.user.id)
+                obj_create.dirtybit = request.user.dirtybit
+                obj_create.provider = 'linkedin'
+                obj_create.account_token = SocialToken.objects.get(id=request.POST['linkedin'])
+                obj_create.access_token = SocialToken.objects.get(id=request.POST['linkedin'])
+
+                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                  id=request.POST['linkedin']).extra_data
+                obj_create.access_expiry = SocialToken.objects.get(id=request.POST['linkedin']).expires_at
+                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                    id=request.POST['linkedin']).extra_data['firstName']['localized']['en_US']+' '+SocialAccount.objects.get(user=request.user.id,
+                                                                    id=request.POST['linkedin']).extra_data['lastName']['localized']['en_US']
+                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid
+                obj_create.selected = True
+                obj_create.save()
+
+                # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
+                # print(SocialToken.objects.get(id = request.POST['twitter']).account)
+                # print(request.POST['twitter'])
+
+            else:
+                error_connected = 'Account Already Connected !'
+                pass
+
+    elif 'twitter' in request.POST:
+        if SocialAccount.objects.filter(user=request.user.id, id=request.POST['twitter']).exists():
+            if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid):
+
+                obj_create = selected_connections()
+                obj_create.username = MyUser.objects.get(id=request.user.id)
+                obj_create.dirtybit = request.user.dirtybit
+                obj_create.provider = 'twitter'
+                obj_create.account_token = SocialToken.objects.get(id=request.POST['twitter'])
+                obj_create.access_token = SocialToken.objects.get(id=request.POST['twitter'])
+
+                obj_create.access_token_secret = SocialToken.objects.get(id=request.POST['twitter']).token_secret
+
+                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                  id=request.POST['twitter']).extra_data
+                obj_create.access_expiry = SocialToken.objects.get(id=request.POST['twitter']).expires_at
+                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                    id=request.POST['twitter']).extra_data['name']
+                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid
+                obj_create.selected = True
+                obj_create.save()
+
+
+                # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
+                # print(SocialToken.objects.get(id = request.POST['twitter']).account)
+                # print(request.POST['twitter'])
+
+            else:
+                error_connected = 'Account Already Connected !'
+                pass
+        else:
+            pass
+            return redirect('/404')
+
+    return render(request, 'accounts/configure.html', {'account':account,'not_selected':not_selected,'selected':selected,'error_connected':error_connected})
+
+
+

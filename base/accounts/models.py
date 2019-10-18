@@ -166,13 +166,14 @@ class selected_connections(models.Model):
     provider = models.CharField(blank=False, null=False, max_length=50)
     account_token = models.CharField(blank=True, null=True, max_length=1000)
     access_token = models.CharField(blank=False, null=False, max_length=1000)
+    access_token_secret = models.CharField(blank=True, null=True, max_length=1000)
     extra_data = models.TextField(blank=True, null=True, max_length=10000)
     access_expiry = models.DateTimeField(blank=True, null=True)
     long_token = models.CharField(blank=True, null=True, max_length=1000)
     long_expiry = models.DateTimeField(blank=True, null=True)
     account_name = models.CharField(max_length=500, blank=True, null=True)
     account_uid = models.CharField(max_length=500, unique=True, blank=True, null=True)
-
+    selected = models.BooleanField(default=False)
     def __str__(self):
         return str(self.account_uid)
 
