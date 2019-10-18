@@ -14,7 +14,7 @@ urlpatterns = [
     path('connect/',connect),
     path('configure/',configure),
     path('lol/',lol),
-    # path('configure/',configure),
+    path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
     url(r'^password/$', change_password, name='change_password'),

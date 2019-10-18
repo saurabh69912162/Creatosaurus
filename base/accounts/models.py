@@ -179,7 +179,7 @@ class selected_connections(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        obj = queue_statistics.objects.get_or_create(username = self.username, dirtybit = self.dirtybit, selected_account= selected_connections.objects.get(id = self.id))
+        obj = queue_statistics.objects.get_or_create(username = self.username, dirtybit = self.dirtybit,account_uid=self.account_uid, selected_account= selected_connections.objects.get(id = self.id))
 
 
 
@@ -199,6 +199,7 @@ class queue_statistics(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
     selected_account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    account_uid = models.CharField(max_length=500,unique=True,blank=True,null=True)
     limit = models.IntegerField(default=10)
     left = models.IntegerField(default=10)
 

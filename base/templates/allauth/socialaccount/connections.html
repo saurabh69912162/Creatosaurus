@@ -18,18 +18,21 @@
 {% with base_account.get_provider_account as account %}
     <h5>
 <div>
-<label for="id_account_{{ base_account.id }}">
-<input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>
-<span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }}">{{account.get_brand.name}}</span>
-{{ account }}
-</label>
+<!--<label for="id_account_{{ base_account.id }}">-->
+<!--<input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>-->
+<!--    -->
+<!--<span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }}">{{account.get_brand.name}}</span>-->
+<!--</label>-->
+    <h4>{{ base_account.provider |title}}</h4>
+    <span style="color:red">{{ account }}</span>
+<hr>
 </div>
     </h5>
 {% endwith %}
 {% endfor %}
 
 <div>
-<button type="submit"  class="btn-danger btn" style="decoration:none;padding:5px">{% trans 'Remove' %}</button>
+<!--<button type="submit"  class="btn-danger btn" style="decoration:none;padding:5px">{% trans 'Remove' %}</button>-->
 <a href="/configure"  class="btn-success btn" type="button" style="decoration:none;padding:6px">Configure Connected Accounts</a>
 <hr>
 </div>

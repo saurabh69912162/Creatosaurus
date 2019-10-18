@@ -16,7 +16,7 @@ from rest_framework import status
 from .serializers import business_profile_dataSerializers
 from django.shortcuts import get_object_or_404
 from .models import  *
-
+import requests
 from datetime import datetime
 
 User = get_user_model()
@@ -271,7 +271,9 @@ def lol(request):
 
     return render(request, 'accounts/facebookjssdk.html',{})
 
+def facebookconfigure(requset):
 
+    return HttpResponse('nothing here!')
 
 def configure(request):
     account = []
@@ -295,9 +297,47 @@ def configure(request):
 
     if 'facebook' in request.POST:
         print(request.POST['facebook'])
-        print(get_object_or_404(SocialToken,id=request.POST['facebook']))
+        object = request.POST['facebook']
+        facetoken = get_object_or_404(SocialToken,id=request.POST['facebook'])
+        all_account = get_object_or_404(SocialAccount,user=request.user, id=request.POST['facebook'])
+        obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token="+str(facetoken))
+        par = obj1.json()
+        accs = par['accounts']['data']
+        # print(accs)
+        return render(request, 'accounts/page-configrue.html',{'accs':accs,'object':object})
 
 
+    elif 'facebook-model' in request.POST:
+        obj = request.POST['facebook-model'].split(',,,,,')
+
+        # if SocialAccount.objects.filter(user=request.user.id, id=obj[3]).exists():
+        if not selected_connections.objects.get(account_uid=obj[0]):
+            print(obj[0])
+            print(obj[1])
+            print(obj[2])
+            print(obj[3])
+            obj_create = selected_connections()
+            obj_create.username = MyUser.objects.get(id=request.user.id)
+            obj_create.dirtybit = request.user.dirtybit
+            obj_create.provider = 'facebook'
+            obj_create.account_token = SocialToken.objects.get(id=obj[3])
+            obj_create.access_token = obj[1]
+            obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,id=obj[3]).extra_data
+            obj_create.access_expiry = SocialToken.objects.get(id=obj[3]).expires_at
+            obj_create.account_name = obj[2]
+            obj_create.account_uid = obj[0]
+            obj_create.selected = True
+            obj_create.save()
+        else:
+            error_connected = 'Account Already Connected !'
+
+            # facetoken = get_object_or_404(SocialToken,id=request.POST['facebook'])
+            # all_account = get_object_or_404(SocialAccount,user=request.user, id=request.POST['facebook'])
+            # obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token="+str(facetoken))
+            # par = obj1.json()
+            # accs = par['accounts']['data']
+            # print(accs)
+            # return render(request, 'accounts/page-configrue.html',{'accs':accs,})
 
 
 
