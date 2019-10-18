@@ -269,7 +269,12 @@ def connect(request):
 
 def lol(request):
     lmao = SocialAccount.objects.filter(user=request.user.id)
-    return render(request, 'accounts/lol.html',{'lmao':lmao,})
+    data = user_connection_data.objects.get(username=request.user.id)
+    connection_count = SocialAccount.objects.filter(user=request.user.id).count()
+    selection_count = selected_connections.objects.filter(username =request.user.id).count()
+    return render(request, 'accounts/lol.html',{'lmao':lmao,'data':data,'connection_count':connection_count,})
+
+
 
 def facebookconfigure(requset):
 
@@ -278,9 +283,12 @@ def facebookconfigure(requset):
 def configure(request):
     account = []
     error_connected = ''
+    pack_error = ''
     obj = SocialAccount.objects.filter(user=request.user.id)
     for x in range(len(obj)):
         account.append(obj[x])
+
+    data = user_connection_data.objects.get(username=request.user.id)
 
     selected = selected_connections.objects.filter(dirtybit = request.user.dirtybit, selected = True)
     not_selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=False)
@@ -297,147 +305,179 @@ def configure(request):
 
 
     elif 'facebook-model' in request.POST:
-        obj = request.POST['facebook-model'].split(',,,,,')
-        if not selected_connections.objects.filter(account_uid=obj[0]):
-            print(obj[0])
-            print(obj[1])
-            print(obj[2])
-            print(obj[3])
-            obj_create = selected_connections()
-            obj_create.username = MyUser.objects.get(id=request.user.id)
-            obj_create.dirtybit = request.user.dirtybit
-            obj_create.provider = 'facebook'
-            obj_create.account_token = SocialToken.objects.get(id=obj[3])
-            obj_create.access_token = obj[1]
-            obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,id=obj[3]).extra_data
-            obj_create.access_expiry = SocialToken.objects.get(id=obj[3]).expires_at
-            obj_create.account_name = obj[2]
-            obj_create.account_uid = obj[0]
-            obj_create.selected = True
-            obj_create.save()
+        if data.total_seleceted_connections >= data.max_seleceted_connections:
+            pack_error = 'Maximum Limit Reached, Upgrade your package!'
         else:
-            error_connected = 'Account Already Connected !'
-
+            obj = request.POST['facebook-model'].split(',,,,,')
+            if not selected_connections.objects.filter(account_uid=obj[0]):
+                print(obj[0])
+                print(obj[1])
+                print(obj[2])
+                print(obj[3])
+                obj_create = selected_connections()
+                obj_create.username = MyUser.objects.get(id=request.user.id)
+                obj_create.dirtybit = request.user.dirtybit
+                obj_create.provider = 'facebook'
+                obj_create.account_token = SocialToken.objects.get(id=obj[3])
+                obj_create.access_token = obj[1]
+                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,id=obj[3]).extra_data
+                obj_create.access_expiry = SocialToken.objects.get(id=obj[3]).expires_at
+                obj_create.account_name = obj[2]
+                obj_create.account_uid = obj[0]
+                obj_create.selected = True
+                obj_create.save()
+                data.total_seleceted_connections += 1
+                data.save()
+            else:
+                error_connected = 'Account Already Connected !'
 
     elif 'google' in request.POST:
-
-        if SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']).exists():
-            if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid):
-                obj_create = selected_connections()
-                obj_create.username = MyUser.objects.get(id = request.user.id)
-                obj_create.dirtybit = request.user.dirtybit
-                obj_create.provider = 'google'
-                obj_create.account_token = SocialToken.objects.get(id=request.POST['google'])
-                obj_create.access_token = SocialToken.objects.get(id=request.POST['google'])
-                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
-                                                                     id=request.POST['google']).extra_data
-                obj_create.access_expiry = SocialToken.objects.get(id=request.POST['google']).expires_at
-                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
-                                                                       id=request.POST['google']).extra_data['email']
-                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid
-                obj_create.selected = True
-                obj_create.save()
-                # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']))
-                # print(SocialToken.objects.get(id = request.POST['google']).account)
-                # print(request.POST['google'])
-
-            else:
-                error_connected = 'Account Already Connected !'
-                pass
+        if data.total_seleceted_connections >= data.max_seleceted_connections:
+            pack_error = 'Maximum Limit Reached, Upgrade your package!'
         else:
-            return redirect('/404')
+            if SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']).exists():
+                if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid):
+                    obj_create = selected_connections()
+                    obj_create.username = MyUser.objects.get(id = request.user.id)
+                    obj_create.dirtybit = request.user.dirtybit
+                    obj_create.provider = 'google'
+                    obj_create.access_token = SocialToken.objects.get(id=request.POST['google']).token
+                    obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                         id=request.POST['google']).extra_data
+                    obj_create.access_expiry = SocialToken.objects.get(id=request.POST['google']).expires_at
+                    obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                           id=request.POST['google']).extra_data['email']
+                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid
+                    obj_create.selected = True
+                    obj_create.save()
+                    obj_create.save()
+                    data.total_seleceted_connections += 1
+                    data.save()
+                    # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']))
+                    # print(SocialToken.objects.get(id = request.POST['google']).account)
+                    # print(request.POST['google'])
+
+                else:
+                    error_connected = 'Account Already Connected !'
+                    pass
+            else:
+                return redirect('/404')
 
     elif 'pinterest' in request.POST:
-        print(request.POST['pinterest'])
+        if data.total_seleceted_connections >= data.max_seleceted_connections:
+            pack_error = 'Maximum Limit Reached, Upgrade your package!'
+        else:
+            print(request.POST['pinterest'])
 
     elif 'linkedin' in request.POST:
-        if SocialAccount.objects.filter(user=request.user.id, id=request.POST['linkedin']).exists():
-            if not selected_connections.objects.filter(
-                    account_uid=SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid):
+        if data.total_seleceted_connections >= data.max_seleceted_connections:
+            pack_error = 'Maximum Limit Reached, Upgrade your package!'
+        else:
+            if SocialAccount.objects.filter(user=request.user.id, id=request.POST['linkedin']).exists():
+                if not selected_connections.objects.filter(
+                        account_uid=SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid):
 
-                obj_create = selected_connections()
-                obj_create.username = MyUser.objects.get(id=request.user.id)
-                obj_create.dirtybit = request.user.dirtybit
-                obj_create.provider = 'linkedin'
-                obj_create.account_token = SocialToken.objects.get(id=request.POST['linkedin'])
-                obj_create.access_token = SocialToken.objects.get(id=request.POST['linkedin'])
+                    obj_create = selected_connections()
+                    obj_create.username = MyUser.objects.get(id=request.user.id)
+                    obj_create.dirtybit = request.user.dirtybit
+                    obj_create.provider = 'linkedin'
+                    obj_create.account_token = SocialToken.objects.get(id=request.POST['linkedin'])
+                    obj_create.access_token = SocialToken.objects.get(id=request.POST['linkedin'])
 
-                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
-                                                                  id=request.POST['linkedin']).extra_data
-                obj_create.access_expiry = SocialToken.objects.get(id=request.POST['linkedin']).expires_at
-                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
-                                                                    id=request.POST['linkedin']).extra_data['firstName']['localized']['en_US']+' '+SocialAccount.objects.get(user=request.user.id,
-                                                                    id=request.POST['linkedin']).extra_data['lastName']['localized']['en_US']
-                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid
-                obj_create.selected = True
-                obj_create.save()
+                    obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                      id=request.POST['linkedin']).extra_data
+                    obj_create.access_expiry = SocialToken.objects.get(id=request.POST['linkedin']).expires_at
+                    obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                        id=request.POST['linkedin']).extra_data['firstName']['localized']['en_US']+' '+SocialAccount.objects.get(user=request.user.id,
+                                                                        id=request.POST['linkedin']).extra_data['lastName']['localized']['en_US']
+                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid
+                    obj_create.selected = True
+                    obj_create.save()
 
-                # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
-                # print(SocialToken.objects.get(id = request.POST['twitter']).account)
-                # print(request.POST['twitter'])
+                    data.total_seleceted_connections += 1
+                    data.save()
+                    # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
+                    # print(SocialToken.objects.get(id = request.POST['twitter']).account)
+                    # print(request.POST['twitter'])
 
-            else:
-                error_connected = 'Account Already Connected !'
-                pass
+                else:
+                    error_connected = 'Account Already Connected !'
+                    pass
 
     elif 'twitter' in request.POST:
-        if SocialAccount.objects.filter(user=request.user.id, id=request.POST['twitter']).exists():
-            if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid):
+        if data.total_seleceted_connections >= data.max_seleceted_connections:
+            pack_error = 'Maximum Limit Reached, Upgrade your package!'
+        else:
+            if SocialAccount.objects.filter(user=request.user.id, id=request.POST['twitter']).exists():
+                if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid):
 
-                obj_create = selected_connections()
-                obj_create.username = MyUser.objects.get(id=request.user.id)
-                obj_create.dirtybit = request.user.dirtybit
-                obj_create.provider = 'twitter'
-                obj_create.account_token = SocialToken.objects.get(id=request.POST['twitter'])
-                obj_create.access_token = SocialToken.objects.get(id=request.POST['twitter'])
+                    obj_create = selected_connections()
+                    obj_create.username = MyUser.objects.get(id=request.user.id)
+                    obj_create.dirtybit = request.user.dirtybit
+                    obj_create.provider = 'twitter'
+                    obj_create.account_token = SocialToken.objects.get(id=request.POST['twitter'])
+                    obj_create.access_token = SocialToken.objects.get(id=request.POST['twitter'])
 
-                obj_create.access_token_secret = SocialToken.objects.get(id=request.POST['twitter']).token_secret
+                    obj_create.access_token_secret = SocialToken.objects.get(id=request.POST['twitter']).token_secret
 
-                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
-                                                                  id=request.POST['twitter']).extra_data
-                obj_create.access_expiry = SocialToken.objects.get(id=request.POST['twitter']).expires_at
-                obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
-                                                                    id=request.POST['twitter']).extra_data['name']
-                obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid
-                obj_create.selected = True
-                obj_create.save()
+                    obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
+                                                                      id=request.POST['twitter']).extra_data
+                    obj_create.access_expiry = SocialToken.objects.get(id=request.POST['twitter']).expires_at
+                    obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                                                                        id=request.POST['twitter']).extra_data['name']
+                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid
+                    obj_create.selected = True
+                    obj_create.save()
 
 
-                # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
-                # print(SocialToken.objects.get(id = request.POST['twitter']).account)
-                # print(request.POST['twitter'])
+                    data.total_seleceted_connections += 1
+                    data.save()
+                    # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
+                    # print(SocialToken.objects.get(id = request.POST['twitter']).account)
+                    # print(request.POST['twitter'])
 
-            else:
-                error_connected = 'Account Already Connected !'
-                pass
+                else:
+                    error_connected = 'Account Already Connected !'
+                    pass
     elif 'facebook-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).extra_data['id']
+        count_var1 = selected_connections.objects.filter(username = request.user.id, extra_data__icontains = var).count()
         var1 = selected_connections.objects.filter(username = request.user.id, extra_data__icontains = var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).delete()
+        data.total_seleceted_connections -= count_var1
+        data.save()
         return redirect('/configure')
 
     elif 'google-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).uid
         var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).delete()
+        data.total_seleceted_connections -= 1
+        data.save()
         return redirect('/configure')
 
     elif 'twitter-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).uid
         var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).delete()
+        data.total_seleceted_connections -= 1
+        data.save()
         return redirect('/configure')
 
     elif 'pinterest-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).uid
         var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).delete()
+        data.total_seleceted_connections -= 1
+        data.save()
         return redirect('/configure')
 
     elif 'linkedin-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).uid
         var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).delete()
+        data.total_seleceted_connections -= 1
+        data.save()
         return redirect('/configure')
 
 
@@ -449,7 +489,9 @@ def configure(request):
         pass
 
 
-    return render(request, 'accounts/configure.html', {'account':account,'not_selected':not_selected,'selected':selected,'error_connected':error_connected})
+    return render(request, 'accounts/configure.html', {'account':account,'not_selected':not_selected,
+                                                       'selected':selected,'error_connected':error_connected,
+                                                       'pack_error':pack_error,})
 
 
 

@@ -42,16 +42,26 @@
   <div class="column" >
 <h4 style="margin:10px">Configure Accounts</h4>
       <div class="well" style="margin:10px">
-          <a href="/accounts/social/connections">
+          <a href="/lol/">
           <img src="https://image.flaticon.com/icons/svg/148/148764.svg" alt="Avatar" style="width:25px; border-radius: 50%;"> Add Account
               </a>
       </div>
 {% if error_connected %}
  <div class="alert alert-danger alert-dismissible">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong>Opps!</strong> Seems as if this Account is already connected.
+  <strong>Opps!</strong> {{error_connected}}
 </div>
       {%endif%}
+
+      {% if pack_error %}
+ <div class="alert alert-danger alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>Opps!</strong> {{pack_error}}
+</div>
+      {%endif%}
+
+
+
 
 {% for x in account %}
 {% if 'facebook' in x.provider %}

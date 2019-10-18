@@ -2,9 +2,21 @@
 {% block content %}
 {% load i18n %}
 <div class="container">
-<h1>{% trans "Account Connections" %}</h1>
+<h1>{% trans "Account Details" %}</h1>
 
-{% if lmao %}
+<br>
+<div class="well">
+
+
+<div class="alert alert-success">
+  <h4>Connections Made: {{connection_count}} </h4>
+    <br>
+    <h4>Selections Made : {{data.total_seleceted_connections}} </h4>
+</div>
+
+</div>
+<br>
+    {% if lmao %}
 
 <div style="padding:10px">
 {%for x in lmao%}
