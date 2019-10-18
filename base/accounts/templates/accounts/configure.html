@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Configure</title>
+    <style>
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="container">
+
+
+
+        <div class="row">
+  <div class="column" >
+<h4 style="margin:10px">Configure Accounts</h4>
+      <div class="well" style="margin:10px">
+          <a href="/lol/">
+          <img src="https://image.flaticon.com/icons/svg/148/148764.svg" alt="Avatar" style="width:25px; border-radius: 50%;"> Add Account
+              </a>
+      </div>
+{% if error_connected %}
+ <div class="alert alert-danger alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>Opps!</strong> {{error_connected}}
+</div>
+      {%endif%}
+
+      {% if pack_error %}
+ <div class="alert alert-danger alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>Opps!</strong> {{pack_error}}
+</div>
+      {%endif%}
+
+
+
+
+{% for x in account %}
+{% if 'facebook' in x.provider %}
+    <form method="post" action=".">
+
+        {% csrf_token %}
+        <hr>
+        <h3>{{x.extra_data.email}}</h3>
+        <h4>{{x.provider | title}}</h4>
+        <button type="submit" class='btn-success btn' name="facebook" value="{{x.id}}">Configure</button>
+        <button type="submit" class='btn-danger btn' name="facebook-remove" value="{{x.id}}">Revoke Access</button>
+    </form>
+{%elif 'google' in x.provider%}
+    <form method="post" action=".">
+        {% csrf_token %}
+        <hr>
+        <h3>{{x.extra_data.email}}</h3>
+        <h4>{{x.provider | title}}</h4>
+        <button type="submit" class='btn-success btn' name="google" value="{{x.id}}">ADD</button>
+        <button type="submit" class='btn-danger btn' name="google-remove" value="{{x.id}}">Revoke Access</button>
+    </form>
+{%elif 'pinterest' in x.provider%}
+    <form method="post" action=".">
+        {% csrf_token %}
+        <hr>
+        <h3>{{x.extra_data.email}}</h3>
+        <h4>{{x.provider | title}}</h4>
+        <button type="submit" class='btn-success btn' name="pinterest" value="{{x.id}}">ADD</button>
+        <button type="submit" class='btn-danger btn' name="pinterest-remove" value="{{x.id}}">Revoke Access</button>
+    </form>
+{%elif 'linkedin' in x.provider%}
+    <form method="post" action=".">
+        {% csrf_token %}
+        <hr>
+        <h3>{{ x.extra_data.firstName.localized.en_US }} {{ x.extra_data.lastName.localized.en_US  }}  </h3>
+        <h4>Linkedin</h4>
+        <button type="submit" class='btn-success btn' name="linkedin" value="{{x.id}}">ADD</button>
+        <button type="submit" class='btn-danger btn' name="linkedin-remove" value="{{x.id}}">Revoke Access</button>
+    </form>
+{%elif 'twitter' in x.provider%}
+    <form method="post" action=".">
+        {% csrf_token %}
+        <hr>
+        <h3>{{x.extra_data.email}}</h3>
+        <h4>{{x.provider | title}}</h4>
+        <button type="submit" class='btn-success btn' name="twitter" value="{{x.id}}">ADD</button>
+        <button type="submit" class='btn-danger btn' name="twitter-remove" value="{{x.id}}">Revoke Access</button>
+    </form>
+
+        {% else %}
+
+
+    {%endif%}
+{% endfor %}
+
+  </div>
+
+
+
+  <div class="column" >
+
+
+
+
+
+
+
+
+
+
+    <h4 style="margin:10px">Selected Accounts</h4>
+
+{% if selected %}
+      {% for x in selected %}
+      <hr>
+      <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;">
+      <h3>{{x.account_name}}</h3>
+    <h4>{{x.provider | title}}</h4>
+      {% endfor %}
+{% else %}
+      <h4 style="margin:10px;">No Social Account Selected</h4>
+      {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

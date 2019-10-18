@@ -1,0 +1,60 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+{% load i18n %}
+<div class="container">
+<h1>{% trans "Account Details" %}</h1>
+
+<br>
+<div class="well">
+
+
+<div class="alert alert-success">
+  <h4>Connections Made: {{connection_count}} </h4>
+    <br>
+    <h4>Selections Made : {{data.total_seleceted_connections}} </h4>
+</div>
+
+</div>
+
+    <br>
+
+
+
+<br>
+    {% if lmao %}
+
+<div style="padding:10px">
+{%for x in lmao%}
+    <h4>{{ x.provider |title}}</h4>
+
+    {% if x.extra_data.email %}
+    <h5><span style="color:red">{{ x.extra_data.email }}</span></h5>
+    {% elif x.extra_data.name %}
+        <h5><span style="color:red">{{ x.extra_data.name }}</span></h5>
+    {%endif %}
+    <hr>
+    {%endfor%}
+</div>
+
+{% else %}
+<p>{% trans 'You currently have no social network accounts connected to this account.' %}</p>
+{% endif %}
+
+<h2>{% trans 'Add a 3rd Party Account' %}</h2>
+
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+<br>
+<a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
+<a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
+<a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
+<a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
+<a title="Pinterest" class="socialaccount_provider pinterest btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "pinterest" action="authorize" process="connect" next="/configure"%}" >Pinterest</a><br>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+
+</div>
+
+
+{% endblock %}

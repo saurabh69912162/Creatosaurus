@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +6,10 @@
     <title>Edit Business Data</title>
 </head>
 <body>
-
-
-
 {% extends 'accounts/base.html' %}
 {% block content %}
+
+
 {{request.user}}
 
 <form method="POST" class="post-form">
@@ -17,6 +17,7 @@
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
+
 {% endblock %}
 
 

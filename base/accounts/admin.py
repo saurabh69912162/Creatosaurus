@@ -63,22 +63,22 @@ class business_profile_data_admin(admin.ModelAdmin):
 
 admin.site.register(business_profile_data, business_profile_data_admin)
 
-class connections_admin(admin.ModelAdmin):
+class selected_connections_admin(admin.ModelAdmin):
 
-	list_display = ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	list_display = ('username','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
 	list_filter = ('provider',)
 
 	fieldsets = (
-			(None, {'fields': ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
+			(None, {'fields': ('username','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
 			('Description', {'fields': ('extra_data',)})
 		)
-	search_fields = ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
-	ordering = ('username','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	search_fields = ('username','selected','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	ordering = ('username','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
 
 	filter_horizontal = ()
 
 
-admin.site.register(connections, connections_admin)
+admin.site.register(selected_connections, selected_connections_admin)
 
 
 
@@ -137,4 +137,22 @@ class upcomming_queue_admin(admin.ModelAdmin):
 
 admin.site.register(upcomming_queue, upcomming_queue_admin)
 
+
+
+
+class user_connection_data_admin(admin.ModelAdmin):
+
+	list_display = ('username','dirtybit','max_connections','total_connections','max_seleceted_connections','total_seleceted_connections','max_team_members','total_team_members',)
+
+	filter_horizontal = ()
+
+admin.site.register(user_connection_data, user_connection_data_admin)
+
+
+class queue_statistics_admin(admin.ModelAdmin):
+
+	list_display = ('username','dirtybit','selected_account','limit','left')
+	filter_horizontal = ()
+
+admin.site.register(queue_statistics, queue_statistics_admin)
 

@@ -1,0 +1,63 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+{% load i18n %}
+<h1>{% trans "Account Connections" %}</h1>
+
+{% if form.accounts %}
+<p>{% blocktrans %}You can sign in to your account using any of the following third party accounts:{% endblocktrans %}</p>
+
+<div style="padding:10px">
+<form method="post" action="{% url 'socialaccount_connections' %}">
+{% csrf_token %}
+
+{% if form.non_field_errors %}
+<div id="errorMsg">{{ form.non_field_errors }}</div>
+{% endif %}
+
+{% for base_account in form.accounts %}
+{% with base_account.get_provider_account as account %}
+    <h5>
+<div>
+<!--<label for="id_account_{{ base_account.id }}">-->
+<!--<input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}"/>-->
+<!--    -->
+<!--<span class="socialaccount_provider {{ base_account.provider }} {{ account.get_brand.id }}">{{account.get_brand.name}}</span>-->
+<!--</label>-->
+    <h4>{{ base_account.provider |title}}</h4>
+    <span style="color:red">{{ account }}</span>
+<hr>
+</div>
+    </h5>
+{% endwith %}
+{% endfor %}
+
+<div>
+<!--<button type="submit"  class="btn-danger btn" style="decoration:none;padding:5px">{% trans 'Remove' %}</button>-->
+<a href="/configure"  class="btn-success btn" type="button" style="decoration:none;padding:6px">Configure Connected Accounts</a>
+<hr>
+</div>
+
+
+
+</form>
+</div>
+{% else %}
+<p>{% trans 'You currently have no social network accounts connected to this account.' %}</p>
+{% endif %}
+
+<h2>{% trans 'Add a 3rd Party Account' %}</h2>
+
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+<br>
+<a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
+<a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
+<a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
+<a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
+<a title="Pinterest" class="socialaccount_provider pinterest btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "pinterest" action="authorize" process="connect" next="/configure"%}" >Pinterest</a><br>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+
+
+{% endblock %}

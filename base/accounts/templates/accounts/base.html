@@ -2,10 +2,20 @@
 <html>
     <head>
         <title>Creatosaurus</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+
+        <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
         <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,19 +26,27 @@
    left: 0;
    bottom: 0;
    width: 100%;
-   background-color: black;
+   background-color: #517BE8;
    color: white;
    text-align: center;
    padding:10px;
 
 
-}
+}}
+
 </style>
-{% block content %}
+
+    {% block content %}
+
 
 {% endblock %}
 
-<div class="footer">
+
+
+
+
+{%if request.user.is_authenticated%}
+<div class="footer" >
 
 <span><a style="text-decoration:none;color:white;"  href="/profile" >Home</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <span><a style="text-decoration:none;color:white;"  href="/logout" >Logout</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -37,10 +55,18 @@
 <span><a style="text-decoration:none;color:white;"  href="/profile/details" >Edit Details</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <span><a style="text-decoration:none;color:white;"  href="/email" >email</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <span><a style="text-decoration:none;color:white;"  href="/password" >Change password</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<span><a style="text-decoration:none;color:white;"  href="/connect" >Social Connections</a></span>
+<span><a style="text-decoration:none;color:white;"  href="/configure" >Configure Accounts</a></span>
 
 </div>
 
+{%else%}
+<div class="footer">
 
+<span><a style="text-decoration:none;color:white;"  href="/admin" >Admin</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <span><a style="text-decoration:none;color:white;"  href="/register" >Register</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+</div>
+
+    {%endif%}
 </body>
 </html>
