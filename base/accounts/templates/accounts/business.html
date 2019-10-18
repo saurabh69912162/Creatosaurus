@@ -10,13 +10,10 @@
 
 {% extends 'accounts/base.html' %}
 {% block content %}
-  {{request.user}}
+<div class="container">
+    <h3 style="padding-top:20px">{{request.user}}</h3>
 
-<form method="POST" class="post-form">
-    {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Save</button>
-    </form>
+</div>
 {% endblock %}
 
 </body>

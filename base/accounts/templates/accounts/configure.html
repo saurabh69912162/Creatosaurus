@@ -66,6 +66,7 @@
 {% for x in account %}
 {% if 'facebook' in x.provider %}
     <form method="post" action=".">
+
         {% csrf_token %}
         <hr>
         <h3>{{x.extra_data.email}}</h3>
