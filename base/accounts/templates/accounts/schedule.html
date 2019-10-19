@@ -1,0 +1,76 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+
+<div class="container" style="padding-top:10px">
+    <h1>Schedule</h1>
+    <hr>
+</div>
+
+
+<div class="container" >
+    <br><br>
+
+
+    <div class="dropdown">
+
+        <button type="button" class="btn btn-primary dropdown-toggle" style="padding:10px;" data-toggle="dropdown">
+    {{month}}
+  </button>
+  <div class="dropdown-menu" style="text-align:center">
+{%for x in arr %}
+
+      {% if x == month %}
+      <a class="dropdown-item" href="/schedule-this-month"><h4 style="text-align:center">{{x}}</h4></a>
+      {% else %}
+      <a class="dropdown-item" href="/schedule-for-{{x}}"><h4 style="text-align:center">{{x}}</h4></a>
+      {%endif%}
+
+      {% endfor %}
+  </div>
+</div>
+
+
+  <table class="table table-bordered" style="text-align:center">
+    <thead>
+      <tr>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thrusday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for x in obj1%}
+    <tr>
+        {% for y in x %}
+
+        {% if y == 0 %}
+        <td>-</td>
+        {% elif y == d %}
+
+        <td><button class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Today's Day, @{{request.user.username}}" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+        </button></td>
+        {%else%}
+        <td>
+
+            <button class="btn btn-warning" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+            </button>
+        </td>
+        {%endif%}
+
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+</div>
+
+
+
+{% endblock %}
+

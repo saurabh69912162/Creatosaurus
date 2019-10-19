@@ -260,14 +260,9 @@ def timed_job():
 
 from django.conf import settings
 
+
+
 def connect(request):
-    if request.user.is_authenticated:
-        return render(request, 'accounts/connect-accounts.html',{})
-    else:
-        return redirect('/')
-
-
-def lol(request):
     lmao = SocialAccount.objects.filter(user=request.user.id)
     data = user_connection_data.objects.get(username=request.user.id)
     connection_count = SocialAccount.objects.filter(user=request.user.id).count()
@@ -275,6 +270,15 @@ def lol(request):
     return render(request, 'accounts/lol.html',{'lmao':lmao,'data':data,'connection_count':connection_count,})
 
 
+def long_live_facebook(existing_token):
+    import facebook
+    lol = existing_token
+    graph = facebook.GraphAPI(lol)
+    app_id = '1990551177704465'
+    app_secret = '38942534de2eeb787551d1cf9d1d0dac'
+    extended_token = graph.extend_access_token(app_id, app_secret)
+    final = extended_token['access_token']
+    return final
 
 def facebookconfigure(requset):
 
@@ -320,6 +324,7 @@ def configure(request):
                 obj_create.provider = 'facebook'
                 obj_create.account_token = SocialToken.objects.get(id=obj[3])
                 obj_create.access_token = obj[1]
+                obj_create.long_token = long_live_facebook(obj[1])
                 obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,id=obj[3]).extra_data
                 obj_create.access_expiry = SocialToken.objects.get(id=obj[3]).expires_at
                 obj_create.account_name = obj[2]
@@ -494,4 +499,29 @@ def configure(request):
                                                        'pack_error':pack_error,})
 
 
+import calendar
+from datetime import date
 
+def schedule(request):
+    obj = date.today()
+    arr = []
+    d = obj.strftime("%d")
+    m = obj.strftime("%m")
+    y = obj.strftime("%Y")
+    obj1 = calendar.monthcalendar(int(y), int(m))
+    month = calendar.month_name[int(m)]
+    for x in range(1,13):
+        arr.append(calendar.month_name[x])
+
+
+    return render(request, 'accounts/schedule.html', {'obj1':obj1,'month':month,'arr':arr,'d':int(d)})
+
+
+def schedule_for(request, month):
+    obj = date.today()
+    m = obj.strftime("%m")
+    month_calc = calendar.month_name[int(m)]
+    if month_calc == month:
+        return redirect('/schrdule-this-month')
+    else:
+        return HttpResponse(month)
