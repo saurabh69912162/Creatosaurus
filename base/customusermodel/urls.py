@@ -13,12 +13,15 @@ urlpatterns = [
     path('', login_view),
     path('connect/',connect),
     path('configure/',configure),
-    # path('lol/',lol),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
     url(r'^password/$', change_password, name='change_password'),
     url(r'^profile/edit$', edit_profile),
+    path('schedule-this-month/', schedule),
+    path('schedule-for-<str:month>/',schedule_for, name="schedule_for"),
+
+
     #url(r'^profile/business$', edit_business),
     #url(r'^profile/creator', edit_creator),
     url(r'^profile/details', edit_me),
