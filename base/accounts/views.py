@@ -543,10 +543,24 @@ def time_machine(request,data):
     return render(request, 'accounts/datetime.html',{'date':date,'hour':now_plus_15.hour,'minute':now_plus_15.minute,'second':now_plus_15.second,'time_string':time_string})
 
 
+import random
+import string
+
+
+def randomString(stringLength=64):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
+
 def post_factory(request,data):
     urlSafeEncodedBytes = base64.b64decode(data)
     date = str(urlSafeEncodedBytes, "utf-8")
     selections = selected_connections.objects.filter(username = request.user.id)
+    new_arr = []
+    for x in selections:
+        new_arr.append(x.account_uid)
+
+    print(new_arr)
 
     if 'submit' in request.POST:
         print(request.POST['message'])
@@ -565,16 +579,60 @@ def post_factory(request,data):
         encodedBytes = base64.b64encode(data_filename.encode("utf-8"))
         encodedFilename = str(encodedBytes, "utf-8")
 
-        return redirect('/config-all-platforms/'+data+'/'+encodedAccounts+'/'+encodedMessage+'/'+encodedFilename)
+        rand_user_string = randomString()
+
+        obj = temp_data()
+        obj.rand_save_string = rand_user_string
+        obj.accs = new_arr
+        obj.cont = data_message
+        obj.img = data_filename
+        obj.date = date
+        obj.save()
+
+        return redirect('/config-all-platforms/'+rand_user_string)
 
 
     return render(request,'accounts/post_factory.html',{'date':date,'selections':selections,})
 
 
 
-def all_post_config(request,data,encodedAccounts,encodedMessage,encodedFilename):
+def all_post_config(request,rand_user_string):
 
-    return render(request,'accounts/all_post_config.html',{})
+    url_post = '/config-all-platforms/'+rand_user_string
+
+
+    model_data = get_object_or_404(temp_data,rand_save_string=rand_user_string)
+
+    # urlSafeEncodedBytes = base64.b64decode(data)
+    # date = str(urlSafeEncodedBytes, "utf-8")
+    #
+    # encodedAccountsurlSafeEncodedBytes = base64.b64decode(encodedAccounts)
+    # accounts = str(encodedAccountsurlSafeEncodedBytes, "utf-8")
+
+
+    arr = eval( model_data.accs )
+    #
+    # encodedMessageurlSafeEncodedBytes = base64.b64decode(encodedMessage)
+    # message = str(encodedMessageurlSafeEncodedBytes, "utf-8")
+    #
+    # encodedFilenameurlSafeEncodedBytes = base64.b64decode(encodedFilename)
+    # filename = str(encodedFilenameurlSafeEncodedBytes, "utf-8")
+
+
+    date = model_data.date
+    accounts = model_data.accs
+    message = model_data.cont
+    filename = model_data.img
+
+
+    if request.method == 'POST':
+        print('12345',request.POST['12345-message'])
+        print('67890', request.POST['67890-message'])
+
+
+    return render(request,'accounts/all_post_config.html',{'date':date,'accounts':accounts,
+                                                           'message':message,'filename':filename,
+                                                           'arr':arr,'url_post':url_post})
 
 
 def schedule_for(request, month):

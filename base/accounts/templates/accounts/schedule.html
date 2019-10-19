@@ -55,7 +55,7 @@
         <td>
             <form method="POST" action=".">
                 {% csrf_token %}
-            <button class="btn btn-success"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}" data-toggle="tooltip" data-placement="top" title="Today's Day, @{{request.user.username}}" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+            <button class="btn btn-warning"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}" data-toggle="tooltip" data-placement="top" title="Today's Day, @{{request.user.username}}" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
         </button>
             </form>
         </td>
@@ -64,7 +64,7 @@
 
             <form method="POST" action=".">
                 {% csrf_token %}
-            <button class="btn btn-warning"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+            <button class="btn btn-primary"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
         </button>
             </form>
         </td>

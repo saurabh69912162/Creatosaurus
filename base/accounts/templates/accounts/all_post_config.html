@@ -4,8 +4,37 @@
 
 
 <div class="container" style="padding-top:10px">
-    <h1>all_post_config</h1>
+    <h1>Align Your Post's</h1>
+   <hr>
+<form action="{{url_post}}" method="post">
+    {% csrf_token %}
+    {% for x in arr %}
+    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
+    {{x}}
+    <br>
+    <div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">~</span>
+    </div>
+    <textarea name="{{x}}-message" rows="10"  class="form-control" >{{message}}</textarea>
+    </div>
+    Media ~ {{filename}}
+    <hr>
+    {% endfor %}
+
+    <br>
+    <button class="btn progress-bar-striped btn-danger " type="submit" name="submit">Select Time & Schedule</button>
+</form>
+
+
+<br><br><br><br><br><br>
+
+
 </div>
+
+
+
+
 
 {% endblock %}
 

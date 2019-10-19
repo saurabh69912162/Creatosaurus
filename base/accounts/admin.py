@@ -156,3 +156,6 @@ class queue_statistics_admin(admin.ModelAdmin):
 
 admin.site.register(queue_statistics, queue_statistics_admin)
 
+
+
+admin.site.register(temp_data)

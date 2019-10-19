@@ -311,3 +311,16 @@ class upcomming_queue(models.Model):
         super().save(*args, **kwargs)
         print(self.timestamp - datetime.timestamp(datetime.now()))
         # reverse.delay(self.provider.provider,self.timestamp - datetime.timestamp(datetime.now()))
+
+
+
+
+class temp_data(models.Model):
+    rand_save_string = models.CharField(max_length=64, null=True, blank=True)
+    date = models.CharField(max_length=12,blank=True, null=True)
+    accs = models.CharField(max_length=1000, null=True, blank=True)
+    cont = models.CharField(max_length=50000, null=True, blank=True)
+    img = models.CharField(max_length=1000, null=True, blank=True)
+
+    def __str__(self):
+        return self.rand_save_string
