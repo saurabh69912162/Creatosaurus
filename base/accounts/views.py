@@ -17,6 +17,7 @@ from .serializers import business_profile_dataSerializers
 from django.shortcuts import get_object_or_404
 from .models import  *
 import requests
+import base64
 from datetime import datetime
 
 User = get_user_model()
@@ -507,18 +508,50 @@ def schedule(request):
     arr = []
     d = obj.strftime("%d")
     m = obj.strftime("%m")
-    y = obj.strftime("%Y")
-    obj1 = calendar.monthcalendar(int(y), int(m))
+    year = obj.strftime("%Y")
+    obj1 = calendar.monthcalendar(int(year), int(m))
     month = calendar.month_name[int(m)]
     for x in range(1,13):
         arr.append(calendar.month_name[x])
 
 
-    return render(request, 'accounts/schedule.html', {'obj1':obj1,'month':month,'arr':arr,'d':int(d)})
+    if 'date_selected' in request.POST:
+        print(request.POST['date_selected'])
+        data = request.POST['date_selected']
+        encodedBytes = base64.b64encode(data.encode("utf-8"))
+        encodedStr = str(encodedBytes, "utf-8")
+        return redirect('/configure/post/'+encodedStr)
 
+
+    return render(request, 'accounts/schedule.html', {'obj1':obj1,'month':month,'arr':arr,'d':int(d),'year':int(year),'m':int(m)})
+
+# from datetime import datetime, timedelta
+import datetime
+
+def time_machine(request,data):
+    urlSafeEncodedBytes = base64.b64decode(data)
+    date = str(urlSafeEncodedBytes, "utf-8")
+    time_string = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+    time_obj = datetime.datetime.now()
+    hour = time_obj.hour
+    minute = time_obj.minute
+    second = time_obj.second
+
+    now = datetime.datetime.now()
+    now_plus_15 = now + datetime.timedelta(minutes=15)
+
+    return render(request, 'accounts/datetime.html',{'date':date,'hour':now_plus_15.hour,'minute':now_plus_15.minute,'second':now_plus_15.second,'time_string':time_string})
+
+
+def post_factory(request,data):
+    urlSafeEncodedBytes = base64.b64decode(data)
+    date = str(urlSafeEncodedBytes, "utf-8")
+    selections = selected_connections.objects.filter(username = request.user.id)
+    return render(request,'accounts/post_factory.html',{'date':date,'selections':selections,})
 
 def schedule_for(request, month):
     obj = date.today()
+
     m = obj.strftime("%m")
     month_calc = calendar.month_name[int(m)]
     if month_calc == month:

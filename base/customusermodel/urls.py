@@ -12,6 +12,8 @@ urlpatterns = [
     url(r'^register/$', register),
     path('', login_view),
     path('connect/',connect),
+
+    path('configure/post/<str:data>/',post_factory),
     path('configure/',configure),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),

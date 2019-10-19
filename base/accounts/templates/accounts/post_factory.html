@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+
+<div class="container" style="padding-top:10px">
+    <h1>Create Your Post for {{date}}</h1>
+</div>
+<hr>
+
+<div class="container">
+{% if selections %}
+    {% for x in selections %}
+    <h6>{{x.account_name}}</h6>
+<!--    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;"><hr>-->
+    {% endfor %}
+    {% else %}
+
+    <div class="alert alert-danger">
+  <h4><strong>Opps!</strong> Make Sure you have selected some accounts</h4>
+        or follow this <a href="/configure">LINK</a>
+</div>
+
+
+    {% endif %}
+</div>
+
+{% endblock %}
+

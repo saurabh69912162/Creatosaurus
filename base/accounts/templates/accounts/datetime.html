@@ -1,0 +1,24 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+
+<div class="container" style="padding-top:10px">
+    <h1>Create Your Post for {{date}}</h1>
+    <hr>
+
+{{hour}}
+{{minute}}
+    {{second}}
+    <br>
+    <br>
+{% for x in time_string %}
+
+    {% if x >= hour %}
+    {{x}}<hr>
+    {%endif%}
+    {%endfor%}
+</div>
+<br><br><br><br><br><br><br><br><br>
+
+{% endblock %}
+

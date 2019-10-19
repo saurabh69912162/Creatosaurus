@@ -9,7 +9,7 @@
 
 
 <div class="container" >
-    <br><br>
+    <br>
 
 
     <div class="dropdown">
@@ -52,13 +52,21 @@
         <td>-</td>
         {% elif y == d %}
 
-        <td><button class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Today's Day, @{{request.user.username}}" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
-        </button></td>
+        <td>
+            <form method="POST" action=".">
+                {% csrf_token %}
+            <button class="btn btn-success"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}" data-toggle="tooltip" data-placement="top" title="Today's Day, @{{request.user.username}}" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+        </button>
+            </form>
+        </td>
         {%else%}
         <td>
 
-            <button class="btn btn-warning" style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
-            </button>
+            <form method="POST" action=".">
+                {% csrf_token %}
+            <button class="btn btn-warning"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+        </button>
+            </form>
         </td>
         {%endif%}
 
