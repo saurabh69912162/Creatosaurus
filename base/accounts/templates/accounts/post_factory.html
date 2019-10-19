@@ -1,3 +1,4 @@
+
 {% extends 'accounts/base.html' %}
 {% block content %}
 
@@ -9,20 +10,53 @@
 
 <div class="container">
 {% if selections %}
-    {% for x in selections %}
-    <h6>{{x.account_name}}</h6>
-<!--    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;"><hr>-->
-    {% endfor %}
+
+    <form action="." method="POST">
+        {% csrf_token %}
+  <h3>Add a Description</h3>
+
+        <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text">~</span>
+    </div>
+      <textarea name="message" rows="10"  class="form-control">What's Going on! #Cache</textarea>
+  </div>
+        <h3>Attach Media</h3>
+   <div class="custom-file mb-3">
+      <input type="file" class="custom-file-input" id="customFile" name="filename">
+      <label class="custom-file-label" for="customFile">Choose file</label>
+    </div>
+<script>
+// Add the following code if you want the name of the file appear on select
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
+        <h3>Select Platforms</h3>
+
+        {% for x in selections %}
+        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
+        {{x.account_name}}
+        {% endfor %}
+
+        <br>
+
+        <button name="submit" type="submit" class="btn btn-danger">Configure for each platform </button>
+</form>
+
     {% else %}
 
     <div class="alert alert-danger">
   <h4><strong>Opps!</strong> Make Sure you have selected some accounts</h4>
         or follow this <a href="/configure">LINK</a>
 </div>
-
-
     {% endif %}
 </div>
 
 {% endblock %}
+
+
+
+
 

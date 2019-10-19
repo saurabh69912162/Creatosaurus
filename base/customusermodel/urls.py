@@ -13,6 +13,7 @@ urlpatterns = [
     path('', login_view),
     path('connect/',connect),
 
+    path('config-all-platforms/<str:data>/<str:encodedAccounts>/<str:encodedMessage>/<str:encodedFilename>', all_post_config),
     path('configure/post/<str:data>/',post_factory),
     path('configure/',configure),
     path('facebook-configure/',facebookconfigure),

@@ -547,11 +547,38 @@ def post_factory(request,data):
     urlSafeEncodedBytes = base64.b64decode(data)
     date = str(urlSafeEncodedBytes, "utf-8")
     selections = selected_connections.objects.filter(username = request.user.id)
+
+    if 'submit' in request.POST:
+        print(request.POST['message'])
+        print(request.POST['filename'])
+        accounts = '12345,67890'
+
+        data_accounts = accounts
+        encodedBytes = base64.b64encode(data_accounts.encode("utf-8"))
+        encodedAccounts = str(encodedBytes, "utf-8")
+
+        data_message = request.POST['message']
+        encodedBytes = base64.b64encode(data_message.encode("utf-8"))
+        encodedMessage = str(encodedBytes, "utf-8")
+
+        data_filename = request.POST['filename']
+        encodedBytes = base64.b64encode(data_filename.encode("utf-8"))
+        encodedFilename = str(encodedBytes, "utf-8")
+
+        return redirect('/config-all-platforms/'+data+'/'+encodedAccounts+'/'+encodedMessage+'/'+encodedFilename)
+
+
     return render(request,'accounts/post_factory.html',{'date':date,'selections':selections,})
+
+
+
+def all_post_config(request,data,encodedAccounts,encodedMessage,encodedFilename):
+
+    return render(request,'accounts/all_post_config.html',{})
+
 
 def schedule_for(request, month):
     obj = date.today()
-
     m = obj.strftime("%m")
     month_calc = calendar.month_name[int(m)]
     if month_calc == month:
