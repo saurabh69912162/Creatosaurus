@@ -13,7 +13,7 @@ urlpatterns = [
     path('', login_view),
     path('connect/',connect),
     path('configure/',configure),
-    path('lol/',lol),
+    # path('lol/',lol),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
