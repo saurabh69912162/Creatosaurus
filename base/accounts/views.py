@@ -632,10 +632,12 @@ def all_post_config(request, rand_user_string):
     accs_provider = model_data.accs_provider
     zipis = zip(eval(model_data.accs), eval(model_data.accs_name), eval(model_data.accs_provider))
 
+
+    
     if request.method == 'POST':
         for x in arr:
             print(x, request.POST[x])
-
+    print(filename)
 
     return render(request, 'accounts/all_post_config.html', {'date': date, 'accounts': accounts,
                                                              'message': message, 'filename': filename,

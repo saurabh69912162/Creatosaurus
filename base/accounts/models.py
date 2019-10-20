@@ -252,7 +252,6 @@ class init_schedule(models.Model):
         super().save(*args, **kwargs)
         provider = self.providers.split(',')
         for x in range(len(provider)):
-            # print(connections.objects.get(account_uid=provider[x]))
             obj = scheduler_model()
             obj.username = self.username
             obj.dirtybit = self.dirtybit
@@ -276,7 +275,7 @@ class scheduler_model(models.Model):
     schedule_dirtybit = models.UUIDField(default=uuid.uuid4, unique=True, blank=True, null=True)
     provider = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
     content = models.TextField(max_length=63000, blank=True, null=True)
-    scheduled_datetime = models.DateTimeField(blank=False, null=False)
+    scheduled_datetime = models.DateTimeField(blank=True, null=True)
     upload_datetime = models.DateTimeField(default=datetime.now, blank=False, null=False)
     image = models.ImageField(upload_to='scheduled_images', blank=True)
     video = models.FileField(upload_to='scheduled_videos', blank=True)
@@ -288,11 +287,12 @@ class scheduler_model(models.Model):
 
 
     def save(self, *args, **kwargs):
-        import datetime
-        import time
-        d = datetime.datetime(self.scheduled_datetime.year, self.scheduled_datetime.month, self.scheduled_datetime.day, self.scheduled_datetime.hour,self.scheduled_datetime.minute,self.scheduled_datetime.second)
-        epoch = time.mktime(d.timetuple())
-        self.timestamp = int(epoch)
+        if not self.scheduled_datetime is None:
+            import datetime
+            import time
+            d = datetime.datetime(self.scheduled_datetime.year, self.scheduled_datetime.month, self.scheduled_datetime.day, self.scheduled_datetime.hour,self.scheduled_datetime.minute,self.scheduled_datetime.second)
+            epoch = time.mktime(d.timetuple())
+            self.timestamp = int(epoch)
 
         super().save(*args, **kwargs)
 
