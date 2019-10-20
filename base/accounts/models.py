@@ -319,6 +319,8 @@ class temp_data(models.Model):
     rand_save_string = models.CharField(max_length=64, null=True, blank=True)
     date = models.CharField(max_length=12,blank=True, null=True)
     accs = models.CharField(max_length=1000, null=True, blank=True)
+    accs_name = models.CharField(max_length=1000, null=True, blank=True)
+    accs_provider = models.CharField(max_length=1000, null=True, blank=True)
     cont = models.CharField(max_length=50000, null=True, blank=True)
     img = models.CharField(max_length=1000, null=True, blank=True)
 

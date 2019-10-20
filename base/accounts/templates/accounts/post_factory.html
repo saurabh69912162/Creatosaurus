@@ -1,5 +1,6 @@
 
 {% extends 'accounts/base.html' %}
+
 {% block content %}
 
 
@@ -19,7 +20,7 @@
     <div class="input-group-prepend">
       <span class="input-group-text">~</span>
     </div>
-      <textarea name="message" rows="10"  class="form-control">What's Going on! #Cache</textarea>
+      <textarea name="message" rows="10"  class="form-control" required>What's Going on! #Cache</textarea>
   </div>
         <h3>Attach Media</h3>
    <div class="custom-file mb-3">
@@ -36,14 +37,30 @@ $(".custom-file-input").on("change", function() {
         <h3>Select Platforms</h3>
 
         {% for x in selections %}
-        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
-        {{x.account_name}}
+
+        <div class="checkbox" >
+             <label><input type="checkbox" value="{{x}}" name="{{x}}"><img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">{{x.account_name|title}} <strong>{{x.provider|title}}</strong> {{x}}</label>
+        </div>
+
         {% endfor %}
 
         <br>
 
         <button name="submit" type="submit" class="btn btn-danger">Configure for each platform </button>
 </form>
+
+
+
+
+
+
+
+
+
+
+
+    <br><br><br><br><br>
+
 
     {% else %}
 

@@ -1,7 +1,7 @@
 from django.contrib.auth import login, get_user_model, logout
 from django.http import HttpResponseRedirect, HttpResponse
-from .forms import UserCreationForm, UserLoginForm , editpro
-from allauth.socialaccount.models import SocialAccount,SocialToken
+from .forms import UserCreationForm, UserLoginForm, editpro
+from allauth.socialaccount.models import SocialAccount, SocialToken
 from django.contrib.auth.forms import UserChangeForm
 from .forms import CustomUserChangeForm
 from django.contrib import messages
@@ -15,12 +15,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import business_profile_dataSerializers
 from django.shortcuts import get_object_or_404
-from .models import  *
+from .models import *
 import requests
 import base64
 from datetime import datetime
 
 User = get_user_model()
+
 
 def register(request, *args, **kwargs):
     userme = request.user
@@ -54,49 +55,47 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect("/")
 
-def check_bizz(name,user__name):
-    if business_profile_data.objects.filter(username = user__name):
+
+def check_bizz(name, user__name):
+    if business_profile_data.objects.filter(username=user__name):
         return True
     else:
         data = business_profile_data()
         data.username = user__name
         data.first_name = ''
-        data.company_category= ''
-        data.website= ''
-        data.email= name
-        data.number= '0'
-        data.founded= '1996-12-26'
-        data.field_of_interest= ''
-        data.overview= ''
-        data.location= ''
-        data.address= ''
-        data.company_size= '0'
+        data.company_category = ''
+        data.website = ''
+        data.email = name
+        data.number = '0'
+        data.founded = '1996-12-26'
+        data.field_of_interest = ''
+        data.overview = ''
+        data.location = ''
+        data.address = ''
+        data.company_size = '0'
         data.save()
         print('user created')
         return True
 
 
-def check_creator(name,user__name):
-    if creator_profile_data.objects.filter(username = user__name):
+def check_creator(name, user__name):
+    if creator_profile_data.objects.filter(username=user__name):
         return True
     else:
         data = creator_profile_data()
         data.username = user__name
         data.skills = ''
-        data.artist_category= ''
-        data.website= ''
-        data.email= name
-        data.number= '0'
-        data.description= ''
-        data.location= ''
-        data.address= ''
+        data.artist_category = ''
+        data.website = ''
+        data.email = name
+        data.number = '0'
+        data.description = ''
+        data.location = ''
+        data.address = ''
         data.gender = ''
         data.save()
         print('user created')
         return True
-
-
-
 
 
 def profile(request):
@@ -105,10 +104,10 @@ def profile(request):
     if userme.is_authenticated:
         if request.user.category == 'Creator':
             # check_creator(userme, user_name_)
-            return render(request,'accounts/creator.html',{})
+            return render(request, 'accounts/creator.html', {})
         elif request.user.category == 'Business':
             # check_bizz(userme,user_name_)
-            return render(request,'accounts/business.html',{})
+            return render(request, 'accounts/business.html', {})
         else:
             # print('choose category')
             return HttpResponseRedirect("/")
@@ -116,9 +115,8 @@ def profile(request):
         return HttpResponseRedirect("/")
 
 
-
 def change_password(request):
-    userme= request.user
+    userme = request.user
     if userme.is_authenticated:
         if request.method == 'POST':
             form = PasswordChangeForm(request.user, request.POST)
@@ -136,61 +134,60 @@ def change_password(request):
     else:
         return HttpResponseRedirect("/")
 
+
 def edit_profile(request):
     userme = request.user
     if userme.is_authenticated:
         if request.method == 'POST':
-            form = editpro(request.POST or None, instance= request.user)
+            form = editpro(request.POST or None, instance=request.user)
             if form.is_valid():
                 form.save()
                 return redirect('/profile')
         else:
             form = editpro(instance=request.user)
-            context = {'form':form}
-            return render(request,'accounts/edit_profile.html',context)
+            context = {'form': form}
+            return render(request, 'accounts/edit_profile.html', context)
 
     else:
         return HttpResponseRedirect("/")
-
 
 
 def edit_business(request):
     userme = request.user
-    if userme.is_authenticated :
+    if userme.is_authenticated:
         cat = request.user.category
-        if cat =='Business':
-            if request.method=='POST':
-                poll = business_profile_data.objects.get(username = request.user.username)
-                form = busi_data(request.POST or None,instance=poll)
+        if cat == 'Business':
+            if request.method == 'POST':
+                poll = business_profile_data.objects.get(username=request.user.username)
+                form = busi_data(request.POST or None, instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
             else:
-                poll = business_profile_data.objects.get(username = request.user.username)
+                poll = business_profile_data.objects.get(username=request.user.username)
                 form = busi_data(instance=poll)
-                context = {'form':form}
-                return render(request,'accounts/business_edit.html',context)
+                context = {'form': form}
+                return render(request, 'accounts/business_edit.html', context)
     else:
         return HttpResponseRedirect("/")
 
 
-
 def edit_creator(request):
     userme = request.user
-    if userme.is_authenticated :
+    if userme.is_authenticated:
         cat = request.user.category
         if cat == 'Creator':
-            if request.method=='POST':
-                poll = creator_profile_data.objects.get(username = request.user.username)
-                form = creator_data(request.POST or None,instance=poll)
+            if request.method == 'POST':
+                poll = creator_profile_data.objects.get(username=request.user.username)
+                form = creator_data(request.POST or None, instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
             else:
-                poll = creator_profile_data.objects.get(username = request.user.username)
+                poll = creator_profile_data.objects.get(username=request.user.username)
                 form = creator_data(instance=poll)
-                context = {'form':form}
-                return render(request,'accounts/creator_edit.html',context)
+                context = {'form': form}
+                return render(request, 'accounts/creator_edit.html', context)
         else:
             HttpResponseRedirect("/")
     else:
@@ -199,23 +196,23 @@ def edit_creator(request):
 
 def edit_me(request):
     userme = request.user
-    if userme.is_authenticated :
+    if userme.is_authenticated:
 
         cat = request.user.category
 
         if cat == 'Creator':
 
-            if request.method=='POST':
-                poll = creator_profile_data.objects.get(username = request.user)
-                form = creator_data(request.POST or None,instance=poll)
+            if request.method == 'POST':
+                poll = creator_profile_data.objects.get(username=request.user)
+                form = creator_data(request.POST or None, instance=poll)
                 if form.is_valid():
                     form.save()
                     return redirect('/profile')
             else:
-                poll = creator_profile_data.objects.get(username = request.user)
+                poll = creator_profile_data.objects.get(username=request.user)
                 form = creator_data(instance=poll)
-                context = {'form':form}
-                return render(request,'accounts/creator_edit.html',context)
+                context = {'form': form}
+                return render(request, 'accounts/creator_edit.html', context)
 
         elif cat == 'Business':
 
@@ -238,37 +235,33 @@ def edit_me(request):
         return HttpResponseRedirect("/")
 
 
-
-
-
-
-
 class userlist(APIView):
-    def get(self,request):
+    def get(self, request):
         list = MyUser.objects.all()
-        serializer = business_profile_dataSerializers(list,many=True)
+        serializer = business_profile_dataSerializers(list, many=True)
         return Response(serializer.data)
 
     def post(self):
         pass
 
 
-
 import time
+
+
 def timed_job():
     print('lmao')
     print(datetime.now())
 
-from django.conf import settings
 
+from django.conf import settings
 
 
 def connect(request):
     lmao = SocialAccount.objects.filter(user=request.user.id)
     data = user_connection_data.objects.get(username=request.user.id)
     connection_count = SocialAccount.objects.filter(user=request.user.id).count()
-    selection_count = selected_connections.objects.filter(username =request.user.id).count()
-    return render(request, 'accounts/lol.html',{'lmao':lmao,'data':data,'connection_count':connection_count,})
+    selection_count = selected_connections.objects.filter(username=request.user.id).count()
+    return render(request, 'accounts/lol.html', {'lmao': lmao, 'data': data, 'connection_count': connection_count, })
 
 
 def long_live_facebook(existing_token):
@@ -281,9 +274,10 @@ def long_live_facebook(existing_token):
     final = extended_token['access_token']
     return final
 
-def facebookconfigure(requset):
 
+def facebookconfigure(requset):
     return HttpResponse('nothing here!')
+
 
 def configure(request):
     account = []
@@ -295,18 +289,18 @@ def configure(request):
 
     data = user_connection_data.objects.get(username=request.user.id)
 
-    selected = selected_connections.objects.filter(dirtybit = request.user.dirtybit, selected = True)
+    selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=True)
     not_selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=False)
 
     if 'facebook' in request.POST:
         print(request.POST['facebook'])
         object = request.POST['facebook']
-        facetoken = get_object_or_404(SocialToken,id=request.POST['facebook'])
-        all_account = get_object_or_404(SocialAccount,user=request.user, id=request.POST['facebook'])
-        obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token="+str(facetoken))
+        facetoken = get_object_or_404(SocialToken, id=request.POST['facebook'])
+        all_account = get_object_or_404(SocialAccount, user=request.user, id=request.POST['facebook'])
+        obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token=" + str(facetoken))
         par = obj1.json()
         accs = par['accounts']['data']
-        return render(request, 'accounts/page-configrue.html',{'accs':accs,'object':object})
+        return render(request, 'accounts/page-configrue.html', {'accs': accs, 'object': object})
 
 
     elif 'facebook-model' in request.POST:
@@ -326,7 +320,7 @@ def configure(request):
                 obj_create.account_token = SocialToken.objects.get(id=obj[3])
                 obj_create.access_token = obj[1]
                 obj_create.long_token = long_live_facebook(obj[1])
-                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,id=obj[3]).extra_data
+                obj_create.extra_data = SocialAccount.objects.get(user=request.user.id, id=obj[3]).extra_data
                 obj_create.access_expiry = SocialToken.objects.get(id=obj[3]).expires_at
                 obj_create.account_name = obj[2]
                 obj_create.account_uid = obj[0]
@@ -341,19 +335,21 @@ def configure(request):
         if data.total_seleceted_connections >= data.max_seleceted_connections:
             pack_error = 'Maximum Limit Reached, Upgrade your package!'
         else:
-            if SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']).exists():
-                if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid):
+            if SocialAccount.objects.filter(user=request.user.id, id=request.POST['google']).exists():
+                if not selected_connections.objects.filter(
+                        account_uid=SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid):
                     obj_create = selected_connections()
-                    obj_create.username = MyUser.objects.get(id = request.user.id)
+                    obj_create.username = MyUser.objects.get(id=request.user.id)
                     obj_create.dirtybit = request.user.dirtybit
                     obj_create.provider = 'google'
                     obj_create.access_token = SocialToken.objects.get(id=request.POST['google']).token
                     obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
-                                                                         id=request.POST['google']).extra_data
+                                                                      id=request.POST['google']).extra_data
                     obj_create.access_expiry = SocialToken.objects.get(id=request.POST['google']).expires_at
                     obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
-                                                                           id=request.POST['google']).extra_data['email']
-                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['google']).uid
+                                                                        id=request.POST['google']).extra_data['email']
+                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id,
+                                                                       id=request.POST['google']).uid
                     obj_create.selected = True
                     obj_create.save()
                     obj_create.save()
@@ -394,9 +390,13 @@ def configure(request):
                                                                       id=request.POST['linkedin']).extra_data
                     obj_create.access_expiry = SocialToken.objects.get(id=request.POST['linkedin']).expires_at
                     obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
-                                                                        id=request.POST['linkedin']).extra_data['firstName']['localized']['en_US']+' '+SocialAccount.objects.get(user=request.user.id,
-                                                                        id=request.POST['linkedin']).extra_data['lastName']['localized']['en_US']
-                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin']).uid
+                                                                        id=request.POST['linkedin']).extra_data[
+                                                  'firstName']['localized']['en_US'] + ' ' + \
+                                              SocialAccount.objects.get(user=request.user.id,
+                                                                        id=request.POST['linkedin']).extra_data[
+                                                  'lastName']['localized']['en_US']
+                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id,
+                                                                       id=request.POST['linkedin']).uid
                     obj_create.selected = True
                     obj_create.save()
 
@@ -415,7 +415,8 @@ def configure(request):
             pack_error = 'Maximum Limit Reached, Upgrade your package!'
         else:
             if SocialAccount.objects.filter(user=request.user.id, id=request.POST['twitter']).exists():
-                if not selected_connections.objects.filter(account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid):
+                if not selected_connections.objects.filter(
+                        account_uid=SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid):
 
                     obj_create = selected_connections()
                     obj_create.username = MyUser.objects.get(id=request.user.id)
@@ -431,10 +432,10 @@ def configure(request):
                     obj_create.access_expiry = SocialToken.objects.get(id=request.POST['twitter']).expires_at
                     obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
                                                                         id=request.POST['twitter']).extra_data['name']
-                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter']).uid
+                    obj_create.account_uid = SocialAccount.objects.get(user=request.user.id,
+                                                                       id=request.POST['twitter']).uid
                     obj_create.selected = True
                     obj_create.save()
-
 
                     data.total_seleceted_connections += 1
                     data.save()
@@ -447,8 +448,8 @@ def configure(request):
                     pass
     elif 'facebook-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).extra_data['id']
-        count_var1 = selected_connections.objects.filter(username = request.user.id, extra_data__icontains = var).count()
-        var1 = selected_connections.objects.filter(username = request.user.id, extra_data__icontains = var).delete()
+        count_var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).count()
+        var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).delete()
         data.total_seleceted_connections -= count_var1
         data.save()
@@ -456,7 +457,7 @@ def configure(request):
 
     elif 'google-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).uid
-        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
@@ -464,7 +465,7 @@ def configure(request):
 
     elif 'twitter-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).uid
-        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
@@ -472,7 +473,7 @@ def configure(request):
 
     elif 'pinterest-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).uid
-        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
@@ -480,7 +481,7 @@ def configure(request):
 
     elif 'linkedin-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).uid
-        var1 = selected_connections.objects.filter(username = request.user.id, account_uid = var).delete()
+        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
@@ -494,14 +495,14 @@ def configure(request):
     else:
         pass
 
-
-    return render(request, 'accounts/configure.html', {'account':account,'not_selected':not_selected,
-                                                       'selected':selected,'error_connected':error_connected,
-                                                       'pack_error':pack_error,})
+    return render(request, 'accounts/configure.html', {'account': account, 'not_selected': not_selected,
+                                                       'selected': selected, 'error_connected': error_connected,
+                                                       'pack_error': pack_error, })
 
 
 import calendar
 from datetime import date
+
 
 def schedule(request):
     obj = date.today()
@@ -511,24 +512,25 @@ def schedule(request):
     year = obj.strftime("%Y")
     obj1 = calendar.monthcalendar(int(year), int(m))
     month = calendar.month_name[int(m)]
-    for x in range(1,13):
+    for x in range(1, 13):
         arr.append(calendar.month_name[x])
-
 
     if 'date_selected' in request.POST:
         print(request.POST['date_selected'])
         data = request.POST['date_selected']
         encodedBytes = base64.b64encode(data.encode("utf-8"))
         encodedStr = str(encodedBytes, "utf-8")
-        return redirect('/configure/post/'+encodedStr)
+        return redirect('/configure/post/' + encodedStr)
 
+    return render(request, 'accounts/schedule.html',
+                  {'obj1': obj1, 'month': month, 'arr': arr, 'd': int(d), 'year': int(year), 'm': int(m)})
 
-    return render(request, 'accounts/schedule.html', {'obj1':obj1,'month':month,'arr':arr,'d':int(d),'year':int(year),'m':int(m)})
 
 # from datetime import datetime, timedelta
 import datetime
 
-def time_machine(request,data):
+
+def time_machine(request, data):
     urlSafeEncodedBytes = base64.b64decode(data)
     date = str(urlSafeEncodedBytes, "utf-8")
     time_string = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
@@ -540,7 +542,9 @@ def time_machine(request,data):
     now = datetime.datetime.now()
     now_plus_15 = now + datetime.timedelta(minutes=15)
 
-    return render(request, 'accounts/datetime.html',{'date':date,'hour':now_plus_15.hour,'minute':now_plus_15.minute,'second':now_plus_15.second,'time_string':time_string})
+    return render(request, 'accounts/datetime.html',
+                  {'date': date, 'hour': now_plus_15.hour, 'minute': now_plus_15.minute, 'second': now_plus_15.second,
+                   'time_string': time_string})
 
 
 import random
@@ -552,56 +556,59 @@ def randomString(stringLength=64):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 
-def post_factory(request,data):
+def post_factory(request, data):
     urlSafeEncodedBytes = base64.b64decode(data)
     date = str(urlSafeEncodedBytes, "utf-8")
-    selections = selected_connections.objects.filter(username = request.user.id)
+    selections = selected_connections.objects.filter(username=request.user.id)
     new_arr = []
-    for x in selections:
-        new_arr.append(x.account_uid)
-
-    print(new_arr)
-
+    names_arr = []
+    accs_provider = []
     if 'submit' in request.POST:
-        print(request.POST['message'])
-        print(request.POST['filename'])
-        accounts = '12345,67890'
 
-        data_accounts = accounts
-        encodedBytes = base64.b64encode(data_accounts.encode("utf-8"))
-        encodedAccounts = str(encodedBytes, "utf-8")
+        for x in selections:
+            try:
+                if request.POST[str(x)]:
+                    new_arr.append(request.POST[str(x)])
+                    names_arr.append(x.account_name)
+                    accs_provider.append(x.provider)
+
+            except:
+                pass
+        print(names_arr)
+
+        # data_accounts = accounts
+        # encodedBytes = base64.b64encode(data_accounts.encode("utf-8"))
+        # encodedAccounts = str(encodedBytes, "utf-8")
 
         data_message = request.POST['message']
-        encodedBytes = base64.b64encode(data_message.encode("utf-8"))
-        encodedMessage = str(encodedBytes, "utf-8")
+        # encodedBytes = base64.b64encode(data_message.encode("utf-8"))
+        # encodedMessage = str(encodedBytes, "utf-8")
 
         data_filename = request.POST['filename']
-        encodedBytes = base64.b64encode(data_filename.encode("utf-8"))
-        encodedFilename = str(encodedBytes, "utf-8")
+        # encodedBytes = base64.b64encode(data_filename.encode("utf-8"))
+        # encodedFilename = str(encodedBytes, "utf-8")
+
 
         rand_user_string = randomString()
-
         obj = temp_data()
         obj.rand_save_string = rand_user_string
         obj.accs = new_arr
         obj.cont = data_message
         obj.img = data_filename
+        obj.accs_name = names_arr
+        obj.accs_provider = accs_provider
         obj.date = date
         obj.save()
 
-        return redirect('/config-all-platforms/'+rand_user_string)
+        return redirect('/config-all-platforms/' + rand_user_string)
+
+    return render(request, 'accounts/post_factory.html', {'date': date, 'selections': selections, })
 
 
-    return render(request,'accounts/post_factory.html',{'date':date,'selections':selections,})
+def all_post_config(request, rand_user_string):
+    url_post = '/config-all-platforms/' + rand_user_string
 
-
-
-def all_post_config(request,rand_user_string):
-
-    url_post = '/config-all-platforms/'+rand_user_string
-
-
-    model_data = get_object_or_404(temp_data,rand_save_string=rand_user_string)
+    model_data = get_object_or_404(temp_data, rand_save_string=rand_user_string)
 
     # urlSafeEncodedBytes = base64.b64decode(data)
     # date = str(urlSafeEncodedBytes, "utf-8")
@@ -609,8 +616,7 @@ def all_post_config(request,rand_user_string):
     # encodedAccountsurlSafeEncodedBytes = base64.b64decode(encodedAccounts)
     # accounts = str(encodedAccountsurlSafeEncodedBytes, "utf-8")
 
-
-    arr = eval( model_data.accs )
+    arr = eval(model_data.accs)
     #
     # encodedMessageurlSafeEncodedBytes = base64.b64decode(encodedMessage)
     # message = str(encodedMessageurlSafeEncodedBytes, "utf-8")
@@ -618,21 +624,22 @@ def all_post_config(request,rand_user_string):
     # encodedFilenameurlSafeEncodedBytes = base64.b64decode(encodedFilename)
     # filename = str(encodedFilenameurlSafeEncodedBytes, "utf-8")
 
-
     date = model_data.date
     accounts = model_data.accs
+    accs_name = model_data.accs_name
     message = model_data.cont
     filename = model_data.img
-
+    accs_provider = model_data.accs_provider
+    zipis = zip(eval(model_data.accs), eval(model_data.accs_name), eval(model_data.accs_provider))
 
     if request.method == 'POST':
-        print('12345',request.POST['12345-message'])
-        print('67890', request.POST['67890-message'])
+        for x in arr:
+            print(x, request.POST[x])
 
 
-    return render(request,'accounts/all_post_config.html',{'date':date,'accounts':accounts,
-                                                           'message':message,'filename':filename,
-                                                           'arr':arr,'url_post':url_post})
+    return render(request, 'accounts/all_post_config.html', {'date': date, 'accounts': accounts,
+                                                             'message': message, 'filename': filename,
+                                                             'arr': arr, 'url_post': url_post,'zipis':zipis})
 
 
 def schedule_for(request, month):
