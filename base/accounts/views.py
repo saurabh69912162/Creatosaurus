@@ -631,17 +631,47 @@ def all_post_config(request, rand_user_string):
     filename = model_data.img
     accs_provider = model_data.accs_provider
     zipis = zip(eval(model_data.accs), eval(model_data.accs_name), eval(model_data.accs_provider))
+    uuid_zip = []
 
 
-    
     if request.method == 'POST':
         for x in arr:
             print(x, request.POST[x])
-    print(filename)
+
+            obj = scheduler_model()
+            obj.username = MyUser.objects.get(id = request.user.id)
+            obj.dirtybit = MyUser.objects.get(id = request.user.id).dirtybit
+            obj.provider = selected_connections.objects.get(account_uid = x)
+            obj.content = request.POST[x]
+            obj.save()
+            print(obj.schedule_dirtybit)
+            uuid_zip.append(obj.schedule_dirtybit)
+
+        model_data.uid_zip = uuid_zip
+        model_data.save()
+
+        return redirect('/select-time/post/'+rand_user_string)
+
+
+
 
     return render(request, 'accounts/all_post_config.html', {'date': date, 'accounts': accounts,
                                                              'message': message, 'filename': filename,
                                                              'arr': arr, 'url_post': url_post,'zipis':zipis})
+
+
+
+
+
+def set_timer_post(request, rand_user_string):
+    model_data = get_object_or_404(temp_data, rand_save_string=rand_user_string)
+
+
+
+    return render(request, 'accounts/set_time.html',{'model_data':model_data,})
+
+
+
 
 
 def schedule_for(request, month):

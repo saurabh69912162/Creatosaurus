@@ -13,6 +13,7 @@ urlpatterns = [
     path('', login_view),
     path('connect/',connect),
     path('config-all-platforms/<str:rand_user_string>', all_post_config),
+    path('select-time/post/<str:rand_user_string>', set_timer_post),
     path('configure/post/<str:data>/',post_factory),
     path('configure/',configure),
     path('facebook-configure/',facebookconfigure),
