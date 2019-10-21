@@ -665,10 +665,14 @@ def all_post_config(request, rand_user_string):
 
 def set_timer_post(request, rand_user_string):
     model_data = get_object_or_404(temp_data, rand_save_string=rand_user_string)
+    date = model_data.date
 
-
-
-    return render(request, 'accounts/set_time.html',{'model_data':model_data,})
+    from datetime import datetime
+    if str(datetime.now().day) == date.split('/')[0] and str(datetime.now().month) == date.split('/')[1]:
+        return HttpResponse('today! i will figure it out ')
+    else:
+        pass
+        return render(request, 'accounts/set_time.html',{'model_data':model_data,'date':date})
 
 
 
