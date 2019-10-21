@@ -644,9 +644,9 @@ def all_post_config(request, rand_user_string):
             obj.provider = selected_connections.objects.get(account_uid = x)
             obj.content = request.POST[x]
             obj.save()
-            print(obj.schedule_dirtybit)
-            uuid_zip.append(obj.schedule_dirtybit)
-
+            print(str(obj.schedule_dirtybit))
+            uuid_zip.append(str(obj.schedule_dirtybit))
+            print(uuid_zip)
         model_data.uid_zip = uuid_zip
         model_data.save()
 
@@ -671,8 +671,12 @@ def set_timer_post(request, rand_user_string):
     if str(datetime.now().day) == date.split('/')[0] and str(datetime.now().month) == date.split('/')[1]:
         return HttpResponse('today! i will figure it out ')
     else:
-        pass
-        return render(request, 'accounts/set_time.html',{'model_data':model_data,'date':date})
+        for x in eval(model_data.uid_zip):
+            print(x)
+
+        else:
+            pass
+        return render(request, 'accounts/set_time.html',{'model_data':model_data,'date':date,'uid':eval(model_data.uid_zip)})
 
 
 
