@@ -1,0 +1,25 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+
+<div class="container" style="padding-top:10px">
+    <h1>Current Queue</h1>
+    <hr>
+    {% for x in obj %}
+<div class="well">
+
+ <div class="alert alert-danger alert-dismissible">
+  {{x.content}}
+    <br>
+{{x.scheduled_datetime}}
+    <br>
+{{x.provider}}
+</div>
+</div><hr>
+    {% endfor %}
+</div>
+
+
+
+{% endblock %}
+

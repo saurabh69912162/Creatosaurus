@@ -705,3 +705,9 @@ def schedule_for(request, month):
         return redirect('/schrdule-this-month')
     else:
         return HttpResponse(month)
+
+
+
+def myqueue(request):
+    obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username)).order_by('-timestamp')
+    return render(request, 'accounts/myqueue.html',{'obj':obj,})

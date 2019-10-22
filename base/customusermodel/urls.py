@@ -16,6 +16,7 @@ urlpatterns = [
     path('select-time/post/<str:rand_user_string>', set_timer_post),
     path('configure/post/<str:data>/',post_factory),
     path('configure/',configure),
+    path('my-queue/', myqueue),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
