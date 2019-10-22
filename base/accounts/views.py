@@ -667,7 +667,7 @@ def set_timer_post(request, rand_user_string):
     post_url = '/select-time/post/'+rand_user_string
     model_data = get_object_or_404(temp_data, rand_save_string=rand_user_string)
     date = model_data.date
-
+    print(date.split('/'))
     from datetime import datetime
     if str(datetime.now().day) == date.split('/')[0] and str(datetime.now().month) == date.split('/')[1]:
         return HttpResponse('today! i will figure it out ')
@@ -681,8 +681,10 @@ def set_timer_post(request, rand_user_string):
             if 'hour_is' in request.POST and 'min_is' in request.POST:
                 print((request.POST['hour_is']), int(request.POST['min_is']))
                 for x in eval(model_data.uid_zip):
+                    import datetime
+                    x_time = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),int(request.POST['min_is']),0)
                     obj = scheduler_model.objects.get(schedule_dirtybit=x)
-                    obj.scheduled_datetime = datetime.now()
+                    obj.scheduled_datetime = x_time
                     obj.save()
 
                 else:

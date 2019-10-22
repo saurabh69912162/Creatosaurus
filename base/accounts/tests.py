@@ -1,9 +1,16 @@
-import random
-import string
+# import random
+# import string
+#
+# def randomString(stringLength=64):
+#     letters = string.ascii_lowercase
+#     return ''.join(random.choice(letters) for i in range(stringLength))
+#
+#
+# print ("Random String is ", randomString() )
 
-def randomString(stringLength=64):
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(stringLength))
 
+import datetime
 
-print ("Random String is ", randomString() )
+x = datetime.datetime(2018, 6, 1)
+
+print(x)
