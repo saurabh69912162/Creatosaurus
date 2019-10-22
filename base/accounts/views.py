@@ -681,9 +681,10 @@ def set_timer_post(request, rand_user_string):
             if 'hour_is' in request.POST and 'min_is' in request.POST:
                 print((request.POST['hour_is']), int(request.POST['min_is']))
                 for x in eval(model_data.uid_zip):
-                    obj = scheduler_model.objects.get(schedule_dirtybit=x).scheduled_datetime
-                    obj = '2019-10-23 15:10:10'
+                    obj = scheduler_model.objects.get(schedule_dirtybit=x)
+                    obj.scheduled_datetime = datetime.now()
                     obj.save()
+
                 else:
                     pass
 
