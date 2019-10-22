@@ -673,13 +673,19 @@ def set_timer_post(request, rand_user_string):
         return HttpResponse('today! i will figure it out ')
     else:
         for x in eval(model_data.uid_zip):
-            print(x)
+            print(x, 'Found')
         else:
             pass
 
         if request.method == 'POST':
             if 'hour_is' in request.POST and 'min_is' in request.POST:
                 print((request.POST['hour_is']), int(request.POST['min_is']))
+                for x in eval(model_data.uid_zip):
+                    obj = scheduler_model.objects.get(schedule_dirtybit=x).scheduled_datetime
+                    obj = '2019-10-23 15:10:10'
+                    obj.save()
+                else:
+                    pass
 
 
         return render(request, 'accounts/set_time.html',{'post_url':post_url,'model_data':model_data,'date':date,'uid':eval(model_data.uid_zip)})
