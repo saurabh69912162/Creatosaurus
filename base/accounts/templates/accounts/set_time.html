@@ -93,18 +93,21 @@
 </style>
 
 
-
+<form action="{{post_url}}" method="post">
+    {% csrf_token %}
 <div class="slidecontainer">
-
-
     <h2>Choose Hour </h2>
-    <input type="range" min="00" max="23" value="17" class="slider" id="myRange">
+    <input type="range" min="00" max="23" value="17" name="hour_is" class="slider" id="myRange">
 </div>
 <br>
 <div class="slidecontainer">
     <h2>Choose Minutes</h2>
-    <input type="range" min="00" max="59" value="50" class="slider2" id="myRange2">
+    <input type="range" min="00" max="59" value="50"  name="min_is" class="slider2" id="myRange2">
 </div>
+    <br>
+    <button class="btn progress-bar-striped btn-warning btn-lg">JUST SEND IT </button>
+
+</form>
 <br>
 <h1 style="padding-top:10px">On <span style="color:red">{{date}}</span> at <span id="demo" style="color:red"></span>:<span style="color:red" id="demo2"></span></h1>
 <script>
@@ -116,8 +119,6 @@ slider.oninput = function() {
   output.innerHTML = this.value;
 }
 
-
-
 var slider2 = document.getElementById("myRange2");
 var output2 = document.getElementById("demo2");
 output2.innerHTML = slider2.value;
@@ -128,7 +129,6 @@ slider2.oninput = function() {
 
 </script>
 <hr>
-<button class="btn progress-bar-striped btn-danger btn-lg">JUST SEND IT </button>
 
 
 </script>
