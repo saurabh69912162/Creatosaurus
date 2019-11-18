@@ -20,6 +20,7 @@ urlpatterns = [
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
+    path('test_view/',test_view),
     url(r'^password/$', change_password, name='change_password'),
     url(r'^profile/edit$', edit_profile),
     path('schedule-this-month/', schedule),

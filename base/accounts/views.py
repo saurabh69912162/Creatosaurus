@@ -19,8 +19,26 @@ from .models import *
 import requests
 import base64
 from datetime import datetime
-
 User = get_user_model()
+
+
+
+
+def test_view(request):
+
+    # sch_dbit = scheduler_model.objects.get(schedule_dirtybit='1b5a561c-1ce7-46f7-ad32-cb4105c4f10e')
+    social_acc = selected_connections.objects.get(account_uid='1633880123300475')
+    _provider = social_acc.provider
+    _token = social_acc.access_token
+
+    if _provider == 'twitter':
+        return HttpResponse('Twitter')
+    elif _provider == 'facebook':
+        return HttpResponse('Facebook',)
+    elif _provider == 'linkedin_oauth2':
+        return HttpResponse('Linkedin')
+    else:
+        return HttpResponse('NA')
 
 
 def register(request, *args, **kwargs):
@@ -487,11 +505,6 @@ def configure(request):
         data.save()
         return redirect('/configure')
 
-
-
-
-
-
     else:
         pass
 
@@ -555,6 +568,7 @@ def randomString(stringLength=64):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(stringLength))
 
+from .forms import temp_data_form
 
 def post_factory(request, data):
     urlSafeEncodedBytes = base64.b64decode(data)
@@ -563,6 +577,9 @@ def post_factory(request, data):
     new_arr = []
     names_arr = []
     accs_provider = []
+
+    form = temp_data_form(request.FILES)
+
     if 'submit' in request.POST:
 
         for x in selections:
@@ -584,25 +601,26 @@ def post_factory(request, data):
         # encodedBytes = base64.b64encode(data_message.encode("utf-8"))
         # encodedMessage = str(encodedBytes, "utf-8")
 
-        data_filename = request.POST['filename']
+        # data_filename = request.POST['filename']
         # encodedBytes = base64.b64encode(data_filename.encode("utf-8"))
         # encodedFilename = str(encodedBytes, "utf-8")
 
+        if form.is_valid():
 
-        rand_user_string = randomString()
-        obj = temp_data()
-        obj.rand_save_string = rand_user_string
-        obj.accs = new_arr
-        obj.cont = data_message
-        obj.img = data_filename
-        obj.accs_name = names_arr
-        obj.accs_provider = accs_provider
-        obj.date = date
-        obj.save()
+            rand_user_string = randomString()
+            obj = temp_data()
+            obj.rand_save_string = rand_user_string
+            obj.accs = new_arr
+            obj.cont = data_message
+            obj.img = request.FILES['img']
+            obj.accs_name = names_arr
+            obj.accs_provider = accs_provider
+            obj.date = date
+            obj.save()
 
         return redirect('/config-all-platforms/' + rand_user_string)
 
-    return render(request, 'accounts/post_factory.html', {'date': date, 'selections': selections, })
+    return render(request, 'accounts/post_factory.html', {'date': date, 'selections': selections, 'form':form})
 
 
 def all_post_config(request, rand_user_string):
@@ -637,12 +655,13 @@ def all_post_config(request, rand_user_string):
     if request.method == 'POST':
         for x in arr:
             print(x, request.POST[x])
-
             obj = scheduler_model()
             obj.username = MyUser.objects.get(id = request.user.id)
             obj.dirtybit = MyUser.objects.get(id = request.user.id).dirtybit
             obj.provider = selected_connections.objects.get(account_uid = x)
             obj.content = request.POST[x]
+            if model_data.img:
+                obj.image = filename
             obj.save()
             print(str(obj.schedule_dirtybit))
             uuid_zip.append(str(obj.schedule_dirtybit))
@@ -651,9 +670,6 @@ def all_post_config(request, rand_user_string):
         model_data.save()
 
         return redirect('/select-time/post/'+rand_user_string)
-
-
-
 
     return render(request, 'accounts/all_post_config.html', {'date': date, 'accounts': accounts,
                                                              'message': message, 'filename': filename,
@@ -664,36 +680,73 @@ def all_post_config(request, rand_user_string):
 
 
 def set_timer_post(request, rand_user_string):
+    error=""
     post_url = '/select-time/post/'+rand_user_string
     model_data = get_object_or_404(temp_data, rand_save_string=rand_user_string)
     date = model_data.date
     print(date.split('/'))
-    from datetime import datetime
+    from datetime import datetime, timedelta
     if str(datetime.now().day) == date.split('/')[0] and str(datetime.now().month) == date.split('/')[1]:
-        return HttpResponse('today! i will figure it out ')
+        for x in eval(model_data.uid_zip):
+            print(x, 'Found')
+        else:
+            pass
+        if request.method == 'POST':
+            if 'hour_is' in request.POST and 'min_is' in request.POST:
+                print((request.POST['hour_is']), int(request.POST['min_is']))
+                if  int(request.POST['min_is'])-int(time.strftime('%M'))<=5:
+                    error = "cant post ! Page Time Out Your Need To Reschedule"
+                    print(int(request.POST['min_is'])-int(time.strftime('%M')))
+                else:
+                    for x in eval(model_data.uid_zip):
+                        import datetime
+                        x_time = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),int(request.POST['min_is']),0)
+                        obj = scheduler_model.objects.get(schedule_dirtybit=x)
+                        obj.scheduled_datetime = x_time
+                        obj.save()
+
+                    else:
+                        pass
+
+        if (15 + int(time.strftime('%M'))) >=60 :
+            current_min = (15 + int(time.strftime('%M'))) - 60
+            current_hour = int(time.strftime('%H'))+1
+        else:
+            current_min = int(time.strftime('%M'))+15
+            current_hour = int(time.strftime('%H'))
+
+
+        return render(request, 'accounts/set_time.html',
+                      {'error':error,'post_url': post_url, 'model_data': model_data, 'date': date, 'uid': eval(model_data.uid_zip),'current_hour':current_hour,'current_min':current_min})
+
     else:
         for x in eval(model_data.uid_zip):
             print(x, 'Found')
         else:
             pass
-
         if request.method == 'POST':
             if 'hour_is' in request.POST and 'min_is' in request.POST:
                 print((request.POST['hour_is']), int(request.POST['min_is']))
-                for x in eval(model_data.uid_zip):
-                    import datetime
-                    x_time = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),int(request.POST['min_is']),0)
-                    obj = scheduler_model.objects.get(schedule_dirtybit=x)
-                    obj.scheduled_datetime = x_time
-                    obj.save()
-
+                if  int(request.POST['min_is'])-int(time.strftime('%M'))<=5:
+                    error = "cant post ! Page Time Out Your Need To Reschedule"
+                    print(int(request.POST['min_is']) - int(time.strftime('%M')))
                 else:
-                    pass
+                    for x in eval(model_data.uid_zip):
+                        import datetime
+                        x_time = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),int(request.POST['min_is']),0)
+                        obj = scheduler_model.objects.get(schedule_dirtybit=x)
+                        obj.scheduled_datetime = x_time
+                        obj.save()
+
+                    else:
+                        pass
+
+        current_min = 20
+        current_hour = 12
 
 
-        return render(request, 'accounts/set_time.html',{'post_url':post_url,'model_data':model_data,'date':date,'uid':eval(model_data.uid_zip)})
-
-
+        return render(request, 'accounts/set_time.html',
+                      {'post_url': post_url, 'model_data': model_data, 'date': date, 'uid': eval(model_data.uid_zip),'current_hour':current_hour,'current_min':current_min})
 
 
 
@@ -702,12 +755,19 @@ def schedule_for(request, month):
     m = obj.strftime("%m")
     month_calc = calendar.month_name[int(m)]
     if month_calc == month:
-        return redirect('/schrdule-this-month')
+        return redirect('/schedule-this-month')
     else:
         return HttpResponse(month)
 
 
 
 def myqueue(request):
-    obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username)).order_by('-timestamp')
+    obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username), hit =False).order_by('-timestamp')
     return render(request, 'accounts/myqueue.html',{'obj':obj,})
+
+
+
+
+
+
+

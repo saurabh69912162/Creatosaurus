@@ -322,7 +322,7 @@ class temp_data(models.Model):
     accs_name = models.CharField(max_length=1000, null=True, blank=True)
     accs_provider = models.CharField(max_length=1000, null=True, blank=True)
     cont = models.CharField(max_length=50000, null=True, blank=True)
-    img = models.CharField(max_length=1000, null=True, blank=True)
+    img = models.ImageField(upload_to='media_uploaded/',null=True, blank=True)
     uid_zip = models.CharField(max_length=3000, null=True, blank=True)
     def __str__(self):
         return self.rand_save_string

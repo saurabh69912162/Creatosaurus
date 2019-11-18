@@ -36,7 +36,7 @@ def job():
         obj.timestamp = x.timestamp
         obj.provider = connections.objects.get(account_uid=x.provider)
         obj.save()
-        reverse.delay(x.provider.provider,x.timestamp - datetime.timestamp(datetime.now()))
+        reverse.delay(obj.schedule_dirtybit,x.provider.provider,x.timestamp - datetime.timestamp(datetime.now()))
     print('Running ', datetime.now())
 
 

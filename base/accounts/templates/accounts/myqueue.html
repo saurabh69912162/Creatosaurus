@@ -8,12 +8,17 @@
     {% for x in obj %}
 <div class="well">
 
- <div class="alert alert-danger alert-dismissible">
-  {{x.content}}
+<strong> <div class="alert alert-danger alert-dismissible">
+  {{x.content}}</strong>
     <br>
 {{x.scheduled_datetime}}
     <br>
 {{x.provider}}
+              <br>
+<strong>Posted : {{x.hit}}
+</strong>
+         <br>
+{{x.schedule_dirtybit}}
 </div>
 </div><hr>
     {% endfor %}

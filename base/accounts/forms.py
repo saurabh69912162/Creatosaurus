@@ -21,7 +21,7 @@ from django.utils.translation import gettext, gettext_lazy as _
 ###############################################
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from .models import business_profile_data, creator_profile_data
+from .models import *
 from django import forms
 
 User = get_user_model()
@@ -211,3 +211,10 @@ class creator_data(forms.ModelForm):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
+
+
+
+class temp_data_form(forms.ModelForm):
+    class Meta:
+        model = temp_data
+        fields = {'img',}
