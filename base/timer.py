@@ -34,7 +34,7 @@ def job():
         obj.init_schedule_fk = init_schedule.objects.filter(self_dirtybit = x.init_schedule_fk.self_dirtybit)[0]
         obj.schedule_dirtybit = scheduler_model.objects.get(schedule_dirtybit = x.schedule_dirtybit)
         obj.timestamp = x.timestamp
-        obj.provider = connections.objects.get(account_uid=x.provider)
+        obj.provider = selected_connections.objects.get(account_uid=x.provider)
         obj.save()
         reverse.delay(obj.schedule_dirtybit,x.provider.provider,x.timestamp - datetime.timestamp(datetime.now()))
     print('Running ', datetime.now())

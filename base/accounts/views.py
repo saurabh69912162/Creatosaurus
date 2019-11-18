@@ -25,20 +25,9 @@ User = get_user_model()
 
 
 def test_view(request):
-
-    # sch_dbit = scheduler_model.objects.get(schedule_dirtybit='1b5a561c-1ce7-46f7-ad32-cb4105c4f10e')
-    social_acc = selected_connections.objects.get(account_uid='1633880123300475')
-    _provider = social_acc.provider
-    _token = social_acc.access_token
-
-    if _provider == 'twitter':
-        return HttpResponse('Twitter')
-    elif _provider == 'facebook':
-        return HttpResponse('Facebook',)
-    elif _provider == 'linkedin_oauth2':
-        return HttpResponse('Linkedin')
-    else:
-        return HttpResponse('NA')
+    obj = scheduler_model.objects.get(schedule_dirtybit = '0088a379-21c9-4a52-b8ca-5310c6119331')
+    print(obj.image.url)
+    return HttpResponse('1')
 
 
 def register(request, *args, **kwargs):
@@ -741,8 +730,8 @@ def set_timer_post(request, rand_user_string):
                     else:
                         pass
 
-        current_min = 20
-        current_hour = 12
+        current_min = 0
+        current_hour = 0
 
 
         return render(request, 'accounts/set_time.html',
