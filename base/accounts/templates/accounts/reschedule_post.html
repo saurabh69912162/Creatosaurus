@@ -4,29 +4,26 @@
 
 
 <div class="container" style="padding-top:10px">
-    <h1>Align Your Post's</h1>
+    <h1>Rechedule Post</h1>
    <hr>
-<form action="{{url_post}}" method="post">
+<form action="{{url_post}}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% for x,y,z in zipis %}
     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
-    <strong>{{y|title}} ~ {{z|title}}</strong>
+    <strong>{{Oprovider|title}} ~ {{Oname|title}}</strong>
     <br>
-    <div class="input-group mb-3">
+    <div class="input-group mb-3" name="text">
     <div class="input-group-prepend">
         <span class="input-group-text">~</span>
     </div>
-    <textarea name="{{x}}" rows="10"  class="form-control" >{{message}}</textarea>
+    <textarea name="text" rows="10"  class="form-control" >{{Ocontent}}</textarea>
     </div>
-    Media ~ {{filename}}
+    <h3>Change Media</h3>
+        {{ form.as_p }}
     <hr>
-    {% endfor %}
 
     <br>
-    <button id="btn-btn" class="btn progress-bar-striped btn-danger " type="submit" name="submit">Select Time & Schedule</button>
+    <button class="btn progress-bar-striped btn-danger " type="submit" name="submit">Change Time & Schedule</button>
 </form>
-
-
 
 
 <br><br><br><br><br><br>

@@ -277,7 +277,7 @@ class scheduler_model(models.Model):
     content = models.TextField(max_length=63000, blank=True, null=True)
     scheduled_datetime = models.DateTimeField(blank=True, null=True)
     upload_datetime = models.DateTimeField(default=datetime.now, blank=False, null=False)
-    image = models.ImageField(upload_to='scheduled_images', blank=True)
+    image = models.ImageField(upload_to='media_uploaded/', blank=True)
     video = models.FileField(upload_to='scheduled_videos', blank=True)
     timestamp = models.BigIntegerField(null=True,blank=True)
     hit = models.BooleanField(default=False)

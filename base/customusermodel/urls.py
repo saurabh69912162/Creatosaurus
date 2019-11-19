@@ -14,9 +14,12 @@ urlpatterns = [
     path('connect/',connect),
     path('config-all-platforms/<str:rand_user_string>', all_post_config),
     path('select-time/post/<str:rand_user_string>', set_timer_post),
+    path('reschedule/<str:rand_string>', reschedule_post),
+    path('reschedule-time/<str:rand_string>', reschedule_time),
     path('configure/post/<str:data>/',post_factory),
     path('configure/',configure),
     path('my-queue/', myqueue),
+    path('my-history/', myhistory),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
     path('logout/', logout_view),
@@ -24,7 +27,7 @@ urlpatterns = [
     url(r'^password/$', change_password, name='change_password'),
     url(r'^profile/edit$', edit_profile),
     path('schedule-this-month/', schedule),
-    path('schedule-for-<str:month>/',schedule_for, name="schedule_for"),
+    path('schedule-for-<str:month>-<int:year>/',schedule_custom_year_month, name="schedule_custom_year_month"),
 
 
     #url(r'^profile/business$', edit_business),

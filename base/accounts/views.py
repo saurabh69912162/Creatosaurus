@@ -9,7 +9,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from .forms import busi_data, creator_data
+from .forms import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -111,7 +111,8 @@ def profile(request):
     if userme.is_authenticated:
         if request.user.category == 'Creator':
             # check_creator(userme, user_name_)
-            return render(request, 'accounts/creator.html', {})
+            user_obj = User.objects.get(id = request.user.id)
+            return render(request, 'accounts/creator.html', {'user_obj':user_obj,})
         elif request.user.category == 'Business':
             # check_bizz(userme,user_name_)
             return render(request, 'accounts/business.html', {})
@@ -514,7 +515,7 @@ def schedule(request):
     year = obj.strftime("%Y")
     obj1 = calendar.monthcalendar(int(year), int(m))
     month = calendar.month_name[int(m)]
-    for x in range(1, 13):
+    for x in range(int(m), 13):
         arr.append(calendar.month_name[x])
 
     if 'date_selected' in request.POST:
@@ -528,10 +529,50 @@ def schedule(request):
                   {'obj1': obj1, 'month': month, 'arr': arr, 'd': int(d), 'year': int(year), 'm': int(m)})
 
 
-# from datetime import datetime, timedelta
+def schedule_custom_year_month(request,month,year):
+
+    obj = date.today()
+    arr = []
+    d = obj.strftime("%d")
+    current_month = obj.strftime("%m")
+    current_year = obj.strftime("%Y")
+    date_error = ''
+    for x in range(1, 13):
+        if calendar.month_name[x] == month:
+            m_int = x
+        else:
+            pass
+
+    if year < int(current_year):
+        date_error = "We Don't have Time Machine Yet!"
+        return redirect('/schedule-this-month')
+
+    if year - int(current_year) > 1:
+        date_error = "We Don't have Time Machine Yet!"
+        return redirect('/schedule-this-month')
+
+    if m_int < int(current_month):
+        date_error = "We Don't have Time Machine Yet!"
+        return redirect('/schedule-this-month')
+
+
+    obj1 = calendar.monthcalendar(int(year), int(m_int))
+    month = calendar.month_name[int(m_int)]
+    for x in range(int(m_int), 13):
+        arr.append(calendar.month_name[x])
+
+    if 'date_selected' in request.POST:
+        print(request.POST['date_selected'])
+        data = request.POST['date_selected']
+        encodedBytes = base64.b64encode(data.encode("utf-8"))
+        encodedStr = str(encodedBytes, "utf-8")
+        return redirect('/configure/post/' + encodedStr)
+
+    return render(request, 'accounts/schedule.html',
+                  {'obj1': obj1, 'month': month, 'arr': arr, 'd': int(d), 'year': int(year), 'm': int(m_int),'date_error':date_error})
+
+
 import datetime
-
-
 def time_machine(request, data):
     urlSafeEncodedBytes = base64.b64decode(data)
     date = str(urlSafeEncodedBytes, "utf-8")
@@ -601,7 +642,8 @@ def post_factory(request, data):
             obj.rand_save_string = rand_user_string
             obj.accs = new_arr
             obj.cont = data_message
-            obj.img = request.FILES['img']
+            if len(request.FILES) !=0:
+                obj.img = request.FILES['img']
             obj.accs_name = names_arr
             obj.accs_provider = accs_provider
             obj.date = date
@@ -693,9 +735,9 @@ def set_timer_post(request, rand_user_string):
                         obj = scheduler_model.objects.get(schedule_dirtybit=x)
                         obj.scheduled_datetime = x_time
                         obj.save()
+                    return redirect('/my-queue')
 
-                    else:
-                        pass
+
 
         if (15 + int(time.strftime('%M'))) >=60 :
             current_min = (15 + int(time.strftime('%M'))) - 60
@@ -714,24 +756,17 @@ def set_timer_post(request, rand_user_string):
         else:
             pass
         if request.method == 'POST':
-            if 'hour_is' in request.POST and 'min_is' in request.POST:
-                print((request.POST['hour_is']), int(request.POST['min_is']))
-                if  int(request.POST['min_is'])-int(time.strftime('%M'))<=5:
-                    error = "cant post ! Page Time Out Your Need To Reschedule"
-                    print(int(request.POST['min_is']) - int(time.strftime('%M')))
-                else:
-                    for x in eval(model_data.uid_zip):
-                        import datetime
-                        x_time = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),int(request.POST['min_is']),0)
-                        obj = scheduler_model.objects.get(schedule_dirtybit=x)
-                        obj.scheduled_datetime = x_time
-                        obj.save()
+            for x in eval(model_data.uid_zip):
+                import datetime
+                x_time = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),int(request.POST['min_is']),0)
+                obj = scheduler_model.objects.get(schedule_dirtybit=x)
+                obj.scheduled_datetime = x_time
+                obj.save()
+            return redirect('/my-queue')
 
-                    else:
-                        pass
 
-        current_min = 0
-        current_hour = 0
+        current_min = 00
+        current_hour = 00
 
 
         return render(request, 'accounts/set_time.html',
@@ -739,24 +774,119 @@ def set_timer_post(request, rand_user_string):
 
 
 
-def schedule_for(request, month):
+def schedule_for(request, month,year):
     obj = date.today()
     m = obj.strftime("%m")
     month_calc = calendar.month_name[int(m)]
     if month_calc == month:
         return redirect('/schedule-this-month')
     else:
-        return HttpResponse(month)
+
+            return HttpResponse(month)
 
 
 
 def myqueue(request):
-    obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username), hit =False).order_by('-timestamp')
+    obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username), hit =False).order_by('timestamp')
+
+    if request.method == 'POST':
+        if 'delete' in request.POST:
+            obj1 = scheduler_model.objects.get(schedule_dirtybit = request.POST['delete']).delete()
+
+        elif 'edit' in request.POST:
+            data = request.POST['edit']
+            encodedBytes = base64.b64encode(data.encode("utf-8"))
+            encodedStr = str(encodedBytes, "utf-8")
+            return redirect('/reschedule/'+encodedStr)
+
+
     return render(request, 'accounts/myqueue.html',{'obj':obj,})
 
+def myhistory(request):
+    obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username), hit =True).order_by('timestamp')
+    return render(request, 'accounts/myhistory.html',{'obj':obj,})
+
+
+def reschedule_post(request,rand_string):
+    urlSafeEncodedBytes = base64.b64decode(rand_string)
+    obj = str(urlSafeEncodedBytes, "utf-8")
+
+    Ocontent = scheduler_model.objects.get(schedule_dirtybit = obj).content
+    Oimage = scheduler_model.objects.get(schedule_dirtybit=obj).image
+
+    Ouid_provider = scheduler_model.objects.get(schedule_dirtybit=obj).provider
+
+    Oprovider = selected_connections.objects.get(account_uid = Ouid_provider).provider
+    Oname = selected_connections.objects.get(account_uid = Ouid_provider).account_name
+
+    instance_  = scheduler_model.objects.get(schedule_dirtybit = obj)
+    form = reschedluer(request.POST,request.FILES,instance = instance_)
+
+    if request.method == 'POST':
+        obj = scheduler_model.objects.get(schedule_dirtybit=obj)
+        obj.content = request.POST['text']
+        if form.is_valid():
+            if len(request.FILES) != 0:
+                obj.image = request.FILES['image']
+        else:
+            pass
+        obj.save()
+
+        return redirect('/reschedule-time/'+rand_string)
+
+
+    context = {
+        'Ocontent':Ocontent,
+        'Oimage':Oimage,
+        'Oprovider':Oprovider,
+        'Oname':Oname,
+        'form': form
+    }
+
+
+    return render(request, 'accounts/reschedule_post.html', context)
+
+
+def reschedule_time(request, rand_string):
+    urlSafeEncodedBytes = base64.b64decode(rand_string)
+    obj = str(urlSafeEncodedBytes, "utf-8")
+    month = time.strftime('%m')
+    day = time.strftime('%d')
+    year = int(time.strftime('%y'))
+    int_month = int(time.strftime('%m'))
+    int_day = int(time.strftime('%d'))
+
+    next_year = year + 1
+    date = "20"+str(year)+'-'+month+'-'+day
+    max_date = '20'+str(next_year)+'-'+month+'-'+day
+    error_pre_time = ''
 
 
 
 
 
+    if request.method == 'POST':
+        import datetime
+        d = datetime.datetime(2000+year, int_month, int_day,int(time.strftime('%H')), int(time.strftime('%M')),0)
+        epoch = time.mktime(d.timetuple())
+        current = int(epoch)
+        d1 = datetime.datetime(int((request.POST['date']).split('-')[0]), int((request.POST['date']).split('-')[1]), int((request.POST['date']).split('-')[2]), int(request.POST['hour_is']), int(request.POST['min_is']),0)
+        print(d1)
+        epoch1 = time.mktime(d1.timetuple())
+        proposed = int(epoch1)
+
+        if proposed - current > 1800.0:
+            instance_ = scheduler_model.objects.get(schedule_dirtybit=obj)
+            instance_.scheduled_datetime = d1
+            instance_.save()
+            return redirect('/my-queue')
+        else:
+            error_pre_time = 'We Dont Have a Time Machine! We cant go back and post for you!!!!'
+
+    context = {
+               'date':date,
+               'max_date':max_date,
+                'error_pre_time':error_pre_time,
+    }
+    return render(request, 'accounts/reschedule_time.html', context)
 

@@ -92,10 +92,17 @@
 }
 </style>
 
-{{error}}
+{{error_pre_time}}
     {{date_error}}
 <form action="{{post_url}}" method="post">
     {% csrf_token %}
+        <h2>Select date</h2>
+<input type="date" id="start" name="date"
+       value="{{date}}"
+       min="{{date}}" max="{{max_date}}">
+<br>
+<br>
+
 <div class="slidecontainer">
     <h2>Choose Hour </h2>
     <input type="range" min="{{current_hour}}" max="23" value="{{current_hour}}" name="hour_is" class="slider" id="myRange">
@@ -105,12 +112,16 @@
     <h2>Choose Minutes</h2>
     <input type="range" min="{{current_min}}" max="59" value="{{current_min}}"  name="min_is" class="slider2" id="myRange2">
 </div>
+<br>
+<h1 style="padding-top:10px">At <span id="demo" style="color:red"></span>:<span style="color:red" id="demo2"></span></h1>
+
     <br>
     <button class="btn progress-bar-striped btn-warning btn-lg">JUST SEND IT </button>
 
 </form>
-<br>
-<h1 style="padding-top:10px">On <span style="color:red">{{date}}</span> at <span id="demo" style="color:red"></span>:<span style="color:red" id="demo2"></span></h1>
+
+
+
 <script>
 var slider = document.getElementById("myRange");
 var output = document.getElementById("demo");

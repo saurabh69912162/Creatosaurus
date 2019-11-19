@@ -23,7 +23,7 @@
       {% if x == month %}
       <a class="dropdown-item" href="/schedule-this-month"><h4 style="text-align:center">{{x}}</h4></a>
       {% else %}
-      <a class="dropdown-item" href="/schedule-for-{{x}}"><h4 style="text-align:center">{{x}}</h4></a>
+      <a class="dropdown-item" href="/schedule-for-{{x}}-{{year}}"><h4 style="text-align:center">{{x}}</h4></a>
       {%endif%}
 
       {% endfor %}

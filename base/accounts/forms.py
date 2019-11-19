@@ -215,6 +215,15 @@ class creator_data(forms.ModelForm):
 
 
 class temp_data_form(forms.ModelForm):
+    img = forms.ImageField(required=False)
     class Meta:
         model = temp_data
         fields = {'img',}
+
+
+class reschedluer(forms.ModelForm):
+    class Meta:
+        model = scheduler_model
+        fields = {'image',}
+
+

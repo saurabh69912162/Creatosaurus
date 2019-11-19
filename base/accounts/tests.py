@@ -8,9 +8,17 @@
 #
 # print ("Random String is ", randomString() )
 
+#
+# import datetime
+#
+# x = datetime.datetime(2018, 6, 1)
+#
+# print(x)
 
+
+import time
 import datetime
+d = datetime.date(2015,21,5)
 
-x = datetime.datetime(2018, 6, 1)
-
-print(x)
+print(time.mktime(d.timetuple())
+      )

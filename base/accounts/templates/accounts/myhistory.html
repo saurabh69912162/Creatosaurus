@@ -3,14 +3,16 @@
 
 
 <div class="container" style="padding-top:10px">
-    <h1>Current Queue</h1>
+    <h1>Competed Tasks</h1>
     <hr>
     {% if obj %}
-
+    {%else%}
+    <h3>No Tasks Found!<a href="/schedule-this-month" > Add a new one</a></h3>
+    {%endif%}
     {% for x in obj %}
 <div class="well">
 
-<strong> <div class="alert alert-danger alert-dismissible">
+<strong> <div class="alert alert-success alert-dismissible">
   {{x.content}}</strong>
     <br>
 {{x.scheduled_datetime}}
@@ -34,10 +36,6 @@
 
 </div><hr>
     {% endfor %}
-
-    {%else%}
-    <h3>No Tasks Found!<a href="/schedule-this-month" > Add a new one</a></h3>
-    {%endif%}
 </div>
 
 
