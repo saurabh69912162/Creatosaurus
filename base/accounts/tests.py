@@ -18,7 +18,16 @@
 
 import time
 import datetime
-d = datetime.date(2015,21,5)
-
-print(time.mktime(d.timetuple())
-      )
+# d = datetime.date(2015,21,5)
+#
+# print(time.mktime(d.timetuple())
+#       )
+from datetime import datetime, timedelta
+curr = datetime.now()
+fut = datetime.now() + timedelta(days = 30)
+import datetime
+d = datetime.datetime(fut.year, fut.month, fut.day)
+epoch = time.mktime(d.timetuple())
+current = int(epoch)
+print(current)
+print(curr)

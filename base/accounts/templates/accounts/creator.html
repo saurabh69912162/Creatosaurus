@@ -51,41 +51,20 @@
     </div>
 
 
-</div>
+</div>{%if queue %}
 <div class="col-sm-4 col-md-6 col-lg-12" style="margin-top:30px">
     <h3>Queue Usage Statistics </h3>
 <hr>
 
-
-
+{% for x in queue %}
     <div class="container">
-        <h6>Facebook Queue 1</h6>
+        <h5>{{x.account_name|title}} - {{x.provider|title}}</h5>
   <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:40%"></div>
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:{{x.left}}0%"></div>
   </div>
 </div>
-
-        <div class="container">
-        <h6>Facebook Queue 2</h6>
-  <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:10%"></div>
-  </div>
-</div>
-
-        <div class="container">
-        <h6>Twitter Queue 1</h6>
-  <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width:100%"></div>
-  </div>
-</div>
-
-
-        <div class="container">
-        <h6>Linkedin Queue 1</h6>
-  <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:70%"></div>
-  </div>
-</div>
+{%endfor%}
+    {%endif%}
 
 
     </div>
@@ -93,11 +72,11 @@
     <h3>Package Details </h3>
 <hr>
             <div class="container">
-            <h5> Current Package : L1 Tier</h5>
-                <h6>Maximum Connections : 8</h6>
-                <h6>Maximum Queue Size : 10</h6>
-                <h6>Maximum Team Members : 0</h6>
-                <a href="#" class="btn btn-danger" role="button">Upgrade Your Package</a>
+            <h5> Current Package : {{curr_pack.package_selected}} Tier</h5>
+                <h6>Maximum Connections : {{curr_pack.queue_size}}</h6>
+                <h6>Maximum Queue Size : {{curr_pack.account_connection_size}}</h6>
+                <h6>Maximum Team Members : {{curr_pack.team_member_size}}</h6>
+                <a href="/package" class="btn btn-danger" role="button">Upgrade Your Package</a>
 
 
             </div>

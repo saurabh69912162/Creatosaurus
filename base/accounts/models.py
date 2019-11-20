@@ -179,7 +179,7 @@ class selected_connections(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        obj = queue_statistics.objects.get_or_create(username = self.username, dirtybit = self.dirtybit,account_uid=self.account_uid, selected_account= selected_connections.objects.get(id = self.id))
+        obj = queue_statistics.objects.get_or_create(username = self.username, provider=self.provider,account_name=self.account_name,dirtybit = self.dirtybit,account_uid=self.account_uid, selected_account= selected_connections.objects.get(id = self.id))
 
 
 
@@ -198,7 +198,9 @@ class user_connection_data(models.Model):
 class queue_statistics(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(blank=True, null=True)
+    provider = models.CharField(max_length=1000,blank=True, null=True)
     selected_account = models.ForeignKey(selected_connections, on_delete=models.CASCADE)
+    account_name = models.CharField(max_length=1000,blank=True, null=True)
     account_uid = models.CharField(max_length=500,unique=True,blank=True,null=True)
     limit = models.IntegerField(default=10)
     left = models.IntegerField(default=10)
@@ -206,6 +208,7 @@ class queue_statistics(models.Model):
 
 class available_package(models.Model):
     package_name = models.CharField(max_length=20, blank=False, null=False)
+    package_id_int = models.IntegerField(blank=False, null=False)
     amount = models.IntegerField(blank=False, null=False)
     queue_size = models.IntegerField(blank=False, null=False)
     account_connection_size = models.IntegerField(blank=False, null=False)
@@ -281,7 +284,7 @@ class scheduler_model(models.Model):
     video = models.FileField(upload_to='scheduled_videos', blank=True)
     timestamp = models.BigIntegerField(null=True,blank=True)
     hit = models.BooleanField(default=False)
-
+    calc = models.BooleanField(default=False)
     def __str__(self):
         return str(self.schedule_dirtybit)
 
@@ -293,6 +296,15 @@ class scheduler_model(models.Model):
             d = datetime.datetime(self.scheduled_datetime.year, self.scheduled_datetime.month, self.scheduled_datetime.day, self.scheduled_datetime.hour,self.scheduled_datetime.minute,self.scheduled_datetime.second)
             epoch = time.mktime(d.timetuple())
             self.timestamp = int(epoch)
+
+            if self.calc is False :
+                self.calc = True
+                obj = queue_statistics.objects.get(username = self.username, selected_account = self.provider)
+                obj.left  = obj.left - 1
+                obj.save()
+
+
+
 
         super().save(*args, **kwargs)
 
@@ -326,3 +338,59 @@ class temp_data(models.Model):
     uid_zip = models.CharField(max_length=3000, null=True, blank=True)
     def __str__(self):
         return self.rand_save_string
+
+import razorpay
+import json
+api_key = "rzp_test_fFP191cDNSQADl"
+api_secret = "csm3OLcOwNTABuHnu8D0qwBZ"
+client = razorpay.Client(auth=(api_key, api_secret))
+
+
+class user_transaction(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    c_transaction_id = models.UUIDField(default=uuid.uuid4, unique=True, blank=False, null=True)
+    transaction_start = models.DateTimeField(blank=False, null=False, default=datetime.now)
+    current_package = models.CharField(max_length=100,blank=False,null=True)
+    upgrade_package = models.CharField(max_length=100,blank=False,null=True)
+    from_date = models.BigIntegerField(blank=False,null=False)
+    to_date = models.BigIntegerField(blank=False,null=False)
+    razorpay_payment_url = models.URLField(max_length=2000,blank=True)
+    razorpay_id = models.CharField(max_length=255, blank=True)
+    customer_id = models.CharField(max_length=255, blank=True, null=True, default='NA')
+    order_id = models.CharField(max_length=255, blank=True, null=True, default='NA')
+    status = models.CharField(max_length=255, default="Pending")
+    amount = models.BigIntegerField(blank=False,null=False, default=99900)
+
+    def save(self, *args, **kwargs):
+        if self.razorpay_id == '':
+            ts = time.time()
+            DATA = {
+                "customer": {
+                    "name": self.username.first_name+' '+self.username.last_name,
+                    "email": self.username.email,
+                },
+                "type": "link",
+                "amount": self.amount,
+                "expire_by": int(ts) + 960,
+                "currency": "INR",
+                "description": self.upgrade_package +" - Creatosaurus"
+            }
+            final_data = client.invoice.create(data=DATA)
+            print(final_data)
+            self.razorpay_id = json.dumps(final_data["id"]).strip('"')
+            self.order_id = json.dumps(final_data["order_id"]).strip('"')
+            self.customer_id = json.dumps(final_data["customer_details"]["id"]).strip('"')
+            self.razorpay_payment_url = json.dumps(final_data["short_url"]).strip('"')
+            self.razorpay_id = json.dumps(final_data["order_id"]).strip('"')
+        print('Done, im in models.py')
+        super().save(*args, **kwargs)
+
+        if self.status == 'Paid':
+            obj = available_package.objects.get(package_name =self.upgrade_package)
+            change = current_package_user.objects.get(username = self.username)
+            change.package_selected = obj
+            change.save()
+
+
+
+

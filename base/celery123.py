@@ -20,6 +20,7 @@ django.setup()
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from celery import Celery
 import time
+import sys
 import requests
 import json
 from requests_oauthlib import OAuth1
@@ -52,7 +53,10 @@ def reverse(key,string,number):
 
 	return True
 
-
+@app.task
+def waiting_time(inv):
+	print(inv)
+	return inv
 
 def parse_info(string):
 	obj  = selected_accounts.objects.get(account_uid = string)

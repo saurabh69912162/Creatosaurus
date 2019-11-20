@@ -1,0 +1,49 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+<div class="container" style="padding-top:10px">
+    <h1>Transaction Details</h1>
+    <hr>
+
+    <h3 style="padding-top:30px">Current Package Details</h3>
+
+        <p><h6>Package Name - {{current_pack_details.package_selected}}</h6></p>
+        <p><h6>Account Connection Limit - {{current_pack_details.account_connection_size}}</h6></p>
+        <p><h6>Queue Size - {{current_pack_details.queue_size}}</h6></p>
+        <p><h6>Team Member Limit - {{current_pack_details.team_member_size}}</h6></p>
+
+
+      <h3 style="padding-top:20px">Items in the Cart</h3>
+<hr>
+
+
+        <p><h6>Package Name - {{avail_details.package_name}}</h6></p>
+        <p><h6>Account Connection Limit - {{avail_details.account_connection_size}}</h6></p>
+        <p><h6>Queue Size - {{avail_details.queue_size}}</h6></p>
+        <p><h6>Team Member Limit - {{avail_details.team_member_size}}</h6></p>
+
+{%if pay_url %}
+  <script>
+  window.open("{{pay_url}}");
+  </script>
+{%endif%}
+
+
+{% if degrade or same_error%}
+  <div class="alert alert-danger" role="alert">
+  {{degrade}} {{same_error}}
+</div>
+  <a href="/package" class="btn btn-danger" >Go Back To Packages</a>
+  {% else%}
+  <form method="post" action="{{url_post}}" >
+    {%csrf_token%}
+    <button class="btn btn-success" type="submit" value="{{avail_details.package_name}}" name="btn-uid" >Complete Transaction</button>
+  </form>
+  {%endif%}
+
+
+
+
+</div>
+
+{% endblock %}

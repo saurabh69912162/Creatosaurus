@@ -101,7 +101,7 @@ admin.site.register(current_package_user, current_package_user_admin)
 	
 class available_package_admin(admin.ModelAdmin):
 
-	list_display = ('package_name','amount','queue_size','account_connection_size','team_member_size','package_dirtybit')
+	list_display = ('package_name','package_id_int','amount','queue_size','account_connection_size','team_member_size','package_dirtybit')
 
 	filter_horizontal = ()
 
@@ -112,7 +112,7 @@ admin.site.register(available_package, available_package_admin)
 
 class scheduler_model_admin(admin.ModelAdmin):
 
-	list_display = ('hit','username','dirtybit','init_schedule_fk','schedule_dirtybit','provider','content','scheduled_datetime','timestamp','upload_datetime','image','video')
+	list_display = ('hit','calc','username','dirtybit','init_schedule_fk','schedule_dirtybit','provider','content','scheduled_datetime','timestamp','upload_datetime','image','video')
 	ordering = ['timestamp']
 	filter_horizontal = ()
 
@@ -151,11 +151,17 @@ admin.site.register(user_connection_data, user_connection_data_admin)
 
 class queue_statistics_admin(admin.ModelAdmin):
 
-	list_display = ('username','dirtybit','selected_account','limit','left')
+	list_display = ('username','dirtybit','account_name','provider','selected_account','limit','left')
 	filter_horizontal = ()
 
 admin.site.register(queue_statistics, queue_statistics_admin)
 
-
-
 admin.site.register(temp_data)
+
+
+class user_transaction_admin(admin.ModelAdmin):
+
+	list_display = ('username','c_transaction_id','transaction_start','current_package','upgrade_package','from_date','to_date','razorpay_payment_url','razorpay_id','status')
+	filter_horizontal = ()
+
+admin.site.register(user_transaction, user_transaction_admin)

@@ -19,6 +19,7 @@ urlpatterns = [
     path('configure/post/<str:data>/',post_factory),
     path('configure/',configure),
     path('my-queue/', myqueue),
+    path('package/', package),
     path('my-history/', myhistory),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
@@ -27,6 +28,10 @@ urlpatterns = [
     url(r'^password/$', change_password, name='change_password'),
     url(r'^profile/edit$', edit_profile),
     path('schedule-this-month/', schedule),
+    path('payment-confirmation/<str:rand_string>/<str:rand_string1>', payment_confirmation),
+    path('payment-success/<str:rand_string1>', payment_success),
+    path('buy-pack-<str:pack_name>', buy_pack),
+
     path('schedule-for-<str:month>-<int:year>/',schedule_custom_year_month, name="schedule_custom_year_month"),
 
 

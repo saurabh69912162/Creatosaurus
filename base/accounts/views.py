@@ -112,7 +112,11 @@ def profile(request):
         if request.user.category == 'Creator':
             # check_creator(userme, user_name_)
             user_obj = User.objects.get(id = request.user.id)
-            return render(request, 'accounts/creator.html', {'user_obj':user_obj,})
+            queue = queue_statistics.objects.filter(username = request.user.id)
+            curr_pack = current_package_user.objects.get(username = request.user)
+            # if not queue:
+            #     queue = ''curr_pack
+            return render(request, 'accounts/creator.html', {'user_obj':user_obj,'queue':queue,'curr_pack':curr_pack,})
         elif request.user.category == 'Business':
             # check_bizz(userme,user_name_)
             return render(request, 'accounts/business.html', {})
@@ -715,7 +719,9 @@ def set_timer_post(request, rand_user_string):
     post_url = '/select-time/post/'+rand_user_string
     model_data = get_object_or_404(temp_data, rand_save_string=rand_user_string)
     date = model_data.date
+
     print(date.split('/'))
+
     from datetime import datetime, timedelta
     if str(datetime.now().day) == date.split('/')[0] and str(datetime.now().month) == date.split('/')[1]:
         for x in eval(model_data.uid_zip):
@@ -725,7 +731,24 @@ def set_timer_post(request, rand_user_string):
         if request.method == 'POST':
             if 'hour_is' in request.POST and 'min_is' in request.POST:
                 print((request.POST['hour_is']), int(request.POST['min_is']))
-                if  int(request.POST['min_is'])-int(time.strftime('%M'))<=5:
+                import datetime
+                d = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(time.strftime('%H')),
+                                      int(time.strftime('%M')), 0)
+                epoch = time.mktime(d.timetuple())
+                current = int(epoch)
+
+
+
+                p = datetime.datetime(int(date.split('/')[2]), int(date.split('/')[1]), int(date.split('/')[0]), int(request.POST['hour_is']),
+                                      int(request.POST['min_is']), 0)
+                epoch = time.mktime(p.timetuple())
+                proposed = int(epoch)
+
+
+
+
+
+                if proposed-current < 60:
                     error = "cant post ! Page Time Out Your Need To Reschedule"
                     print(int(request.POST['min_is'])-int(time.strftime('%M')))
                 else:
@@ -791,7 +814,15 @@ def myqueue(request):
 
     if request.method == 'POST':
         if 'delete' in request.POST:
-            obj1 = scheduler_model.objects.get(schedule_dirtybit = request.POST['delete']).delete()
+            obj1 = scheduler_model.objects.get(schedule_dirtybit = request.POST['delete'])
+
+            obj2 = queue_statistics.objects.get(username=User.objects.get(id = request.user.id), selected_account=obj1.provider)
+            obj2.left = obj2.left + 1
+            obj2.save()
+
+            obj1.delete()
+
+
 
         elif 'edit' in request.POST:
             data = request.POST['edit']
@@ -889,4 +920,143 @@ def reschedule_time(request, rand_string):
                 'error_pre_time':error_pre_time,
     }
     return render(request, 'accounts/reschedule_time.html', context)
+
+def package(request):
+    obj = current_package_user.objects.get(username = request.user.id)
+    context = {'obj':obj,}
+    return render(request, 'accounts/package.html', context)
+
+
+from datetime import datetime
+def buy_pack(request, pack_name):
+    obj = available_package.objects.all()
+    check = 0 # nothing
+    check_name = 0
+    same_error = ''
+    pay_url = ''
+    degrade = ''
+    encodedStr = ''
+    encodedStr1 = ''
+
+    current_pack_details = current_package_user.objects.get(username=request.user.id)
+    current_pack = current_package_user.objects.get(username = request.user.id).package_selected
+    current_pack_int = available_package.objects.get(package_name = current_pack).package_id_int
+    url_post = 'buy-pack-'+pack_name
+    opt = 0
+
+    if request.method == 'POST':
+        print(request.POST['btn-uid'])
+        for x in obj:
+            if request.POST['btn-uid'] == x.package_name and pack_name.upper() != 'L1':
+                opted =  x.package_name
+                price = x.amount
+                opt =1
+
+        if opt ==1:
+            trans = user_transaction()
+            trans.username = MyUser.objects.get(id = request.user.id)
+            trans.current_package = current_pack
+            trans.upgrade_package = opted
+
+            from datetime import datetime, timedelta
+            curr = datetime.now()
+            fut = datetime.now() + timedelta(days = 30)
+            import datetime
+            d = datetime.datetime(curr.year, curr.month, curr.day)
+            epoch = time.mktime(d.timetuple())
+            current = int(epoch)
+
+            f = datetime.datetime(fut.year, fut.month, fut.day)
+            epoch = time.mktime(f.timetuple())
+            future = int(epoch)
+
+            trans.from_date = current
+            trans.to_date = future
+            trans.amount = price
+            trans.save()
+            pay_url = trans.razorpay_payment_url
+            data_inv = trans.razorpay_id
+            encodedBytes = base64.b64encode(data_inv.encode("utf-8"))
+            encodedStr = str(encodedBytes, "utf-8")
+
+            data_inv1 = str(trans.c_transaction_id)
+            encodedBytes = base64.b64encode(data_inv1.encode("utf-8"))
+            encodedStr1 = str(encodedBytes, "utf-8")
+
+
+
+
+
+
+
+    for x in obj:
+        if pack_name.upper() == x.package_name and pack_name.upper() != 'L1':
+            check_name = 1
+            pack_int_id = x.package_id_int
+
+    if check_name == 1:
+        if current_pack_int == pack_int_id:
+            avail_details = available_package.objects.get(package_id_int=pack_int_id)
+            same_error = 'You cannot buy the same pack until its active'
+            check =3
+        elif current_pack_int < pack_int_id:
+            avail_details = available_package.objects.get(package_id_int = pack_int_id)
+            check = 1
+        elif current_pack_int > pack_int_id:
+            avail_details = available_package.objects.get(package_id_int=pack_int_id)
+            degrade = 'Cant End the currnet package and degrade you.'
+            check = 2
+    else:
+        check = 4
+        return redirect('/package')
+
+
+    if check == 1 or check==2 or check==3 :
+        context = {'avail_details':avail_details,'current_pack_details':current_pack_details,
+                   'same_error':same_error,'degrade':degrade,'url_post':url_post,
+                   'pay_url':pay_url,'encodedStr':encodedStr,'encodedStr1':encodedStr1,
+
+                   }
+        return render(request, 'accounts/package_verify.html', context)# expected output
+    elif check ==4:
+        return redirect('/package') # some error logical
+    else:
+        return redirect('/package')
+
+
+def payment_confirmation(request,rand_string,rand_string1):
+    urlSafeEncodedBytes = base64.b64decode(rand_string)
+    obj = str(urlSafeEncodedBytes, "utf-8")
+    status = user_transaction.objects.get(razorpay_id = obj).status
+    urlSafeEncodedBytes1 = base64.b64decode(rand_string1)
+    c_trans = str(urlSafeEncodedBytes1, "utf-8")
+
+    time.sleep(8)
+    for x in range(238):
+        time.sleep(4)
+        final_data = client.order.fetch(obj)
+        print(json.dumps(final_data).strip('"'))
+        if json.dumps(final_data["status"]).strip('"') == "paid":
+            trans_table = user_transaction.objects.get(c_transaction_id = c_trans)
+            trans_table.status = 'Paid'
+            trans_table.save()
+
+            return redirect('/payment-success/'+rand_string1)
+        elif x == 74 and (json.dumps(final_data["status"]).strip('"'))!="paid":
+            return redirect('/payment-failed/'+rand_string1)
+        else:
+            pass
+
+
+    context = {'obj':obj,
+               'status':status,}
+    return render(request, 'accounts/confirmation.html', context)
+
+
+
+
+def payment_success(request, rand_string1):
+
+    context = {}
+    return render(request, 'accounts/pay_success.html', context)
 
