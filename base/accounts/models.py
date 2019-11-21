@@ -107,7 +107,12 @@ class MyUser(AbstractBaseUser):
             super().save(*args, **kwargs)
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
             creator_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
-            query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
+
+            try:
+                query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
+            except:
+                query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit, package_selected = available_package.objects.get(package_name = 'L1'))
+
             user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
 
 
@@ -243,6 +248,7 @@ class current_package_user(models.Model):
         if self.assigned == 'False':
             self.assigned = True
             self.package_selected = available_package.objects.get(package_name = 'L1')
+
         self.queue_size = self.package_selected.queue_size
         self.account_connection_size = self.package_selected.account_connection_size
         self.team_member_size = self.package_selected.team_member_size
