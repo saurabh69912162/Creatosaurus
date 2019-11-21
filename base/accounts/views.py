@@ -525,6 +525,18 @@ def schedule(request):
     if 'date_selected' in request.POST:
         print(request.POST['date_selected'])
         data = request.POST['date_selected']
+        print(data.split('/'))
+
+    if data.split('/')[2] == year:
+        pass
+    elif data.split('/')[2] > year:
+        pass
+    elif data.split('/')[2] < year:
+        pass
+    else:
+        pass
+
+
         encodedBytes = base64.b64encode(data.encode("utf-8"))
         encodedStr = str(encodedBytes, "utf-8")
         return redirect('/configure/post/' + encodedStr)
