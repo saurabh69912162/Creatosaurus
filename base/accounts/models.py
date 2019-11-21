@@ -107,10 +107,7 @@ class MyUser(AbstractBaseUser):
             super().save(*args, **kwargs)
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
             creator_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
-            current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,
-                                                       package_selected=available_package.objects.get(
-                                                           package_name='L1'))
-
+            query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
             user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
 
 
@@ -120,9 +117,7 @@ class MyUser(AbstractBaseUser):
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
             user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
             business_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
-            current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,
-                                                       package_selected=available_package.objects.get(
-                                                           package_name='L1'))
+            query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,)
             super().save(*args, **kwargs)
         else:
             pass
@@ -239,12 +234,15 @@ class available_package(models.Model):
 class current_package_user(models.Model):
     username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     dirtybit = models.UUIDField(unique=True, blank=True, null=True)
-    package_selected = models.ForeignKey(available_package, on_delete=models.CASCADE, blank=False, null=False)
+    package_selected = models.ForeignKey(available_package, on_delete=models.CASCADE, blank=False, null=False,)
     queue_size = models.IntegerField(blank=True, null=True)
     account_connection_size = models.IntegerField(blank=True, null=True)
     team_member_size = models.IntegerField(blank=True, null=True)
-
+    assigned = models.BooleanField(default=False)
     def save(self, *args, **kwargs):
+        if self.assigned == 'False':
+            self.assigned = True
+            self.package_selected = available_package.objects.get(package_name = 'L1')
         self.queue_size = self.package_selected.queue_size
         self.account_connection_size = self.package_selected.account_connection_size
         self.team_member_size = self.package_selected.team_member_size

@@ -313,8 +313,7 @@ def configure(request):
         par = obj1.json()
         accs = par['accounts']['data']
         print('going to configure page')
-        import time
-        time.sleep(5)
+
         return render(request, 'accounts/page-configrue.html', {'accs': accs, 'object': object})
 
 
@@ -329,8 +328,7 @@ def configure(request):
                 print(obj[2])
                 print(obj[3])
                 print('selecting facebook page')
-                import time
-                time.sleep(5)
+
                 obj_create = selected_connections()
                 obj_create.username = MyUser.objects.get(id=request.user.id)
                 obj_create.dirtybit = request.user.dirtybit
@@ -514,9 +512,7 @@ def configure(request):
 
     else:
         pass
-    import time
-    time.sleep(5)
-    print('done')
+
 
     return render(request, 'accounts/configure.html', {'account': account, 'not_selected': not_selected,
                                                        'selected': selected, 'error_connected': error_connected,
@@ -1128,7 +1124,7 @@ def payment_confirmation(request,rand_string,rand_string1):
     status = user_transaction.objects.get(razorpay_id=obj).status
 
     context = {'obj':obj,
-               'status':status,
+               'status':stat,
                'message':message}
     return render(request, 'accounts/confirmation.html', context)
 
