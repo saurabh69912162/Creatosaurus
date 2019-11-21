@@ -312,6 +312,9 @@ def configure(request):
         obj1 = requests.get("https://graph.facebook.com/me?fields=accounts&access_token=" + str(facetoken))
         par = obj1.json()
         accs = par['accounts']['data']
+        print('going to configure page')
+        import time
+        time.sleep(5)
         return render(request, 'accounts/page-configrue.html', {'accs': accs, 'object': object})
 
 
@@ -325,6 +328,9 @@ def configure(request):
                 print(obj[1])
                 print(obj[2])
                 print(obj[3])
+                print('selecting facebook page')
+                import time
+                time.sleep(5)
                 obj_create = selected_connections()
                 obj_create.username = MyUser.objects.get(id=request.user.id)
                 obj_create.dirtybit = request.user.dirtybit
@@ -338,6 +344,13 @@ def configure(request):
                 obj_create.account_uid = obj[0]
                 obj_create.selected = True
                 obj_create.save()
+
+                queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id), provider='facebook',
+                                                             account_name= obj[2], dirtybit=request.user.dirtybit,
+                                                             account_uid=obj[0],
+                                                             selected_account=selected_connections.objects.get(
+                                                                 id=obj_create.id))
+
                 data.total_seleceted_connections += 1
                 data.save()
             else:
@@ -501,6 +514,9 @@ def configure(request):
 
     else:
         pass
+    import time
+    time.sleep(5)
+    print('done')
 
     return render(request, 'accounts/configure.html', {'account': account, 'not_selected': not_selected,
                                                        'selected': selected, 'error_connected': error_connected,
@@ -516,6 +532,7 @@ def schedule(request):
     arr = []
     d = obj.strftime("%d")
     m = obj.strftime("%m")
+    current_month_int = int(obj.strftime("%m"))
     year = obj.strftime("%Y")
     obj1 = calendar.monthcalendar(int(year), int(m))
     month = calendar.month_name[int(m)]
@@ -527,14 +544,14 @@ def schedule(request):
         data = request.POST['date_selected']
         print(data.split('/'))
 
-    if data.split('/')[2] == year:
-        pass
-    elif data.split('/')[2] > year:
-        pass
-    elif data.split('/')[2] < year:
-        pass
-    else:
-        pass
+        if data.split('/')[2] == year:
+            pass
+        elif data.split('/')[2] > year:
+            pass
+        elif data.split('/')[2] < year:
+            pass
+        else:
+            pass
 
 
         encodedBytes = base64.b64encode(data.encode("utf-8"))
@@ -542,7 +559,8 @@ def schedule(request):
         return redirect('/configure/post/' + encodedStr)
 
     return render(request, 'accounts/schedule.html',
-                  {'obj1': obj1, 'month': month, 'arr': arr, 'd': int(d), 'year': int(year), 'm': int(m)})
+                  {'obj1': obj1, 'month': month, 'arr': arr, 'd': int(d),
+                   'year': int(year), 'm': int(m),'current_month_int':current_month_int})
 
 
 def schedule_custom_year_month(request,month,year):
@@ -551,6 +569,7 @@ def schedule_custom_year_month(request,month,year):
     arr = []
     d = obj.strftime("%d")
     current_month = obj.strftime("%m")
+    current_month_int = obj.strftime("%m")
     current_year = obj.strftime("%Y")
     date_error = ''
     for x in range(1, 13):
@@ -585,7 +604,9 @@ def schedule_custom_year_month(request,month,year):
         return redirect('/configure/post/' + encodedStr)
 
     return render(request, 'accounts/schedule.html',
-                  {'obj1': obj1, 'month': month, 'arr': arr, 'd': int(d), 'year': int(year), 'm': int(m_int),'date_error':date_error})
+                  {'obj1': obj1, 'month': month, 'arr': arr,
+                   'd': int(d), 'year': int(year),
+                   'm': int(m_int),'date_error':date_error,'current_month_int':current_month_int})
 
 
 import datetime
@@ -827,9 +848,11 @@ def myqueue(request):
     obj = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username), hit =False).order_by('timestamp')
 
     if request.method == 'POST':
+        if 'delete-full-queue' in request.POST:
+            scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username)).delete()
+
         if 'delete' in request.POST:
             obj1 = scheduler_model.objects.get(schedule_dirtybit = request.POST['delete'])
-
             obj2 = queue_statistics.objects.get(username=User.objects.get(id = request.user.id), selected_account=obj1.provider)
             obj2.left = obj2.left + 1
             obj2.save()

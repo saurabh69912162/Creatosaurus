@@ -110,6 +110,7 @@ class MyUser(AbstractBaseUser):
             current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,
                                                        package_selected=available_package.objects.get(
                                                            package_name='L1'))
+
             user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
 
 
@@ -180,7 +181,6 @@ class selected_connections(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        obj = queue_statistics.objects.get_or_create(username = self.username, provider=self.provider,account_name=self.account_name,dirtybit = self.dirtybit,account_uid=self.account_uid, selected_account= selected_connections.objects.get(id = self.id))
 
 
 

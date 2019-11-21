@@ -59,15 +59,32 @@
         </button>
             </form>
         </td>
-        {%else%}
+        {%elif y > d %}
         <td>
 
             <form method="POST" action=".">
                 {% csrf_token %}
-            <button class="btn btn-primary"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+            <button class="btn btn-success"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
         </button>
             </form>
         </td>
+        {%elif y < d and current_month_int == m %}
+        <td>
+            <button class="btn btn-primary" data-toggle="tooltip" title="Cant Schedule back in time!" type="submit" data-placement="top" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+        </button>
+        </td>
+
+
+        {%elif y < d and current_month_int != m %}
+
+        <td>
+            <form method="POST" action=".">
+                {% csrf_token %}
+            <button class="btn btn-success"  type="submit" name="date_selected"  value="{{y}}/{{m}}/{{year}}"  style="padding-top:10px;padding-bottom:10px;padding-right:30px;padding-left:30px">{{y}}
+        </button>
+            </form>
+        </td>
+
         {%endif%}
 
         {% endfor %}

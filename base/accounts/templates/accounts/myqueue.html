@@ -5,7 +5,12 @@
 <div class="container" style="padding-top:10px">
     <h1>Current Queue</h1>
     <hr>
-    <a href="/my-history" class="btn btn-primary">Queue History</a>
+
+    <form action="." method="POST">
+        {%csrf_token%}
+        <a href="/my-history" class="btn btn-primary">Queue History</a>
+    <button class="btn btn-danger" type="submit" name="delete-full-queue">Clear Whole Queue</button>
+    </form>
     <br><br>
     {% if obj %}
 
