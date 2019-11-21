@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<head>
+
+</head>
+<div class="container" style="padding-top:10px">
+    <h1>Your Transactions</h1>
+    <hr>
+
+    <h3 style="padding-top:20px">Recent Transactions</h3>
+    <div class="container" style="padding:10px">
+{%for x in obj %}
+      <div class="border rounded" style="padding:10px">
+        <p><h6>Transaction ID - {{x.c_transaction_id}}</h6></p>
+        <p><h6>Invoice ID - {{x.inv_id}}</h6></p>
+        <p><h6>Date - {{x.transaction_start}}</h6></p>
+        <p><h6>Status - {{x.status}}</h6></p>
+   <form action="{{url}}" method="post">
+     {%csrf_token%}
+     <button type="submit"  name="btn-order" class="btn btn-primary" value="{{x.order_id}}" >Download Reciept</button>
+
+   </form>
+      </div>
+      <br>
+    {%endfor%}
+    </div>
+
+
+{% endblock %}

@@ -607,15 +607,17 @@ from .forms import temp_data_form
 def post_factory(request, data):
     urlSafeEncodedBytes = base64.b64decode(data)
     date = str(urlSafeEncodedBytes, "utf-8")
-    selections = selected_connections.objects.filter(username=request.user.id)
+
+
+    selections = selected_connections.objects.filter(username=request.user.id, within_limit = True)
+    print(selections)
     new_arr = []
     names_arr = []
     accs_provider = []
-
+    check_count = 0
     form = temp_data_form(request.FILES)
 
     if 'submit' in request.POST:
-
         for x in selections:
             try:
                 if request.POST[str(x)]:
@@ -1027,36 +1029,83 @@ def buy_pack(request, pack_name):
 def payment_confirmation(request,rand_string,rand_string1):
     urlSafeEncodedBytes = base64.b64decode(rand_string)
     obj = str(urlSafeEncodedBytes, "utf-8")
-    status = user_transaction.objects.get(razorpay_id = obj).status
     urlSafeEncodedBytes1 = base64.b64decode(rand_string1)
     c_trans = str(urlSafeEncodedBytes1, "utf-8")
-
-    time.sleep(8)
-    for x in range(238):
-        time.sleep(4)
-        final_data = client.order.fetch(obj)
-        print(json.dumps(final_data).strip('"'))
-        if json.dumps(final_data["status"]).strip('"') == "paid":
-            trans_table = user_transaction.objects.get(c_transaction_id = c_trans)
-            trans_table.status = 'Paid'
-            trans_table.save()
-
-            return redirect('/payment-success/'+rand_string1)
-        elif x == 74 and (json.dumps(final_data["status"]).strip('"'))!="paid":
-            return redirect('/payment-failed/'+rand_string1)
+    if user_transaction.objects.get(razorpay_id=obj).status == 'Failed' or user_transaction.objects.get(razorpay_id=obj).status == 'Paid':
+        if user_transaction.objects.get(razorpay_id=obj).status == 'Failed':
+            message = 'Transaction Could not be completed.'
+        elif user_transaction.objects.get(razorpay_id=obj).status == 'Paid':
+            message = 'Transaction Completed.'
         else:
             pass
+    else:
+        message = 'Transaction Pending.'
+        stat = 'Pending'
+        time.sleep(8)
+        for x in range(238):
+            time.sleep(4)
+            final_data = client.order.fetch(obj)
+            if json.dumps(final_data["status"]).strip('"') == "paid":
+                trans_table = user_transaction.objects.get(c_transaction_id = c_trans)
+                trans_table.status = 'Paid'
+                trans_table.save()
+                stat = 'Paid'
+                break
+            elif json.dumps(final_data["status"]).strip('"') == "failed":
+                print('tried canceling')
+                trans_table = user_transaction.objects.get(c_transaction_id = c_trans)
+                try:
+                    client.invoice.cancel(trans_table.inv_id)
+                    trans_table.status = 'Failed'
+                    stat = 'Failed'
+                    trans_table.save()
+                    break
+                except:
+                    pass
 
+                trans_table.save()
+            elif x == 75 and (json.dumps(final_data["status"]).strip('"'))!="paid":
+                print('tried canceling')
+                trans_table = user_transaction.objects.get(c_transaction_id = c_trans)
+                try:
+                    client.invoice.cancel(trans_table.inv_id)
+                    trans_table.status = 'Failed'
+                    stat = 'Failed'
+                    trans_table.save()
+                    break
+                except:
+                    pass
+
+            elif json.dumps(final_data["attempts"]).strip('"') >= '3':
+                print('tried canceling')
+                trans_table = user_transaction.objects.get(c_transaction_id = c_trans)
+                try:
+                    client.invoice.cancel(trans_table.inv_id)
+                    trans_table.status = 'Failed'
+                    stat = 'Failed'
+                    trans_table.save()
+                    break
+                except:
+                    pass
+
+            else:
+                pass
+    status = user_transaction.objects.get(razorpay_id=obj).status
 
     context = {'obj':obj,
-               'status':status,}
+               'status':status,
+               'message':message}
     return render(request, 'accounts/confirmation.html', context)
 
 
 
 
-def payment_success(request, rand_string1):
+def transactions(request):
+    obj = user_transaction.objects.filter(username = request.user.id).order_by('-transaction_start')
+    if request.method == 'POST':
+        print(request.POST['btn-order'])
+        print('will create bill and will let user download it')
 
-    context = {}
-    return render(request, 'accounts/pay_success.html', context)
+    context = {'obj':obj,}
+    return render(request, 'accounts/transactions.html', context)
 

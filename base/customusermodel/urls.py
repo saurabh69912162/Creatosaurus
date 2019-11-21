@@ -20,6 +20,7 @@ urlpatterns = [
     path('configure/',configure),
     path('my-queue/', myqueue),
     path('package/', package),
+    path('transactions/', transactions),
     path('my-history/', myhistory),
     path('facebook-configure/',facebookconfigure),
     url('^accounts/', include('allauth.urls')),
@@ -29,7 +30,7 @@ urlpatterns = [
     url(r'^profile/edit$', edit_profile),
     path('schedule-this-month/', schedule),
     path('payment-confirmation/<str:rand_string>/<str:rand_string1>', payment_confirmation),
-    path('payment-success/<str:rand_string1>', payment_success),
+    # path('payment-success/<str:rand_string1>', payment_success),
     path('buy-pack-<str:pack_name>', buy_pack),
 
     path('schedule-for-<str:month>-<int:year>/',schedule_custom_year_month, name="schedule_custom_year_month"),

@@ -174,6 +174,7 @@ class selected_connections(models.Model):
     account_name = models.CharField(max_length=500, blank=True, null=True)
     account_uid = models.CharField(max_length=500, unique=True, blank=True, null=True)
     selected = models.BooleanField(default=False)
+    within_limit = models.BooleanField(default=True)
     def __str__(self):
         return str(self.account_uid)
 
@@ -205,6 +206,22 @@ class queue_statistics(models.Model):
     limit = models.IntegerField(default=10)
     left = models.IntegerField(default=10)
 
+    def save(self, *args, **kwargs):
+        if self.left <= 0:
+            obj = selected_connections.objects.get(account_uid = self.selected_account)
+            obj.within_limit = False
+            obj.save()
+        elif self.left > 0:
+            obj = selected_connections.objects.get(account_uid=self.selected_account)
+            obj.within_limit = True
+            obj.save()
+        else:
+            pass
+        super().save(*args, **kwargs)
+
+
+
+
 
 class available_package(models.Model):
     package_name = models.CharField(max_length=20, blank=False, null=False)
@@ -231,6 +248,13 @@ class current_package_user(models.Model):
         self.queue_size = self.package_selected.queue_size
         self.account_connection_size = self.package_selected.account_connection_size
         self.team_member_size = self.package_selected.team_member_size
+
+        change_q = queue_statistics.objects.filter(username=self.username)
+        for x in change_q:
+            x.limit = self.queue_size
+            x.left = (self.queue_size - 10 ) + x.left
+            x.save()
+
         super().save(*args, **kwargs)
 
 
@@ -358,6 +382,7 @@ class user_transaction(models.Model):
     razorpay_id = models.CharField(max_length=255, blank=True)
     customer_id = models.CharField(max_length=255, blank=True, null=True, default='NA')
     order_id = models.CharField(max_length=255, blank=True, null=True, default='NA')
+    inv_id = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=255, default="Pending")
     amount = models.BigIntegerField(blank=False,null=False, default=99900)
 
@@ -376,8 +401,13 @@ class user_transaction(models.Model):
                 "description": self.upgrade_package +" - Creatosaurus"
             }
             final_data = client.invoice.create(data=DATA)
-            print(final_data)
+            for key,value in final_data.items():
+                if key == 'id':
+                    print(value)
+                    break
+
             self.razorpay_id = json.dumps(final_data["id"]).strip('"')
+            self.inv_id = value
             self.order_id = json.dumps(final_data["order_id"]).strip('"')
             self.customer_id = json.dumps(final_data["customer_details"]["id"]).strip('"')
             self.razorpay_payment_url = json.dumps(final_data["short_url"]).strip('"')
@@ -390,7 +420,3 @@ class user_transaction(models.Model):
             change = current_package_user.objects.get(username = self.username)
             change.package_selected = obj
             change.save()
-
-
-
-

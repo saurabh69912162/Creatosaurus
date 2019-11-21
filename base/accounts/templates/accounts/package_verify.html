@@ -31,10 +31,14 @@
 </div>
   <a href="/package" class="btn btn-danger" >Go Back To Packages</a>
   {% else%}
-  <form method="post" action="{{url_post}}" >
+    {%if pay_url %}
+
+    {%else%}
+      <form method="post" action="{{url_post}}" >
     {%csrf_token%}
     <button class="btn btn-success" type="submit" value="{{avail_details.package_name}}" name="btn-uid" >Complete Transaction</button>
   </form>
+    {%endif%}
   {%endif%}
 
 
@@ -46,12 +50,9 @@
   Please Wait untill your transaction is completed.
     </div>
   <script>
-
   window.open("{{pay_url}}");
   window.open('/payment-confirmation/{{encodedStr}}/{{encodedStr1}}',"_self");
   </script>
-
-
 {%endif%}
 
 

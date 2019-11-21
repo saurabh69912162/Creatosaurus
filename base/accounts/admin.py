@@ -65,15 +65,15 @@ admin.site.register(business_profile_data, business_profile_data_admin)
 
 class selected_connections_admin(admin.ModelAdmin):
 
-	list_display = ('username','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	list_display = ('username','within_limit','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
 	list_filter = ('provider',)
 
 	fieldsets = (
-			(None, {'fields': ('username','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
+			(None, {'fields': ('username','within_limit','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','access_expiry','long_token','long_expiry')}),
 			('Description', {'fields': ('extra_data',)})
 		)
 	search_fields = ('username','selected','account_name','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
-	ordering = ('username','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
+	ordering = ('username','within_limit','selected','account_name','account_token','access_token_secret','account_uid','dirtybit','connection_dirtybit','provider','access_token','extra_data','access_expiry','long_token','long_expiry')
 
 	filter_horizontal = ()
 
@@ -161,7 +161,7 @@ admin.site.register(temp_data)
 
 class user_transaction_admin(admin.ModelAdmin):
 
-	list_display = ('username','c_transaction_id','transaction_start','current_package','upgrade_package','from_date','to_date','razorpay_payment_url','razorpay_id','status')
+	list_display = ('username','c_transaction_id','transaction_start','current_package','upgrade_package','from_date','to_date','razorpay_payment_url','razorpay_id','inv_id','status')
 	filter_horizontal = ()
 
 admin.site.register(user_transaction, user_transaction_admin)
