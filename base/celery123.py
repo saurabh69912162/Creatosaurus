@@ -279,7 +279,6 @@ def linkedin_post(final_token, string, key):
         status = str(obj.content)
         url = "https://api.linkedin.com/v2/ugcPosts"
         payload = "{\n\"author\": \"" + user_urn_id + "\",\n\"lifecycleState\":\"PUBLISHED\",\n\"specificContent\": {\n\"com.linkedin.ugc.ShareContent\": {\n\"shareCommentary\": {\n\"text\": \"" + status + "\"\n},\n\"shareMediaCategory\": \"NONE\"\n}\n},\n\"visibility\": {\n\"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n}\n}"
-
         access_token = 'Bearer ' + str(final_token)
         headers = {
             'Content-Type': "application/raw",
@@ -287,5 +286,3 @@ def linkedin_post(final_token, string, key):
         }
         response = requests.request("POST", url, data=payload, headers=headers)
         print(response.text)
-        # obj.hit = True
-        # obj.save()

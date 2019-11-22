@@ -404,6 +404,9 @@ def configure(request):
             print(request.POST['pinterest'])
 
     elif 'linkedin' in request.POST:
+        import requests
+        import json
+
         if data.total_seleceted_connections >= data.max_seleceted_connections:
             pack_error = 'Maximum Limit Reached, Upgrade your package!'
         else:
@@ -421,12 +424,26 @@ def configure(request):
                     obj_create.extra_data = SocialAccount.objects.get(user=request.user.id,
                                                                       id=request.POST['linkedin']).extra_data
                     obj_create.access_expiry = SocialToken.objects.get(id=request.POST['linkedin']).expires_at
-                    obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
-                                                                        id=request.POST['linkedin']).extra_data[
-                                                  'firstName']['localized']['en_US'] + ' ' + \
-                                              SocialAccount.objects.get(user=request.user.id,
-                                                                        id=request.POST['linkedin']).extra_data[
-                                                  'lastName']['localized']['en_US']
+
+
+                    url = "https://api.linkedin.com/v2/me"
+                    text = 'Bearer '+ str(obj_create.access_token)
+                    headers = {
+                        'Authorization': text,
+                    }
+
+                    response = requests.request("GET", url, headers=headers)
+                    print(response.json())
+                    obj = response.json()
+                    obj_create.account_name = str(obj['firstName']['localized']['en_US']) +' '+ str(obj['lastName']['localized']['en_US'])
+
+                    # obj_create.account_name = SocialAccount.objects.get(user=request.user.id,
+                    #                                                     id=request.POST['linkedin']).extra_data[
+                    #                               'firstName']['localized']['en_US'] + ' ' + \
+                    #                           SocialAccount.objects.get(user=request.user.id,
+                    #                                                     id=request.POST['linkedin']).extra_data[
+                    #                               'lastName']['localized']['en_US']
+
                     obj_create.account_uid = SocialAccount.objects.get(user=request.user.id,
                                                                        id=request.POST['linkedin']).uid
                     obj_create.selected = True
@@ -1163,4 +1180,3 @@ def transactions(request):
 
     context = {'obj':obj,}
     return render(request, 'accounts/transactions.html', context)
-
