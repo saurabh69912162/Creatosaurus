@@ -26,21 +26,31 @@ def job():
     epoch = time.mktime(datetime.now().timetuple())
     upcomming_queue.objects.all().delete()
     # epoch = 1571790600
-    for x in scheduler_model.objects.filter(timestamp__lte=int(epoch)+600,timestamp__gte=epoch):
+    for x in scheduler_model.objects.filter(timestamp__lte=int(epoch)+86400,timestamp__gte=epoch, hit=False):
         obj = upcomming_queue()
+        print('found something')
         obj.username = MyUser.objects.get(dirtybit = x.dirtybit)
         obj.dirtybit = x.dirtybit
-        # print(type(x.init_schedule_fk.self_dirtybit),'hi')
-        obj.init_schedule_fk = init_schedule.objects.filter(self_dirtybit = x.init_schedule_fk.self_dirtybit)[0]
-        obj.schedule_dirtybit = scheduler_model.objects.get(schedule_dirtybit = x.schedule_dirtybit)
+        print('halfway done ')
+        # obj.init_schedule_fk = init_schedule.objects.filter(self_dirtybit = x.init_schedule_fk.self_dirtybit)[0]
+        key = str(scheduler_model.objects.get(schedule_dirtybit=x.schedule_dirtybit))
+        obj.schedule_dirtybit = scheduler_model.objects.get(schedule_dirtybit=x.schedule_dirtybit)
         obj.timestamp = x.timestamp
         obj.provider = selected_connections.objects.get(account_uid=x.provider)
         obj.save()
-        reverse.delay(obj.schedule_dirtybit,x.provider.provider,x.timestamp - datetime.timestamp(datetime.now()))
+        print('saved successfully')
+        print('sending')
+        string = str(selected_connections.objects.get(account_uid=x.provider).account_uid)
+        print('string is ',string)
+        number = float(x.timestamp - datetime.timestamp(datetime.now()))
+        reverse.delay(key,string,number)
+        print('sent')
+
     print('Running ', datetime.now())
 
 
-schedule.every(3).minutes.do(job)
+
+schedule.every(2).seconds.do(job)
 
 
 while True:

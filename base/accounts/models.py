@@ -207,6 +207,10 @@ class queue_statistics(models.Model):
     left = models.IntegerField(default=10)
 
     def save(self, *args, **kwargs):
+
+        check_lim = current_package_user.objects.get(username= self.username)
+        self.limit =  check_lim.queue_size
+
         if self.left <= 0:
             obj = selected_connections.objects.get(account_uid = self.selected_account)
             obj.within_limit = False

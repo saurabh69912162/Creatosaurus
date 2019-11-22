@@ -376,6 +376,15 @@ def configure(request):
                     obj_create.selected = True
                     obj_create.save()
                     obj_create.save()
+
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='google',
+                                                                       account_name=obj_create.account_name,
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj_create.account_uid,
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
+
                     data.total_seleceted_connections += 1
                     data.save()
                     # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']))
@@ -423,6 +432,14 @@ def configure(request):
                     obj_create.selected = True
                     obj_create.save()
 
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='linkedin',
+                                                                       account_name=obj_create.account_name,
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj_create.account_uid,
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
+
                     data.total_seleceted_connections += 1
                     data.save()
                     # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
@@ -459,6 +476,14 @@ def configure(request):
                                                                        id=request.POST['twitter']).uid
                     obj_create.selected = True
                     obj_create.save()
+
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='twitter',
+                                                                       account_name=obj_create.account_name,
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj_create.account_uid,
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
 
                     data.total_seleceted_connections += 1
                     data.save()
