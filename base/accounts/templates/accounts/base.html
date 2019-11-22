@@ -40,19 +40,12 @@
 <!--  }-->
 <!--}-->
 </style>
-
-    {% block content %}
-
-
+{% block content %}
 {% endblock %}
-
-
-
-
-
 {%if request.user.is_authenticated%}
-<div class="footer" >
 
+
+<div class="footer" >
     <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile" >Dashboard</a></span>
     <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile/edit" >Edit</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <span><a style="text-decoration:none;color:white;padding:5px"  href="/profile/details" >Edit Details</a></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

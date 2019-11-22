@@ -877,7 +877,6 @@ def myqueue(request):
             obj2 = queue_statistics.objects.get(username=User.objects.get(id = request.user.id), selected_account=obj1.provider)
             obj2.left = obj2.left + 1
             obj2.save()
-
             obj1.delete()
 
 
