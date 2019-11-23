@@ -87,10 +87,11 @@ def facebook_post(final_token, string, key):
     if obj.image:
         post = obj.content
         account_id = str(obj.provider)
-        image_url_2 = 'https://localhost:8000' + obj.image.url
-        post.replace(' ', '+')
+        # image_url_2 = 'https://localhost:8000' + obj.image.url
+        image_url_2 = 'https://cdn.pixabay.com/photo/2019/11/04/17/30/happy-4601691_1280.jpg'
+        post1 = post.replace(' ', '+')
         print('Posting')
-        print(requests.post("https://graph.facebook.com/" + id + "/photos/?url=" + image_url_2 + "&message="+post+"&access_token=" + final_token))
+        print(requests.post("https://graph.facebook.com/" + account_id + "/photos/?url=" + image_url_2 + "&message="+post1+"&access_token=" + final_token))
         obj.hit = True
         obj.save()
     else:
@@ -131,7 +132,9 @@ class imageTweet(object):
         }
         oauth = abc
         req = requests.post(url=MEDIA_ENDPOINT_URL, data=request_data, auth=oauth)
-        media_id = req.json()['media_id']
+        print(req.text)
+        m_id = req.json()
+        media_id = m_id['media_id']
 
         self.media_id = media_id
 
@@ -226,10 +229,16 @@ def twitter_post(final_token, secret, string, key):
         CONSUMER_SECRET = 'hRVFl78PDOMmBjAbAerSM5RGWLp4Om2ni2ohtRTyOYqFZUABp7'
         ACCESS_TOKEN = final_token
         ACCESS_TOKEN_SECRET = secret
-        VIDEO_FILENAME = 'https://localhost:8000' + obj.image.url  # might have to give local file address rather than url
-
-        oauth = OAuth1(CONSUMER_KEY, client_secret=CONSUMER_SECRET, resource_owner_key=ACCESS_TOKEN,
-                       resource_owner_secret=ACCESS_TOKEN_SECRET)
+        # VIDEO_FILENAME = "E:\Creatosaurus-in\ backend\Creatosaurus\ base\ accounts\media" + obj.image.url  # might have to give local file address rather than url
+        name = obj.image.url
+        file_name = name.replace('/', '\\')
+        VIDEO_FILENAME = "E:\\Creatosaurus-in\\backend\\Creatosaurus\\base\\accounts" + file_name
+        print(VIDEO_FILENAME)
+        # VIDEO_FILENAME = 'https://cdn.pixabay.com/photo/2019/11/04/17/30/happy-4601691_1280.jpg'
+        oauth = OAuth1(TWITTER_CONSUMER_KEY,
+                       client_secret=TWITTER_CONSUMER_SECRET,
+                       resource_owner_key=final_token,
+                       resource_owner_secret=str(secret))
 
         imageTwi = imageTweet(VIDEO_FILENAME, oauth)
         imageTwi.upload_init(oauth)
@@ -262,7 +271,8 @@ def linkedin_post(final_token, string, key):
         user_urn_id = "urn:li:person:" + user_id
         status = str(obj.content)
         url = "https://api.linkedin.com/v2/ugcPosts"
-        is_url_given = 'https://localhost:8000' + obj.image.url
+        # is_url_given = 'https://localhost:8000' + obj.image.url
+        is_url_given = "https://cdn.pixabay.com/photo/2019/11/04/17/30/happy-4601691_1280.jpg"
         payload = "{\n    \"author\": \"" + user_urn_id + "\",\n    \"lifecycleState\": \"PUBLISHED\",\n    \"specificContent\": {\n        \"com.linkedin.ugc.ShareContent\": {\n            \"shareCommentary\": {\n                \"text\": \"" + status + "\"\n            },\n            \"shareMediaCategory\": \"ARTICLE\",\n            \"media\": [\n                {\n                    \"status\": \"READY\",\n                    \"description\": {\n                        \"text\": \"\"\n                    },\n                    \"originalUrl\": \"" + is_url_given + "\",\n                    \"title\": {\n                        \"text\": \"\"\n                    }\n                }\n            ]\n        }\n    },\n    \"visibility\": {\n        \"com.linkedin.ugc.MemberNetworkVisibility\": \"CONNECTIONS\"\n    }\n}"
         access_token = 'Bearer ' + str(final_token)
         headers = {
@@ -271,8 +281,8 @@ def linkedin_post(final_token, string, key):
         }
         response = requests.request("POST", url, data=payload, headers=headers)
         print(response.text)
-        # obj.hit = True
-        # obj.save()
+        obj.hit = True
+        obj.save()
     else:
         user_id = string
         user_urn_id = "urn:li:person:" + user_id
@@ -286,3 +296,5 @@ def linkedin_post(final_token, string, key):
         }
         response = requests.request("POST", url, data=payload, headers=headers)
         print(response.text)
+        obj.hit = True
+        obj.save()
