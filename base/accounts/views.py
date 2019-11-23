@@ -758,22 +758,29 @@ def all_post_config(request, rand_user_string):
     accs_provider = model_data.accs_provider
     zipis = zip(eval(model_data.accs), eval(model_data.accs_name), eval(model_data.accs_provider))
     uuid_zip = []
+    content_len = len(message)
+    content_len_flag = ''
+    if int(content_len) > 270:
+        content_len_flag = 'yes'
 
 
     if request.method == 'POST':
         for x in arr:
             print(x, request.POST[x])
-            obj = scheduler_model()
-            obj.username = MyUser.objects.get(id = request.user.id)
-            obj.dirtybit = MyUser.objects.get(id = request.user.id).dirtybit
-            obj.provider = selected_connections.objects.get(account_uid = x)
-            obj.content = request.POST[x]
-            if model_data.img:
-                obj.image = filename
-            obj.save()
-            print(str(obj.schedule_dirtybit))
-            uuid_zip.append(str(obj.schedule_dirtybit))
-            print(uuid_zip)
+            if selected_connections.objects.get(account_uid = x).provider == 'twitter' and int(len(request.POST[x])) > 270:
+                pass
+            else:
+                obj = scheduler_model()
+                obj.username = MyUser.objects.get(id = request.user.id)
+                obj.dirtybit = MyUser.objects.get(id = request.user.id).dirtybit
+                obj.provider = selected_connections.objects.get(account_uid = x)
+                obj.content = request.POST[x]
+                if model_data.img:
+                    obj.image = filename
+                obj.save()
+                print(str(obj.schedule_dirtybit))
+                uuid_zip.append(str(obj.schedule_dirtybit))
+                print(uuid_zip)
         model_data.uid_zip = uuid_zip
         model_data.save()
 
@@ -781,7 +788,8 @@ def all_post_config(request, rand_user_string):
 
     return render(request, 'accounts/all_post_config.html', {'date': date, 'accounts': accounts,
                                                              'message': message, 'filename': filename,
-                                                             'arr': arr, 'url_post': url_post,'zipis':zipis})
+                                                             'arr': arr, 'url_post': url_post,'zipis':zipis,
+                                                             'content_len_flag':content_len_flag})
 
 
 

@@ -46,6 +46,7 @@ def reverse(key, string, number):
     # obj = string[::-1]
     final_token, provider, secret = parse_info(string)
     if provider == 'facebook':
+        # time.sleep(10)
         facebook_post(final_token, string, key)
     elif provider == 'twitter':
         twitter_post(final_token, secret, string, key)
