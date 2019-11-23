@@ -1,0 +1,38 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="container" style="padding-top:30px; margin-bottom:10px">
+    <h1>Notifications</h1>
+    <hr>
+    </div>
+<div class="container">
+{%if not var%}
+    <h4>All Caught Up! Come back later</h4><br>
+    <a href="/profile" class="btn btn-primary">Back To Home</a>
+    {%else%}
+
+ <form action="/notifications/" method="post">
+        {%csrf_token%}
+    <button class="btn btn-danger" type="submit" name="all-read" value="{{x.id}}" >Mark All As Read</button>
+     </form>
+
+{%endif%}
+</div>
+
+<div class="container">
+{% for x in obj %}
+
+    <form action="." method="post">
+        {%csrf_token%}
+    <div class="alert alert-success alert-dismissible">
+         <span>
+        {{x.message}}
+             <button class="close" type="submit" value="{{x.id}}" name="read_once"><h6>Mark As Read</h6></button>
+        </span>
+<br>         {{x.timestamp}}
+
+    </div>
+  </form>
+
+    {% endfor%}
+</div>
+{% endblock %}

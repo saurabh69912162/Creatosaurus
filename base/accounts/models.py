@@ -49,7 +49,7 @@ class MyUserManager(BaseUserManager):
     def create_superuser(self, username, email, first_name, last_name, category, date_of_joining, dirtybit,
                          password=None):
         user = self.create_user(
-            username, email, first_name, last_name, category, date_of_joining, dirtybit, password=password
+            username, email, first_name, last_name,category, date_of_joining, dirtybit, password=password
         )
         user.first_name = first_name
         user.last_name = last_name
@@ -60,6 +60,7 @@ class MyUserManager(BaseUserManager):
         user.email_verified = True
         user.phone_verified = True
         user.is_staff = True
+        user.new_user_notify = False
         user.save(using=self._db)
         return user
 
@@ -89,6 +90,8 @@ class MyUser(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     date_of_joining = models.DateTimeField(default=datetime.now)
     dirtybit = models.UUIDField(default=uuid.uuid4, unique=True)
+    new_user_notify = models.BooleanField(default=False)
+
     objects = MyUserManager()
 
     USERNAME_FIELD = 'username'
@@ -116,6 +119,7 @@ class MyUser(AbstractBaseUser):
             super().save(*args, **kwargs)
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
             creator_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
+
 
             try:
                 query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
@@ -185,10 +189,12 @@ class selected_connections(models.Model):
     account_uid = models.CharField(max_length=500, unique=True, blank=True, null=True)
     selected = models.BooleanField(default=False)
     within_limit = models.BooleanField(default=True)
+
     def __str__(self):
         return str(self.account_uid)
 
     def save(self, *args, **kwargs):
+
         super().save(*args, **kwargs)
 
 
@@ -467,28 +473,38 @@ class notification_pannel(models.Model):
         if self.read_hit == False:
             if self.u_code == 102:
                 self.message = 'Payment completed Successful,Your Package has been upgraded to L2'
+                self.follow_link = 'https://localhost:8000/package/'
+
             elif self.u_code == 103:
                 self.message = 'Payment completed Successful,Your Package has been upgraded to L3'
+                self.follow_link = 'https://localhost:8000/package/'
+
             elif self.u_code == 104:
                 self.message = 'Payment completed Successful,Your Package has been upgraded to L4'
+                self.follow_link = 'https://localhost:8000/package/'
+
             elif self.u_code == 101: # Degrading WARNING from l2,l3 or l4 to l1
                 self.message = 'Your Package will expire soon, buy a new one in order to keep your data in queue'
+                self.follow_link = 'https://localhost:8000/package/'
+
             elif self.u_code == 100:  # Degraded
-                self.message = 'Your Package has expired, buy a new one in order to keep your data in queue'
+                self.message = 'Your Package has expired, Upgrade Now'
+                self.follow_link = 'https://localhost:8000/package/'
+
             elif self.u_code == 200:  # posted successfully
-                self.message = 'Your Scheduled Item has been sent successfully'
+                self.message = 'Your Scheduled Item has been sent successfully, Add more to the Queue'
+                self.follow_link = 'https://localhost:8000/schedule-this-month/'
+
             elif self.u_code == 199:  # placed in queue successfully
-                self.message = 'Your Item has been placed in the Queue successfully'
+                self.message = 'Your Item has been placed in the Queue successfully, Add More'
+                self.follow_link = 'https://localhost:8000/schedule-this-month/'
+
             elif self.u_code == 300:  # account added in selected accounts
                 self.message = 'Account setup successful'
             elif self.u_code == 301:  # account added in selected accounts
                 self.message = 'Account disconnected successful'
-            elif self.u_code == 401:  # New Account Created - Creator
-                self.message = 'Welcome to Cache, you can use this mannual to get along'
-                self.follow_link = 'https://localhost:8000/get-along-business'
-            elif self.u_code == 402:  # New Account Created - Business
-                self.message = 'Welcome to Cache, you can use this mannual to get along'
-                self.follow_link = 'https://localhost:8000/get-along-creator'
+                self.follow_link = 'https://localhost:8000/configure'
+
 
             else:
                 pass

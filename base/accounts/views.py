@@ -29,6 +29,15 @@ def test_view(request):
     # print(obj.image.url)
     return render(request, 'accounts/index.html',{})
 
+def init_noti(username,u_code):
+    print(u_code)
+    obj = notification_pannel()
+    obj.username = username
+    obj.u_code = u_code
+    obj.save()
+    return True
+
+
 def notes(request):
 
     return render(request, 'accounts/notes.html',{})
@@ -118,11 +127,10 @@ def profile(request):
             user_obj = User.objects.get(id = request.user.id)
             queue = queue_statistics.objects.filter(username = request.user.id)
             curr_pack = current_package_user.objects.get(username = request.user)
-            # if not queue:
-            #     queue = ''curr_pack
             return render(request, 'accounts/creator.html', {'user_obj':user_obj,'queue':queue,'curr_pack':curr_pack,})
         elif request.user.category == 'Business':
             # check_bizz(userme,user_name_)
+            user_obj = User.objects.get(id = request.user.id)
             return render(request, 'accounts/business.html', {})
         else:
             # print('choose category')
@@ -308,7 +316,7 @@ def configure(request):
 
     selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=True)
     not_selected = selected_connections.objects.filter(dirtybit=request.user.dirtybit, selected=False)
-
+    import requests
     if 'facebook' in request.POST:
         print(request.POST['facebook'])
         object = request.POST['facebook']
@@ -356,6 +364,8 @@ def configure(request):
 
                 data.total_seleceted_connections += 1
                 data.save()
+                init_noti(obj_create.username, 300)
+
             else:
                 error_connected = 'Account Already Connected !'
 
@@ -392,6 +402,8 @@ def configure(request):
 
                     data.total_seleceted_connections += 1
                     data.save()
+                    init_noti(obj_create.username, 300)
+
                     # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['google']))
                     # print(SocialToken.objects.get(id = request.POST['google']).account)
                     # print(request.POST['google'])
@@ -407,6 +419,7 @@ def configure(request):
             pack_error = 'Maximum Limit Reached, Upgrade your package!'
         else:
             print(request.POST['pinterest'])
+
 
     elif 'linkedin' in request.POST:
         import requests
@@ -464,6 +477,8 @@ def configure(request):
 
                     data.total_seleceted_connections += 1
                     data.save()
+                    init_noti(obj_create.username, 300)
+
                     # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
                     # print(SocialToken.objects.get(id = request.POST['twitter']).account)
                     # print(request.POST['twitter'])
@@ -509,6 +524,8 @@ def configure(request):
 
                     data.total_seleceted_connections += 1
                     data.save()
+                    init_noti(obj_create.username, 300)
+
                     # print(SocialAccount.objects.filter(user=request.user.id, id = request.POST['twitter']))
                     # print(SocialToken.objects.get(id = request.POST['twitter']).account)
                     # print(request.POST['twitter'])
@@ -523,6 +540,8 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).delete()
         data.total_seleceted_connections -= count_var1
         data.save()
+        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
         return redirect('/configure')
 
     elif 'google-remove' in request.POST:
@@ -531,6 +550,8 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
+        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
         return redirect('/configure')
 
     elif 'twitter-remove' in request.POST:
@@ -539,6 +560,8 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
+        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
         return redirect('/configure')
 
     elif 'pinterest-remove' in request.POST:
@@ -547,6 +570,8 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
+        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
         return redirect('/configure')
 
     elif 'linkedin-remove' in request.POST:
@@ -555,6 +580,8 @@ def configure(request):
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).delete()
         data.total_seleceted_connections -= 1
         data.save()
+        init_noti(MyUser.objects.get(id=request.user.id), 301)
+
         return redirect('/configure')
 
     else:
@@ -1200,3 +1227,32 @@ def transactions(request):
 
     context = {'obj':obj,}
     return render(request, 'accounts/transactions.html', context)
+
+
+def notifications(request):
+    obj = notification_pannel.objects.filter(username = request.user.id, read_hit = False).order_by('-timestamp')[:10]
+
+    var = ''
+    url = '/notifications'
+    if obj:
+        var = '1'
+    else:
+        pass
+    if request.method == 'POST':
+        if 'all-read' in request.POST:
+            obj1 = notification_pannel.objects.filter(username = request.user.id, read_hit = False)
+            for x in obj1:
+                x.read_hit = True
+                x.mark_as_read_hit = True
+                x.save()
+
+        if 'read_once' in request.POST:
+            obj1 = notification_pannel.objects.get(id =request.POST['read_once'])
+            obj1.read_hit = True
+            obj1.save()
+        obj = notification_pannel.objects.filter(username=request.user.id, read_hit=False).order_by('-timestamp')[:10]
+
+    context = {'obj':obj,'var':var,'url':url}
+    return render(request, 'accounts/notification.html', context)
+
+

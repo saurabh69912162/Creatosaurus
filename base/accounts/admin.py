@@ -11,15 +11,15 @@ admin.site.unregister(Group)
 class UserAdmin(BaseUserAdmin):
 	add_form = UserCreationForm
 
-	list_display = ('username','email','is_admin','first_name','last_name','category','date_of_joining','dirtybit')
+	list_display = ('username','last_login','email','is_admin','first_name','last_name','category','date_of_joining','dirtybit')
 	list_filter = ('is_admin',)
 
 	fieldsets = (
-			(None, {'fields': ('username','email','first_name','last_name','category','password','date_of_joining','dirtybit')}),
-			('Permissions', {'fields': ('is_admin','email_verified','phone_verified','cache_hit')})
+			(None, {'fields': ('username','email','last_login','first_name','last_name','category','password','date_of_joining','dirtybit')}),
+			('Permissions', {'fields': ('is_admin','email_verified','phone_verified','cache_hit','new_user_notify')})
 		)
 	search_fields = ('username','email','first_name','last_name','category','date_of_joining','dirtybit')
-	ordering = ('username','email','last_name','first_name')
+	ordering = ('username','email','last_name','first_name','last_login',)
 
 	filter_horizontal = ()
 

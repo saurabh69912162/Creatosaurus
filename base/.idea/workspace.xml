@@ -2,13 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2354f8e8-5c90-44c5-b366-792655645bb4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/notes.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/notification.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/lol.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/lol.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/myqueue.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/myqueue.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/notes.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/notes.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customusermodel/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/customusermodel/urls.py" afterDir="false" />
     </list>

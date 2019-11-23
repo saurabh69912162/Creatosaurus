@@ -5,7 +5,7 @@
     <hr>
 
 
-    <div style="margin:20px" class="alert alert-warning" role="alert">
+    <div style="margin:20px" class="alert alert-success" role="alert">
         <strong> Notification System</strong>
         <br> -> package bought
         <br> -> package about to expire
@@ -107,16 +107,10 @@
                 self.message = 'Your Scheduled Item has been sent successfully'<br>
                     <strong>elif self.u_code == 199:</strong>  # placed in queue successfully<br>
                 self.message = 'Your Item has been placed in the successfully'<br>
-            elif self.u_code == 300:  # account added in selected accounts<br>
+                    <strong>elif self.u_code == 300:</strong>  # account added in selected accounts<br>
                 self.message = 'Account setup successful'<br>
-            elif self.u_code == 301:  # account added in selected accounts<br>
+                    <strong>elif self.u_code == 301:</strong>  # account deleted in selected accounts<br>
                 self.message = 'Account disconnected successful'<br>
-                       elif self.u_code == 401:  # New Account Created - Creator<br>
-                self.message = 'Welcome to Cache, you can use this mannual to get along'<br>
-                self.follow_link = 'https://localhost:8000/get-along-business'<br>
-            elif self.u_code == 402:  # New Account Created - Business<br>
-                self.message = 'Welcome to Cache, you can use this mannual to get along'<br>
-                self.follow_link = 'https://localhost:8000/get-along-creator'<br>
 
             else:<br>
                 pass<br>
