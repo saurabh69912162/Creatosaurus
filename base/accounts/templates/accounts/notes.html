@@ -1,0 +1,128 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="container" style="padding-top:30px; margin-bottom:100px">
+    <h1>Notes</h1>
+    <hr>
+
+
+    <div style="margin:20px" class="alert alert-warning" role="alert">
+        <strong> Notification System</strong>
+        <br> -> package bought
+        <br> -> package about to expire
+        <br> -> post successfully placed in Queue
+        <br> -> posted successfully
+        <br> -> package new connection setup
+        <br> * mark as read
+        <br> * mark all as read
+        <br> * show only new 10 notifications
+
+    </div>
+
+                        <div style="margin:20px" class="alert alert-danger" role="alert">
+          Account Statistics
+    </div>
+
+                            <div style="margin:20px" class="alert alert-success" role="alert">
+                                <strong> Post Details Page</strong>
+    </div>
+
+
+            <div style="margin:20px" class="alert alert-danger" role="alert">
+            <strong>If package is expired the connections will be removed and so does the scheduled items.
+            </strong><br> As soon as the package is over the scheduled items will be removed
+    </div>
+
+            <div style="margin:20px" class="alert alert-danger" role="alert">
+                if a user is degraded...make sure his free queue is maintained as it was before
+    </div>
+
+
+   <div style="margin:20px" class="alert alert-danger" role="alert">
+            create a script to check if a pacakge is about to be over.
+        and create notification for it.
+    </div>
+
+    <div style="margin:20px" class="alert alert-danger" role="alert">
+    Run a script to check if package is expired or not, if in case the package is expired... assign the basic
+        package and remove connections made
+    <strong>
+        if timestamp == or __gte than current:
+            <br>current_package_user = 'L1'
+            <br>selected_accounts -> provider other than 'facebook' 'twitter' 'linkedin' --> delete
+        <br>save
+</strong>
+    </div>
+        <div style="margin:20px" class="alert alert-success" role="alert">
+           Facebook Text schedule
+    </div>
+
+
+        <div style="margin:20px" class="alert alert-success" role="alert">
+           Facebook Text and Image schedule
+    </div>
+
+
+
+        <div style="margin:20px" class="alert alert-success" role="alert">
+           Twitter Text schedule
+    </div>
+
+
+        <div style="margin:20px" class="alert alert-success" role="alert">
+           Twitter Text and Image schedule
+    </div>
+
+        <div style="margin:20px" class="alert alert-success" role="alert">
+           Linkedin Text schedule
+    </div>
+
+        <div style="margin:20px" class="alert alert-success" role="alert">
+           Linkedin Text and Image schedule
+    </div>
+         <div style="margin:20px" class="alert alert-success" role="alert">
+          Celery123.py Configure
+    </div>
+
+
+            <div style="margin:20px" class="alert alert-success" role="alert">
+          Timer.py Configure
+                <br>
+
+    </div>
+
+
+                <div style="margin:20px" class="alert alert-primary" role="alert">
+
+                    <strong> if self.u_code == 102:</strong><br>
+                self.message = 'Payment completed Successful,Your Package has been upgraded to L2'<br>
+               <strong> elif self.u_code == 103:</strong><br>
+                self.message = 'Payment completed Successful,Your Package has been upgraded to L3'<br>
+               <strong> elif self.u_code == 104:</strong><br>
+                self.message = 'Payment completed Successful,Your Package has been upgraded to L4'<br>
+            elif self.u_code == 101: # Degrading WARNING from l2,l3 or l4 to l1<br>
+                self.message = 'Your Package will expire soon, buy a new one in order to keep your data in queue'<br>
+            elif self.u_code == 100:  # Degraded<br>
+                self.message = 'Your Package has expired, buy a new one in order to keep your data in queue'<br>
+                    <strong>elif self.u_code == 200:</strong>  # posted successfully<br>
+                self.message = 'Your Scheduled Item has been sent successfully'<br>
+                    <strong>elif self.u_code == 199:</strong>  # placed in queue successfully<br>
+                self.message = 'Your Item has been placed in the successfully'<br>
+            elif self.u_code == 300:  # account added in selected accounts<br>
+                self.message = 'Account setup successful'<br>
+            elif self.u_code == 301:  # account added in selected accounts<br>
+                self.message = 'Account disconnected successful'<br>
+                       elif self.u_code == 401:  # New Account Created - Creator<br>
+                self.message = 'Welcome to Cache, you can use this mannual to get along'<br>
+                self.follow_link = 'https://localhost:8000/get-along-business'<br>
+            elif self.u_code == 402:  # New Account Created - Business<br>
+                self.message = 'Welcome to Cache, you can use this mannual to get along'<br>
+                self.follow_link = 'https://localhost:8000/get-along-creator'<br>
+
+            else:<br>
+                pass<br>
+
+    </div>
+
+
+</div>
+{% endblock %}

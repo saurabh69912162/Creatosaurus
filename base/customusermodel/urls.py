@@ -20,6 +20,7 @@ urlpatterns = [
     path('configure/',configure),
     path('my-queue/', myqueue),
     path('package/', package),
+    path('notes/', notes),
     path('transactions/', transactions),
     path('my-history/', myhistory),
     path('facebook-configure/',facebookconfigure),

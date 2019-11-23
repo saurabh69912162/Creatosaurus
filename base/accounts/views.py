@@ -29,6 +29,10 @@ def test_view(request):
     # print(obj.image.url)
     return render(request, 'accounts/index.html',{})
 
+def notes(request):
+
+    return render(request, 'accounts/notes.html',{})
+
 
 def register(request, *args, **kwargs):
     userme = request.user
@@ -273,7 +277,8 @@ def connect(request):
     data = user_connection_data.objects.get(username=request.user.id)
     connection_count = SocialAccount.objects.filter(user=request.user.id).count()
     selection_count = selected_connections.objects.filter(username=request.user.id).count()
-    return render(request, 'accounts/lol.html', {'lmao': lmao, 'data': data, 'connection_count': connection_count, })
+    current_pack = current_package_user.objects.get(username = MyUser.objects.get(id = request.user.id)).package_selected
+    return render(request, 'accounts/lol.html', {'lmao': lmao, 'data': data, 'connection_count': connection_count,'current_pack':str(current_pack) })
 
 
 def long_live_facebook(existing_token):
@@ -904,6 +909,13 @@ def myqueue(request):
             obj2.save()
             obj1.delete()
 
+        if 'view-only' in request.POST:
+            obj1 = scheduler_model.objects.get(schedule_dirtybit = request.POST['view-only'])
+            acc = selected_connections.objects.get(account_uid = obj1.provider)
+            acc_name = acc.account_name
+            acc_pro = acc.provider
+            return render(request, 'accounts/myqueue.html', {'obj': obj, 'obj1':obj1,'acc_pro':acc_pro,'acc_name':acc_name})
+
 
 
         elif 'edit' in request.POST:
@@ -1173,7 +1185,7 @@ def payment_confirmation(request,rand_string,rand_string1):
     status = user_transaction.objects.get(razorpay_id=obj).status
 
     context = {'obj':obj,
-               'status':stat,
+               'status':status,
                'message':message}
     return render(request, 'accounts/confirmation.html', context)
 

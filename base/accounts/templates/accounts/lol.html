@@ -1,7 +1,7 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
 {% load i18n %}
-<div class="container">
+<div class="container" style="margin-bottom:60px">
 <h1>{% trans "Account Details" %}</h1>
 
 <br>
@@ -48,16 +48,58 @@
 
 {% load socialaccount %}
 {% get_providers as socialaccount_providers %}
+
+    {% if current_pack == 'L1' %}
+<br>
+<a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
+<a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
+<a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
+<a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
+    <p><button type="button" class=" btn-warning btn" disabled>Pinterest</button></p>
+    <p><button type="button" class=" btn-warning btn" disabled>Instagram Comming Soon</button></p>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+{%elif current_pack == 'L2' %}
 <br>
 <a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
 <a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
 <a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
 <a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
 <a title="Pinterest" class="socialaccount_provider pinterest btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "pinterest" action="authorize" process="connect" next="/configure"%}" >Pinterest</a><br>
+    <p><button type="button" class="btn-warning btn" disabled>Instagram Comming Soon</button></p>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+{%elif current_pack == 'L3' %}
+<br>
+<a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
+<a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
+<a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
+<a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
+<a title="Pinterest" class="socialaccount_provider pinterest btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "pinterest" action="authorize" process="connect" next="/configure"%}" >Pinterest</a><br>
+    <p><button type="button" class="btn-warning btn" disabled>Instagram Comming Soon</button></p>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+{% elif current_pack == 'L4' %}
+<br>
+<a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
+<a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
+<a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
+<a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
+<a title="Pinterest" class="socialaccount_provider pinterest btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "pinterest" action="authorize" process="connect" next="/configure"%}" >Pinterest</a><br>
+    <p><button type="button" class="btn-warning btn" disabled>Instagram Comming Soon</button></p>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+    {%else%}
+    <br>
+<a title="Facebook" class="socialaccount_provider facebook btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "facebook" action="authorize" process="connect" next="/configure" %}" >Facebook</a><br>
+<a title="Google"  class="socialaccount_provider google btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "google" action="authorize" process="connect" next="/configure" %}" >Youtube</a><br>
+<a title="Twitter" class="socialaccount_provider twitter btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "twitter" action="authorize" process="connect" next="/configure"%}" >Twitter</a><br>
+<a title="LinkedIn" class="socialaccount_provider linkedin_oauth2 btn-warning btn" type="button" style="padding:10px;margin:10px" href="{% provider_login_url "linkedin_oauth2" action="authorize" process="connect" next="/configure"%}" >LinkedIn</a><br>
+    <p><button type="button" class="btn-warning btn" disabled>Instagram Comming Soon</button></p>
 
 {% include "socialaccount/snippets/login_extra.html" %}
 
-
+{%endif%}
 </div>
 
 

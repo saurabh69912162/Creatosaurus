@@ -165,3 +165,33 @@ class user_transaction_admin(admin.ModelAdmin):
 	filter_horizontal = ()
 
 admin.site.register(user_transaction, user_transaction_admin)
+
+
+
+class notification_pannel_admin(admin.ModelAdmin):
+
+	list_display = ('username','timestamp','read_hit','mark_as_read_hit','read_hit_time','message','follow_link','u_code')
+	filter_horizontal = ()
+
+admin.site.register(notification_pannel, notification_pannel_admin)
+
+
+'''   
+ 
+ class notification_pannel_admin(admin.ModelAdmin):
+
+	list_display = ('username','timestamp','read_hit','mark_as_read_hit','read_hit_time','message','follow_link','u_code')
+	filter_horizontal = ()
+
+admin.site.register(notification_pannel, notification_pannel_admin)
+
+
+ username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=datetime.now)
+    read_hit = models.BooleanField(default=False)
+    mark_as_read_hit = models.BooleanField(default=False)
+    read_hit_time = models.DateTimeField(blank=True,null=True)
+    message = models.CharField(max_length=256,blank=False,null=False)
+    follow_link = models.URLField(blank=True,null=True)
+    u_code = models.IntegerField(blank=True,null=True)
+'''

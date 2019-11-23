@@ -16,6 +16,15 @@ USERNAME_REGEX = '^[a-zA-Z0-9.+-]*$'
 # from ..celery123 import *
 
 
+def init_noti(username,u_code):
+    print(u_code)
+    obj = notification_pannel()
+    obj.username = username
+    obj.u_code = u_code
+    obj.save()
+    return True
+
+
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, first_name, last_name, category, date_of_joining, dirtybit, password=None):
         if not email:
@@ -334,9 +343,10 @@ class scheduler_model(models.Model):
                 obj = queue_statistics.objects.get(username = self.username, selected_account = self.provider)
                 obj.left  = obj.left - 1
                 obj.save()
+                init_noti(self.username, 199)
 
-
-
+        if self.hit == True:
+            init_noti(self.username,200)
 
         super().save(*args, **kwargs)
 
@@ -428,3 +438,59 @@ class user_transaction(models.Model):
             change = current_package_user.objects.get(username = self.username)
             change.package_selected = obj
             change.save()
+
+            if self.upgrade_package == 'L2':
+                init_noti(self.username, 102)
+            elif self.upgrade_package == 'L3':
+                init_noti(self.username, 103)
+            elif self.upgrade_package == 'L4':
+                init_noti(self.username, 104)
+
+
+
+class notification_pannel(models.Model):
+    username = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=datetime.now)
+    read_hit = models.BooleanField(default=False)
+    mark_as_read_hit = models.BooleanField(default=False)
+    read_hit_time = models.DateTimeField(blank=True,null=True)
+    message = models.CharField(max_length=256,blank=True,null=True)
+    follow_link = models.URLField(blank=True,null=True)
+    u_code = models.IntegerField(blank=True,null=True)
+
+    def save(self, *args, **kwargs):
+        if self.read_hit == True:
+            self.read_hit_time = datetime.now()
+        if self.mark_as_read_hit == True:
+            self.read_hit_time = datetime.now()
+
+        if self.read_hit == False:
+            if self.u_code == 102:
+                self.message = 'Payment completed Successful,Your Package has been upgraded to L2'
+            elif self.u_code == 103:
+                self.message = 'Payment completed Successful,Your Package has been upgraded to L3'
+            elif self.u_code == 104:
+                self.message = 'Payment completed Successful,Your Package has been upgraded to L4'
+            elif self.u_code == 101: # Degrading WARNING from l2,l3 or l4 to l1
+                self.message = 'Your Package will expire soon, buy a new one in order to keep your data in queue'
+            elif self.u_code == 100:  # Degraded
+                self.message = 'Your Package has expired, buy a new one in order to keep your data in queue'
+            elif self.u_code == 200:  # posted successfully
+                self.message = 'Your Scheduled Item has been sent successfully'
+            elif self.u_code == 199:  # placed in queue successfully
+                self.message = 'Your Item has been placed in the Queue successfully'
+            elif self.u_code == 300:  # account added in selected accounts
+                self.message = 'Account setup successful'
+            elif self.u_code == 301:  # account added in selected accounts
+                self.message = 'Account disconnected successful'
+            elif self.u_code == 401:  # New Account Created - Creator
+                self.message = 'Welcome to Cache, you can use this mannual to get along'
+                self.follow_link = 'https://localhost:8000/get-along-business'
+            elif self.u_code == 402:  # New Account Created - Business
+                self.message = 'Welcome to Cache, you can use this mannual to get along'
+                self.follow_link = 'https://localhost:8000/get-along-creator'
+
+            else:
+                pass
+        super().save(*args, **kwargs)
+

@@ -12,12 +12,15 @@
     <button class="btn btn-danger" type="submit" name="delete-full-queue">Clear Whole Queue</button>
     </form>
     <br><br>
+
+
     {% if obj %}
 
     {% for x in obj %}
 <div class="well">
 
-<strong> <div class="alert alert-danger alert-dismissible">
+<strong>
+    <div class="alert alert-danger alert-dismissible">
   {{x.content}}</strong>
     <br>
 {{x.scheduled_datetime}}
@@ -32,12 +35,32 @@
 
     <form action="." method="post">
     {%csrf_token%}
-
+        <button type="submit" class='btn btn-primary' name="view-only" value="{{x.schedule_dirtybit}}">View Info</button>
         <button type="submit" class='btn btn-warning' name="edit" value="{{x.schedule_dirtybit}}">Edit & Reschedule</button>
         <button type="submit" class='btn btn-danger' name="delete" value="{{x.schedule_dirtybit}}">Delete Post</button>
     </form>
 
+{%if obj1 and x.schedule_dirtybit == obj1.schedule_dirtybit%}
+    <div class="card">
+  <div class="card-body">
+      <h4>{{acc_name}} - {{acc_pro| title}}'s Post</h4>
+      <br>
+      <div class="container">
 
+          {%if obj1.image%}
+          <h6>Image -</h6> <img class="card-img-top" style="width: 18rem;" src="{{obj1.image.url}}">
+               <br>
+      <br>
+          {%endif%}
+
+
+          <h6>Message - {{obj1.content}}</h6>
+          <h6>Scheduled Date & Time - {{obj1.scheduled_datetime}}</h6>
+
+      </div>
+  </div>
+</div>
+    {%endif%}
 
 </div><hr>
     {% endfor %}
