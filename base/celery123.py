@@ -7,7 +7,7 @@
 # settings.configure(INSTALLED_APPS=app_settings.INSTALLED_APPS,DATABASES=app_settings.DATABASES)
 # import django
 # django.setup()
-
+# >py -m celery -A celery123 worker --pool=eventlet -l info  --concurrency=100
 # py -m celery -A celery123 worker --pool=eventlet -l info
 
 import os

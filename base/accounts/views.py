@@ -25,9 +25,9 @@ User = get_user_model()
 
 
 def test_view(request):
-    obj = scheduler_model.objects.get(schedule_dirtybit = '0088a379-21c9-4a52-b8ca-5310c6119331')
-    print(obj.image.url)
-    return HttpResponse('1')
+    # obj = scheduler_model.objects.get(schedule_dirtybit = '0088a379-21c9-4a52-b8ca-5310c6119331')
+    # print(obj.image.url)
+    return render(request, 'accounts/index.html',{})
 
 
 def register(request, *args, **kwargs):

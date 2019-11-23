@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2354f8e8-5c90-44c5-b366-792655645bb4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/style.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/test.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/all_post_config.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/all_post_config.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/configure.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/configure.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/post_factory.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/post_factory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/celery123.py" beforeDir="false" afterPath="$PROJECT_DIR$/celery123.py" afterDir="false" />
     </list>
@@ -32,14 +35,14 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="C:/backup/march19" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/accounts/templates/accounts" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Creatosaurus-in\backend\Creatosaurus\base\accounts\templates\accounts" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Creatosaurus-in\backend\Creatosaurus\base\accounts\templates\accounts" />
     </key>
   </component>
@@ -139,6 +142,9 @@
       <updated>1550379333188</updated>
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.js" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">

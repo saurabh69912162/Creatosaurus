@@ -14,9 +14,13 @@
 
     {%if z == 'twitter' %}
     {% if content_len_flag %}
+    <div class="alert alert-danger">
+  <strong>Twitter text must be smaller or equal to 270 Characters, else this post will be discarded</strong>
+</div>
     <div class="alert alert-danger" role="alert">
         <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
     <strong>{{y|title}} ~ {{z|title}}</strong>
+
     <br>
     <div class="input-group mb-3">
     <div class="input-group-prepend">
@@ -26,13 +30,28 @@
     </div>
     Media ~ {{filename}}
     <hr>
+          </div>
+    {%else%}
+    <div class="alert alert-success" role="alert">
+        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
+    <strong>{{y|title}} ~ {{z|title}}</strong>
+
+    <br>
+    <div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">~</span>
+    </div>
+    <textarea name="{{x}}" rows="10"  class="form-control" >{{message}}</textarea>
+    </div>
+    Media ~ {{filename}}
+    <hr>
+    </div>
+
+
 
     {%endif%}
-    </div>
-    <div class="alert alert-danger" role="alert">
-        <strong>
-            Twitter Text length must smaller or equal to 270 Characters or it will be discarded for posting.</strong>
-</div>
+
+
     {%else%}
         <div class="alert alert-success" role="alert">
         <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:60px; border-radius: 50%;margin:10px;">
