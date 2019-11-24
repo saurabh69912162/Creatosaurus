@@ -21,6 +21,7 @@ urlpatterns = [
     path('my-queue/', myqueue),
     path('package/', package),
     path('notes/', notes),
+    path('check_pack_date/',check_pack_date),
     path('notifications/', notifications),
     path('transactions/', transactions),
     path('my-history/', myhistory),

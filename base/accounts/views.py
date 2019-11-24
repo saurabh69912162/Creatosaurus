@@ -927,6 +927,13 @@ def myqueue(request):
 
     if request.method == 'POST':
         if 'delete-full-queue' in request.POST:
+            object = scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username))
+            for x in object:
+                provider_uid = selected_connections.objects.get(username = MyUser.objects.get(username  = request.user.username), account_uid = x.provider.account_uid)
+                obj2 = queue_statistics.objects.get(username=User.objects.get(id=request.user.id),selected_account=provider_uid)
+                obj2.left = obj2.left + 1
+                obj2.save()
+                pass
             scheduler_model.objects.filter(username = MyUser.objects.get(username  = request.user.username)).delete()
 
         if 'delete' in request.POST:
@@ -1256,3 +1263,33 @@ def notifications(request):
     return render(request, 'accounts/notification.html', context)
 
 
+def check_pack_date(request):
+    user = current_package_user.objects.all()
+    from datetime import datetime
+    expiry = datetime.now()
+    import datetime
+    d = datetime.datetime(expiry.year, expiry.month, expiry.day,
+                          expiry.hour, expiry.minute,
+                          expiry.second)
+    epoch = time.mktime(d.timetuple())
+
+    for x in user:
+        if x.package_exipry - epoch <= 86000 and x.package_exipry > 0:
+            print('found this ',x.username)
+            init_noti(x.username, 101)
+        elif x.package_exipry - epoch > 10 and x.package_exipry > 0:
+            init_noti(x.username, 100)
+            obj = current_package_user.objects.get(username = x.username)
+            obj.package_selected = available_package.objects.get(package_name = 'L1')
+            obj.save()
+            sele = selected_connections.objects.filter(username = x.username)
+            for x in sele:
+                if x.provider == 'pinterest' or x.provider == 'youtube':
+                    SocialAccount.objects.get(user=request.user.id, uid = x.account_uid).delete()
+                else:
+                    pass
+        else:
+            sele = selected_connections.objects.filter(username=x.username)
+            for x in sele:
+                print(SocialAccount.objects.get(user=request.user.id, uid = x.account_uid))
+    return HttpResponse('Done')

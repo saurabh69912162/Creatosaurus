@@ -224,7 +224,7 @@ class queue_statistics(models.Model):
     def save(self, *args, **kwargs):
 
         check_lim = current_package_user.objects.get(username= self.username)
-        self.limit =  check_lim.queue_size
+        self.limit = check_lim.queue_size
 
         if self.left <= 0:
             obj = selected_connections.objects.get(account_uid = self.selected_account)
@@ -236,6 +236,8 @@ class queue_statistics(models.Model):
             obj.save()
         else:
             pass
+
+
         super().save(*args, **kwargs)
 
 
@@ -263,8 +265,25 @@ class current_package_user(models.Model):
     account_connection_size = models.IntegerField(blank=True, null=True)
     team_member_size = models.IntegerField(blank=True, null=True)
     assigned = models.BooleanField(default=False)
+    package_exipry = models.BigIntegerField(default=0,blank=True,null=True)
+
+
     def save(self, *args, **kwargs):
-        if self.assigned == 'False':
+        pack = available_package.objects.get(package_name='L1')
+        if not self.package_selected == pack:
+            from datetime import datetime, timedelta
+            expiry = datetime.now() + timedelta(days=30)
+            import datetime
+            d = datetime.datetime(expiry.year, expiry.month, expiry.day,
+                                  expiry.hour, expiry.minute,
+                                  expiry.second)
+            epoch = time.mktime(d.timetuple())
+            self.package_exipry = int(epoch)
+        else:
+            self.package_exipry = -1
+
+
+        if self.assigned == False:
             self.assigned = True
             self.package_selected = available_package.objects.get(package_name = 'L1')
 
@@ -352,6 +371,9 @@ class scheduler_model(models.Model):
                 init_noti(self.username, 199)
 
         if self.hit == True:
+            obj = queue_statistics.objects.get(username=self.username, selected_account=self.provider)
+            obj.left = obj.left + 1
+            obj.save()
             init_noti(self.username,200)
 
         super().save(*args, **kwargs)

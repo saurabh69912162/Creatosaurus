@@ -84,11 +84,11 @@ admin.site.register(selected_connections, selected_connections_admin)
 
 class current_package_user_admin(admin.ModelAdmin):
 
-	list_display = ('username','dirtybit','package_selected','queue_size','account_connection_size','team_member_size')
+	list_display = ('username','dirtybit','package_selected','package_exipry','queue_size','account_connection_size','team_member_size')
 	list_filter = ('package_selected',)
 
 
-	search_fields = ('username','dirtybit','package_selected','queue_size','account_connection_size','team_member_size')
+	search_fields = ('username','dirtybit','package_selected','package_exipry','queue_size','account_connection_size','team_member_size')
 	ordering = ('username','dirtybit','package_selected','queue_size','account_connection_size','team_member_size')
 
 	filter_horizontal = ()

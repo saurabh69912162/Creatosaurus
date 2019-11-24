@@ -60,7 +60,7 @@
     <div class="container">
         <h5>{{x.account_name|title}} - {{x.provider|title}}</h5>
   <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:{{x.left}}0%"></div>
+    {{x.left}} <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width:{{x.left}}0%"></div>
   </div>
 </div>
 {%endfor%}
