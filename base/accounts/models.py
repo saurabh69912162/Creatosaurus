@@ -133,9 +133,17 @@ class MyUser(AbstractBaseUser):
         elif self.category == 'Business':
             super().save(*args, **kwargs)
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
-            user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
             business_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
-            query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,)
+
+            try:
+                query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
+            except:
+                query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit,
+                                                                       package_selected=available_package.objects.get(
+                                                                           package_name='L1'))
+
+            user_connection_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
+
             super().save(*args, **kwargs)
         else:
             pass
@@ -350,7 +358,7 @@ class current_package_user(models.Model):
                     x.left = 0
                 else:
                     x.left = x.left - 6
-                    
+
                 print('l4 -> l1')
                 x.save()
                 self.last_package = 'L4'

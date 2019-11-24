@@ -130,8 +130,12 @@ def profile(request):
             return render(request, 'accounts/creator.html', {'user_obj':user_obj,'queue':queue,'curr_pack':curr_pack,})
         elif request.user.category == 'Business':
             # check_bizz(userme,user_name_)
+            # check_creator(userme, user_name_)
+            user_obj = User.objects.get(id=request.user.id)
+            queue = queue_statistics.objects.filter(username=request.user.id)
+            curr_pack = current_package_user.objects.get(username=request.user)
             user_obj = User.objects.get(id = request.user.id)
-            return render(request, 'accounts/business.html', {})
+            return render(request, 'accounts/business.html', {'user_obj':user_obj,'queue':queue,'curr_pack':curr_pack,})
         else:
             # print('choose category')
             return HttpResponseRedirect("/")
