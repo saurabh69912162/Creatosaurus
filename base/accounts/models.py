@@ -304,35 +304,42 @@ class current_package_user(models.Model):
                 x.limit = 12
                 x.left = x.left+2
                 x.save()
+                self.last_package = 'L1'
                 print('l1 -> l2')
 
             elif new_pack == 'L3' and self.last_package == 'L1':
                 x.limit = 14
                 x.left = x.left + 4
                 x.save()
+                self.last_package = 'L1'
                 print('l1 -> l3')
 
             elif new_pack == 'L4' and self.last_package == 'L1':
                 x.limit = 16
                 x.left = x.left + 6
                 x.save()
+                self.last_package = 'L1'
                 print('l1 -> l4')
 
             elif new_pack == 'L3' and self.last_package == 'L2':
                 x.limit = 14
                 x.left = x.left + 2
                 x.save()
+                self.last_package = 'L2'
                 print('l2 -> l3')
 
             elif new_pack == 'L4' and self.last_package == 'L2':
                 x.limit = 16
                 x.left = x.left + 4
+                x.save()
+                self.last_package = 'L2'
                 print('l2 -> l4')
 
             elif new_pack == 'L4' and self.last_package == 'L3':
                 x.limit = 16
                 x.left = x.left + 2
                 x.save()
+                self.last_package = 'L3'
                 print('l3 -> l4')
 
 
@@ -343,8 +350,10 @@ class current_package_user(models.Model):
                     x.left = 0
                 else:
                     x.left = x.left - 6
+                    
                 print('l4 -> l1')
                 x.save()
+                self.last_package = 'L4'
 
             elif new_pack == 'L1' and self.last_package == 'L3':
                 x.limit = 10
@@ -354,6 +363,7 @@ class current_package_user(models.Model):
                     x.left = x.left - 4
                 print('l3 -> l1')
                 x.save()
+                self.last_package = 'L3'
 
             elif new_pack == 'L1' and self.last_package == 'L2':
                 x.limit = 10
@@ -363,10 +373,12 @@ class current_package_user(models.Model):
                     x.left = x.left - 2
                 print('l2 -> l1')
                 x.save()
+                self.last_package = 'L2'
 
             elif new_pack == 'L1' and self.last_package == 'L1':
                 pass
                 print('l1 -> l1')
+                self.last_package = 'L1'
 
             else:
                 pass

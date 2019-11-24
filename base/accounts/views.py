@@ -1331,7 +1331,9 @@ def check_pack_date(request):
         elif x.package_exipry - epoch > 10 and x.package_exipry > 0:
             init_noti(x.username, 100)
             obj = current_package_user.objects.get(username = x.username)
-            obj.package_selected = available_package.objects.get(package_name = 'L1')
+            last_pack = current_package_user.objects.get(username = x.username).package_selected
+            last_pack_name = available_package.objects.get(package_name = last_pack)
+            obj.package_selected = available_package.objects.get(package_name = 'L1', last_package = last_pack_name)
             obj.save()
             sele = selected_connections.objects.filter(username = x.username)
             for x in sele:
