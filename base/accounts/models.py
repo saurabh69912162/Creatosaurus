@@ -224,7 +224,7 @@ class queue_statistics(models.Model):
     def save(self, *args, **kwargs):
 
         check_lim = current_package_user.objects.get(username= self.username)
-        self.limit = check_lim.queue_size
+        # self.limit = check_lim.queue_size
 
         if self.left <= 0:
             obj = selected_connections.objects.get(account_uid = self.selected_account)
@@ -266,6 +266,7 @@ class current_package_user(models.Model):
     team_member_size = models.IntegerField(blank=True, null=True)
     assigned = models.BooleanField(default=False)
     package_exipry = models.BigIntegerField(default=0,blank=True,null=True)
+    last_package = models.CharField(max_length=10,default='L1')
 
 
     def save(self, *args, **kwargs):
@@ -292,11 +293,86 @@ class current_package_user(models.Model):
         self.team_member_size = self.package_selected.team_member_size
 
         change_q = queue_statistics.objects.filter(username=self.username)
-        for x in change_q:
-            x.limit = self.queue_size
-            x.left = (self.queue_size - 10 ) + x.left
-            x.save()
 
+        new_pack = available_package.objects.get(package_name = self.package_selected.package_name).package_name
+
+        print('i am the new pack',new_pack)
+
+        for x in change_q:
+
+            if new_pack == 'L2' and self.last_package == 'L1':
+                x.limit = 12
+                x.left = x.left+2
+                x.save()
+                print('l1 -> l2')
+
+            elif new_pack == 'L3' and self.last_package == 'L1':
+                x.limit = 14
+                x.left = x.left + 4
+                x.save()
+                print('l1 -> l3')
+
+            elif new_pack == 'L4' and self.last_package == 'L1':
+                x.limit = 16
+                x.left = x.left + 6
+                x.save()
+                print('l1 -> l4')
+
+            elif new_pack == 'L3' and self.last_package == 'L2':
+                x.limit = 14
+                x.left = x.left + 2
+                x.save()
+                print('l2 -> l3')
+
+            elif new_pack == 'L4' and self.last_package == 'L2':
+                x.limit = 16
+                x.left = x.left + 4
+                print('l2 -> l4')
+
+            elif new_pack == 'L4' and self.last_package == 'L3':
+                x.limit = 16
+                x.left = x.left + 2
+                x.save()
+                print('l3 -> l4')
+
+
+
+            elif new_pack == 'L1' and self.last_package == 'L4':
+                x.limit = 10
+                if x.left-x.left >= 6:
+                    x.left = 0
+                else:
+                    x.left = x.left - 6
+                print('l4 -> l1')
+                x.save()
+
+            elif new_pack == 'L1' and self.last_package == 'L3':
+                x.limit = 10
+                if x.left-x.left >= 4:
+                    x.left = 0
+                else:
+                    x.left = x.left - 4
+                print('l3 -> l1')
+                x.save()
+
+            elif new_pack == 'L1' and self.last_package == 'L2':
+                x.limit = 10
+                if x.left-x.left >= 2:
+                    x.left = 0
+                else:
+                    x.left = x.left - 2
+                print('l2 -> l1')
+                x.save()
+
+            elif new_pack == 'L1' and self.last_package == 'L1':
+                pass
+                print('l1 -> l1')
+
+            else:
+                pass
+                print(self.last_package)
+                print(type(new_pack))
+                print('i got passed')
         super().save(*args, **kwargs)
 
 
@@ -465,6 +541,7 @@ class user_transaction(models.Model):
             obj = available_package.objects.get(package_name =self.upgrade_package)
             change = current_package_user.objects.get(username = self.username)
             change.package_selected = obj
+            change.last_package = self.current_package
             change.save()
 
             if self.upgrade_package == 'L2':

@@ -6,12 +6,11 @@
 
 
 
-                        <div style="margin:20px" class="alert alert-warning" role="alert">
+                        <div style="margin:20px" class="alert alert-success" role="alert">
           Account Statistics
                             <strong><br>-> left </strong>
                             <strong><br>-> limit increase on success</strong>
-                            <br>-> on package upgrade and degrade -> will use script
-                            <br>-> selected accounts count
+                            <strong> <br>-> on package upgrade and degrade -> will use script</strong>
                             <strong>  <br>-> if user is already on some package -> set queue stats</strong>
 
     </div>
@@ -19,22 +18,33 @@
 
 
 
-            <div style="margin:20px" class="alert alert-danger" role="alert">
+            <div style="margin:20px" class="alert alert-success" role="alert">
             <strong>If package is expired the connections will be removed and so does the scheduled items.
             </strong><br> As soon as the package is over the scheduled items will be removed
+                <br><hr><strong>removing connections will directly remove any scheduled item of future.
+            </strong>
     </div>
 
-            <div style="margin:20px" class="alert alert-danger" role="alert">
-                if a user is degraded...make sure his free queue is maintained as it was before
-    </div>
+            <div style="margin:20px" class="alert alert-success" role="alert">
+                if a user is degraded...make sure his free queue is maintained as it was before.
+                <hr><strong> Nothin will happen until selected connection is deleted
+
+            </strong>
+            </div>
 
 
-   <div style="margin:20px" class="alert alert-danger" role="alert">
+   <div style="margin:20px" class="alert alert-success" role="alert">
             create a script to check if a pacakge is about to be over.
         and create notification for it.
     </div>
 
-    <div style="margin:20px" class="alert alert-danger" role="alert">
+       <div style="margin:20px" class="alert alert-success" role="alert">
+       <strong>     incase of purchase before date -> just update the expiry timestamp in models.
+           and it should only be active a week before expiry.<strong>
+               or use draft system
+    </div>
+
+    <div style="margin:20px" class="alert alert-success" role="alert">
     Run a script to check if package is expired or not, if in case the package is expired... assign the basic
         package and remove connections made
     <strong>
@@ -43,10 +53,13 @@
             <br>selected_accounts -> provider other than 'facebook' 'twitter' 'linkedin' --> delete
         <br>save
 </strong>
+        <hr>
+        <strong>done in views.py def check_pack_date(request) </strong>
     </div>
 
                             <div style="margin:20px" class="alert alert-success" role="alert">
                                 <strong> Post Details Page</strong>
+                                draft system
     </div>
 
 

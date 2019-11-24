@@ -535,51 +535,102 @@ def configure(request):
                     pass
     elif 'facebook-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).extra_data['id']
+
         count_var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).count()
-        var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).delete()
+
+        # var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).delete()
+        try:
+            var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+            if var1:
+                var1.delete()
+                data.total_seleceted_connections -= 1
+                data.save()
+        except:
+            pass
+
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).delete()
-        data.total_seleceted_connections -= count_var1
-        data.save()
+
+        # data.total_seleceted_connections -= count_var1
+        # data.save()
         init_noti(MyUser.objects.get(id=request.user.id), 301)
 
         return redirect('/configure')
 
     elif 'google-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).uid
-        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+        # var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).delete()
+        try:
+            var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+            if var1:
+                var1.delete()
+                data.total_seleceted_connections -= 1
+                data.save()
+        except:
+            pass
+
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['google-remove']).delete()
-        data.total_seleceted_connections -= 1
-        data.save()
+        # data.total_seleceted_connections -= 1
+        # data.save()
         init_noti(MyUser.objects.get(id=request.user.id), 301)
 
         return redirect('/configure')
 
     elif 'twitter-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).uid
-        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+        # var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+        # var1 = selected_connections.objects.get(username=request.user.id, account_uid=var).delete()
+        # var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+        try:
+            var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+            if var1:
+                var1.delete()
+                data.total_seleceted_connections -= 1
+                data.save()
+        except:
+            pass
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['twitter-remove']).delete()
-        data.total_seleceted_connections -= 1
-        data.save()
+        # data.total_seleceted_connections -= 1
+        # data.save()
         init_noti(MyUser.objects.get(id=request.user.id), 301)
 
         return redirect('/configure')
 
     elif 'pinterest-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).uid
-        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+        # var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+
+        try:
+            var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+            if var1:
+                var1.delete()
+                data.total_seleceted_connections -= 1
+                data.save()
+        except:
+            pass
+
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['pinterest-remove']).delete()
-        data.total_seleceted_connections -= 1
-        data.save()
+        # data.total_seleceted_connections -= 1
+        # data.save()
         init_noti(MyUser.objects.get(id=request.user.id), 301)
 
         return redirect('/configure')
 
     elif 'linkedin-remove' in request.POST:
         var = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).uid
-        var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+        # var1 = selected_connections.objects.filter(username=request.user.id, account_uid=var).delete()
+
+        try:
+            var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+            if var1:
+                var1.delete()
+                data.total_seleceted_connections -= 1
+                data.save()
+        except:
+            pass
+
+
         delete_me = SocialAccount.objects.get(user=request.user.id, id=request.POST['linkedin-remove']).delete()
-        data.total_seleceted_connections -= 1
-        data.save()
+
         init_noti(MyUser.objects.get(id=request.user.id), 301)
 
         return redirect('/configure')
@@ -1292,4 +1343,5 @@ def check_pack_date(request):
             sele = selected_connections.objects.filter(username=x.username)
             for x in sele:
                 print(SocialAccount.objects.get(user=request.user.id, uid = x.account_uid))
+
     return HttpResponse('Done')
