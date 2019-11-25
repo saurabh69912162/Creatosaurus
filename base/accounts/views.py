@@ -359,12 +359,54 @@ def configure(request):
                 obj_create.account_uid = obj[0]
                 obj_create.selected = True
                 obj_create.save()
+                curr = current_package_user.objects.get(username = MyUser.objects.get(id = request.user.id)).package_selected
+                avail = available_package.objects.get(package_name = curr).package_name
+                if avail == 'L1':
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='facebook',
+                                                                       account_name=obj[2],
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj[0],
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
 
-                queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id), provider='facebook',
-                                                             account_name= obj[2], dirtybit=request.user.dirtybit,
-                                                             account_uid=obj[0],
-                                                             selected_account=selected_connections.objects.get(
-                                                                 id=obj_create.id))
+                    print('L1 saurabh')
+                elif avail == 'L2':
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='facebook',
+                                                                       account_name=obj[2],
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj[0],
+                    limit =12,left=12,
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
+
+                    print('L2 saurabh')
+                elif avail == 'L3':
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='facebook',
+                                                                       account_name=obj[2],
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj[0],
+                                                                       limit=14, left=14,
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
+
+                    print('L3 saurabh')
+                elif avail == 'L4':
+                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
+                                                                       provider='facebook',
+                                                                       account_name=obj[2],
+                                                                       dirtybit=request.user.dirtybit,
+                                                                       account_uid=obj[0],
+                                                                       limit=16, left=16,
+                                                                       selected_account=selected_connections.objects.get(
+                                                                           id=obj_create.id))
+
+                    print('L4 saurabh')
+                else:
+                    pass
+
 
                 data.total_seleceted_connections += 1
                 data.save()
@@ -395,14 +437,63 @@ def configure(request):
                     obj_create.selected = True
                     obj_create.save()
                     obj_create.save()
+#---------------
+                    curr = current_package_user.objects.get(
+                        username=MyUser.objects.get(id=request.user.id)).package_selected
+                    avail = available_package.objects.get(package_name=curr).package_name
+                    if avail == 'L1':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='google',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            account_uid=obj_create.account_uid,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
 
-                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
-                                                                       provider='google',
-                                                                       account_name=obj_create.account_name,
-                                                                       dirtybit=request.user.dirtybit,
-                                                                       account_uid=obj_create.account_uid,
-                                                                       selected_account=selected_connections.objects.get(
-                                                                           id=obj_create.id))
+                        print('L1 saurabh')
+                    elif avail == 'L2':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='google',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            limit=12, left=12,
+                            account_uid=obj_create.account_uid,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
+
+
+                        print('L2 saurabh')
+                    elif avail == 'L3':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='google',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            limit=14, left=14,
+                            account_uid=obj_create.account_uid,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
+
+                        print('L3 saurabh')
+                    elif avail == 'L4':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='google',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            limit=16, left=16,
+                            account_uid=obj_create.account_uid,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
+
+                        print('L4 saurabh')
+                    else:
+                        pass
+
+                    #---------------
+
 
                     data.total_seleceted_connections += 1
                     data.save()
@@ -470,14 +561,62 @@ def configure(request):
                                                                        id=request.POST['linkedin']).uid
                     obj_create.selected = True
                     obj_create.save()
+                    # ---------------
+                    curr = current_package_user.objects.get(
+                        username=MyUser.objects.get(id=request.user.id)).package_selected
+                    avail = available_package.objects.get(package_name=curr).package_name
+                    if avail == 'L1':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='linkedin',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            account_uid=obj_create.account_uid,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
 
-                    queue_obj = queue_statistics.objects.get_or_create(username=MyUser.objects.get(id=request.user.id),
-                                                                       provider='linkedin',
-                                                                       account_name=obj_create.account_name,
-                                                                       dirtybit=request.user.dirtybit,
-                                                                       account_uid=obj_create.account_uid,
-                                                                       selected_account=selected_connections.objects.get(
-                                                                           id=obj_create.id))
+                        print('L1 saurabh')
+                    elif avail == 'L2':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='linkedin',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            account_uid=obj_create.account_uid,
+                            limit=12, left=12,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
+
+                        print('L2 saurabh')
+                    elif avail == 'L3':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='linkedin',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            account_uid=obj_create.account_uid,
+                            limit=14, left=14,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
+                        print('L3 saurabh')
+                    elif avail == 'L4':
+                        queue_obj = queue_statistics.objects.get_or_create(
+                            username=MyUser.objects.get(id=request.user.id),
+                            provider='linkedin',
+                            account_name=obj_create.account_name,
+                            dirtybit=request.user.dirtybit,
+                            account_uid=obj_create.account_uid,
+                            limit=16, left=16,
+                            selected_account=selected_connections.objects.get(
+                                id=obj_create.id))
+
+                        print('L4 saurabh')
+                    else:
+                        pass
+
+                    # ---------------
+
+
 
                     data.total_seleceted_connections += 1
                     data.save()
@@ -538,17 +677,20 @@ def configure(request):
                     error_connected = 'Account Already Connected !'
                     pass
     elif 'facebook-remove' in request.POST:
-        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).extra_data['id']
-
+        var = SocialAccount.objects.get(user=request.user.id, id=request.POST['facebook-remove']).uid
+        print('var is ',var)
         count_var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).count()
+        print('related accounts :: ', count_var1)
 
         # var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var).delete()
         try:
-            var1 = selected_connections.objects.get(username=request.user.id, account_uid=var)
+            print('tried deleting')
+            var1 = selected_connections.objects.filter(username=request.user.id, extra_data__icontains=var)
             if var1:
                 var1.delete()
-                data.total_seleceted_connections -= 1
+                data.total_seleceted_connections -= count_var1
                 data.save()
+                print('deleted')
         except:
             pass
 
