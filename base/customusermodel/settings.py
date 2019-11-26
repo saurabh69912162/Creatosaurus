@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'customusermodel.wsgi.application'
 DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cache_base',
+        'NAME': 'cache_final',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': 'localhost',

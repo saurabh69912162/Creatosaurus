@@ -119,8 +119,6 @@ class MyUser(AbstractBaseUser):
             super().save(*args, **kwargs)
             obj = MyUser.objects.get(dirtybit=self.dirtybit)
             creator_profile_data.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
-
-
             try:
                 query_set = current_package_user.objects.get_or_create(username=obj, dirtybit=self.dirtybit)
             except:
