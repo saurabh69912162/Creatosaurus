@@ -105,8 +105,8 @@ def facebook_post(final_token, string, key):
         obj.save()
 
 
-TWITTER_CONSUMER_KEY = '1Vd9j6RGv01MeGpMhqbgGhP5l'
-TWITTER_CONSUMER_SECRET = 'XxXOZD0mwVrdEcKFkT2qsIlP7scJKIBhqBueH03sw01rEilQjJ'
+TWITTER_CONSUMER_KEY = 'xxxxxxxxxxxxxxxxxxxx'
+TWITTER_CONSUMER_SECRET = 'xxxxxxxxxxxxxxxxxxxxx'
 MEDIA_ENDPOINT_URL = 'https://upload.twitter.com/1.1/media/upload.json'
 POST_TWEET_URL = 'https://api.twitter.com/1.1/statuses/update.json'
 
@@ -226,8 +226,8 @@ def twitter_post(final_token, secret, string, key):
     obj = scheduler_model.objects.get(schedule_dirtybit=key)
     if obj.image:
 
-        CONSUMER_KEY = 'bTDdpQAjKLBL1B0r259ZbIZg2'
-        CONSUMER_SECRET = 'hRVFl78PDOMmBjAbAerSM5RGWLp4Om2ni2ohtRTyOYqFZUABp7'
+        CONSUMER_KEY = 'xxxxxxxxxxxxxxxxxxxx'
+        CONSUMER_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
         ACCESS_TOKEN = final_token
         ACCESS_TOKEN_SECRET = secret
         # VIDEO_FILENAME = "E:\Creatosaurus-in\ backend\Creatosaurus\ base\ accounts\media" + obj.image.url  # might have to give local file address rather than url
